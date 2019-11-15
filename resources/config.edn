@@ -1,0 +1,117 @@
+{:duct.profile/base
+ {:duct.core/project-ns  sweet-tooth.todo-example
+  :duct.core/environment :production
+
+  ;;-----------
+  ;; middleware
+  ;;-----------
+
+  :duct.middleware.web/defaults
+  {:params    {:urlencoded true
+               :keywordize true
+               :multipart  true
+               :nested     true}
+   :session   {:store        #ig/ref :sweet-tooth.endpoint.datomic/session-store
+               ;; one year
+               :cookie-attrs {:max-age 31556952}}
+   :security  {:anti-forgery         false
+               :xss-protection       {:enable? true, :mode :block}
+               :frame-options        :sameorigin
+               :content-type-options :nosniff}
+   :static    {:resources "public"}
+   :responses {:not-modified-responses true
+               :absolute-redirects     true
+               :content-types          true
+               :default-charset        "utf-8"}}
+
+  :sweet-tooth.todo-example.backend.duct/buddy     {}
+  :sweet-tooth.todo-example.backend.duct/wrap-gzip {}
+
+  :sweet-tooth.todo-example.backend.endpoint.static/handler {}
+
+  :sweet-tooth.endpoint.datomic/session-store
+  {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
+
+  :duct.server.http/jetty
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+
+  ;; datomic
+  :sweet-tooth.endpoint.datomic/connection
+  {:uri     #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/sweet-tooth-todo-example"]
+   :create? true
+   :schema  []
+   :data    []}}
+ ;; end base profile
+ ;;-----------------
+
+ ;;---------
+ ;; profiles
+ ;;---------
+ :duct.profile/local #duct/include "local.edn"
+ :duct.profile/dev   #duct/include "dev.edn"
+ :duct.profile/test  #duct/include "test.edn"
+
+ :duct.profile/local-staging
+ {:duct.core/environment :local-staging
+
+  :duct.server.http/jetty
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+
+  :sweet-tooth.endpoint.datomic/connection
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/localhost"]}
+
+  :duct.logger/timbre
+  {:level     :debug
+   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
+
+  :duct.logger.timbre/println {}}
+ ;; end local staging profile
+
+ :duct.profile/staging
+ {:duct.core/environment :staging
+
+  :duct.server.http/jetty
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+
+  :sweet-tooth.endpoint.datomic/connection
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-staging"]}
+
+  :duct.logger/timbre
+  {:level     :debug
+   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
+
+  :duct.logger.timbre/println {}}
+ ;; end staging profile
+
+
+ :duct.profile/prod
+ {:duct.core/environment :production
+
+  :duct.server.http/jetty
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+
+  :sweet-tooth.endpoint.datomic/connection
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-prod"]}
+
+  :duct.logger/timbre
+  {:level     :info
+   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
+
+  :duct.logger.timbre/println {}}
+
+ ;;--------
+ ;; modules
+ ;;--------
+
+ :duct.module/logging  {}
+ :duct.module.web/api  {}
+ :duct.module.web/site {}
+
+ :sweet-tooth.endpoint/middleware {}
+
+ :sweet-tooth.endpoint.liberator.reitit-routes/ns-routes
+ {:ns-routes :sweet-tooth.todo-example.cross.endpoint-routes/ns-routes}
+
+ :sweet-tooth.todo-example.backend.duct/merge-many
+ {:configs [{:duct.handler/root {:middleware ^:distinct [:sweet-tooth.todo-example.backend.duct/buddy]}}
+            {:duct.handler/root {:middleware ^:prepend  [:sweet-tooth.todo-example.backend.duct/wrap-gzip]}}]}}

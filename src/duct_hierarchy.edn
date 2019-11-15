@@ -1,0 +1,4 @@
+{:duct.profile/test                         [:duct/profile]
+ :duct.profile/local-staging                [:duct/profile]
+ :duct.profile/staging                      [:duct/profile]
+ :sweet-tooth.endpoint.datomic/connection   [:duct/database]}
