@@ -1,0 +1,12 @@
+* overview
+** list many todo lists
+** interact with individual todo list
+* todo
+** TODO create schema
+** TODO list todo endpoint
+** TODO create todo endpoint
+** TODO update todo endpoint
+** TODO delete todo endpoint
+** TODO home page that lists todo lists
+** TODO click on a todo list, go to it
+*** create route

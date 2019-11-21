@@ -7,6 +7,7 @@
             [sweet-tooth.todo-example.backend.duct]
             [taoensso.timbre :as log]
             [sweet-tooth.endpoint.system :as es]
+            [sweet-tooth.todo-example.backend.db.tasks :as dbt]
             [environ.core :as env]
             [datomic.api :as d]))
 
@@ -39,7 +40,6 @@
   [cmd & args]
   (let [env (keyword (env/env :app-env :dev))]
     (log/info "-main" ::-main {:cmd cmd})
-    (duct/load-hierarchy)
     (case cmd
       "server"
       (start-server env)

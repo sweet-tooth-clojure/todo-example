@@ -1,0 +1,8 @@
+{:grateful-place/base-todo-list-schema
+ {:txes [[{:db/ident :todo-list/title
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/fulltext true
+           :db/doc "todo title"
+           :db.install/_attribute :db.part/db}]]}}

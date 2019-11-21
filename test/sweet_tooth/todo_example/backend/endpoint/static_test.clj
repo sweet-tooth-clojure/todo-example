@@ -9,4 +9,5 @@
 
 (deftest public-routes
   (let [index-html (slurp (io/resource "public/index.html"))]
+    (is (re-find #"<html>" index-html))
     (is (= index-html (slurp (:body (eth/req :get "/")))))))

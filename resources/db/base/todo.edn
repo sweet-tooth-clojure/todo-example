@@ -1,0 +1,38 @@
+{:grateful-place/base-todo-schema
+ {:txes [[{:db/ident :todo/title
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/fulltext true
+           :db/doc "todo title"
+           :db.install/_attribute :db.part/db}
+
+          {:db/ident :todo/notes
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/string
+           :db/cardinality :db.cardinality/one
+           :db/fulltext true
+           :db/doc "todo notes"
+           :db.install/_attribute :db.part/db}
+
+          {:db/ident :todo/due-date
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/instant
+           :db/cardinality :db.cardinality/one
+           :db/fulltext true
+           :db/doc "when's this thang due"
+           :db.install/_attribute :db.part/db}
+
+          {:db/ident :todo/done?
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/boolean
+           :db/cardinality :db.cardinality/one
+           :db/fulltext true
+           :db.install/_attribute :db.part/db}
+
+          {:db/ident :todo/todo-list
+           :db/id #db/id[:db.part/db]
+           :db/valueType :db.type/ref
+           :db/cardinality :db.cardinality/one
+           :db/doc "parent todo list"
+           :db.install/_attribute :db.part/db}]]}}
