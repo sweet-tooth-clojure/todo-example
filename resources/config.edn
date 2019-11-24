@@ -11,7 +11,7 @@
                :keywordize true
                :multipart  true
                :nested     true}
-   :session   {:store        #ig/ref :sweet-tooth.endpoint.datomic/session-store
+   :session   {;; :store        #ig/ref :sweet-tooth.endpoint.datomic/session-store
                ;; one year
                :cookie-attrs {:max-age 31556952}}
    :security  {:anti-forgery         false
@@ -29,8 +29,8 @@
 
   :sweet-tooth.todo-example.backend.endpoint.static/handler {}
 
-  :sweet-tooth.endpoint.datomic/session-store
-  {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
+  ;; :sweet-tooth.endpoint.datomic/session-store
+  ;; {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
 
   :duct.server.http/jetty
   {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
@@ -39,7 +39,8 @@
   :sweet-tooth.endpoint.datomic/connection
   {:uri     #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/sweet-tooth-todo-example"]
    :create? true
-   :schema  []
+   :schema  ["db/base/todo.edn"
+             "db/base/todo-list.edn"]
    :data    []}}
  ;; end base profile
  ;;-----------------

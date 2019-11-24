@@ -1,0 +1,5 @@
+{:sweet-tooth.endpoint.datomic/connection
+ {:uri      #duct/env ["DATOMIC_URI" Str :or "datomic:mem://sweet-tooth-todo-example-test"]
+  :create?  true
+  :migrate? true
+  :delete?  true}}
