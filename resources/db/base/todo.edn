@@ -1,4 +1,4 @@
-{:grateful-place/base-todo-schema
+{:sweet-tooth.todo-example/base-todo-schema
  {:txes [[{:db/ident :todo/title
            :db/id #db/id[:db.part/db]
            :db/valueType :db.type/string

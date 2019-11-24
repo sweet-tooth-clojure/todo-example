@@ -13,3 +13,6 @@
 
      {:handler (ig/ref :sweet-tooth.todo-example.backend.endpoint.static/handler)}
      ["/"]]))
+
+(defmethod ig/init-key ::routes [_ _]
+  ns-routes)

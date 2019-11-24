@@ -1,0 +1,54 @@
+;; shadow-cljs configuration
+{:deps   true
+ :builds {:dev
+          {:target           :browser
+           :output-dir       "frontend-target/dev/public/js"
+           :asset-path       "/js"
+           :compiler-options {:closure-defines {"re_frame.trace.trace_enabled_QMARK_" true}}
+
+           :modules
+           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}
+
+           ;; start a development http server on http://localhost:8020
+           :devtools
+           {:http-root   "frontend-target/dev/public"
+            :http-port   3000
+            :preloads    [day8.re-frame-10x.preload]
+            :before-load sweet-tooth.todo-example.frontend.core/stop
+            :after-load  sweet-tooth.todo-example.frontend.core/-main}}
+
+          :test
+          {:target     :browser
+           :output-dir "frontend-target/test/public/js"
+           :asset-path "/js"
+
+           :modules
+           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}
+
+          :local-staging
+          {:target     :browser
+           :output-dir "frontend-target/local-staging/public/js"
+           :asset-path "/js"
+           :compiler-options {:optimizations :advanced}
+
+           :modules
+           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}
+
+          :staging
+          {:target     :browser
+           :output-dir "frontend-target/staging/public/js"
+           :asset-path "/js"
+           :compiler-options {:optimizations :advanced}
+
+           :modules
+           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}
+
+          :prod
+          {:target     :browser
+           :output-dir "frontend-target/prod/public/js"
+           :asset-path "/js"
+           :compiler-options {:optimizations :advanced}
+
+           :modules
+           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}}
+ :nrepl {:middleware [refactor-nrepl.middleware/wrap-refactor]}}

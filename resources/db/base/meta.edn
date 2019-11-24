@@ -1,4 +1,4 @@
-{:grateful-place/base-meta-schema
+{:sweet-tooth.todo-example/base-meta-schema
  {:txes [[{:db/ident :meta/owner
            :db/id #db/id[:db.part/db]
            :db/valueType :db.type/ref

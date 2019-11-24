@@ -1,4 +1,4 @@
-(ns sweet-tooth.todo-example.front.core
+(ns sweet-tooth.todo-example.frontend.core
   (:require [reagent.core :as r]
             [re-frame.core :as rf]
             [re-frame.db :as rfdb]
@@ -14,13 +14,10 @@
             [sweet-tooth.frontend.sync.dispatch.ajax :as stsda]
             [sweet-tooth.frontend.js-event-handlers.flow :as stjehf]
 
-            [grateful-place.frontend.environment :as env]
-            [grateful-place.frontend.routes :as routes]
-            [grateful-place.frontend.handlers]
-            [grateful-place.frontend.subs]
-            [grateful-place.cross.utils :as u]
-
-            [grateful-place.frontend.components.app :as app]
+            [sweet-tooth.todo-example.frontend.components.app :as app]
+            [sweet-tooth.todo-example.frontend.environment :as env]
+            [sweet-tooth.todo-example.frontend.routes :as froutes]
+            [sweet-tooth.todo-example.cross.endpoint-routes :as eroutes]
 
             [goog.events]))
 
@@ -41,15 +38,15 @@
   (cond-> (meta-merge stconfig/default-config
                       {::stsda/sync-dispatch-fn {:global-opts {:with-credentials true}}
                        ::stfr/frontend-router   {:use :reitit
-                                                 :routes routes/frontend-routes}
+                                                 :routes froutes/frontend-routes}
                        ::stfr/sync-router       {:use :reitit
-                                                 :routes (ig/ref ::routes/sync-routes)}
+                                                 :routes (ig/ref ::eroutes/routes)}
                        ::stjehf/handlers        {}
-                       ::routes/sync-routes     ""})
+                       ::eroutes/routes         ""})
     ;; for integration testing
 
-    (= env/environment :dev)         (assoc ::routes/sync-routes "http://localhost:3010")
-    (= env/environment :integration) (assoc ::routes/sync-routes "http://localhost:4010")))
+    (= env/environment :dev)         (assoc ::eroutes/sync-routes "http://localhost:3010")
+    (= env/environment :integration) (assoc ::eroutes/sync-routes "http://localhost:4010")))
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
