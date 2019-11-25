@@ -9,7 +9,7 @@
            :modules
            {:main {:entries [sweet-tooth.todo-example.frontend.core]}}
 
-           ;; start a development http server on http://localhost:8020
+           ;; start a development http server on http://localhost:3000
            :devtools
            {:http-root   "frontend-target/dev/public"
             :http-port   3000

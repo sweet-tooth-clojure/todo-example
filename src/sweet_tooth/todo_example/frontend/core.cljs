@@ -45,12 +45,12 @@
                        ::eroutes/routes         ""})
     ;; for integration testing
 
-    (= env/environment :dev)         (assoc ::eroutes/sync-routes "http://localhost:3010")
-    (= env/environment :integration) (assoc ::eroutes/sync-routes "http://localhost:4010")))
+    (= env/environment :dev)         (assoc ::eroutes/routes "http://localhost:3010")
+    (= env/environment :integration) (assoc ::eroutes/routes "http://localhost:4010")))
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
-  (rf/dispatch-sync [:init])
+  #_(rf/dispatch-sync [:init])
   (r/render [app/app] (stcu/el-by-id "app")))
 
 (defonce initial-load (delay (-main)))

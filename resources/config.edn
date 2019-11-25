@@ -33,7 +33,7 @@
   ;; {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
 
   :duct.server.http/jetty
-  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
 
   ;; datomic
   :sweet-tooth.endpoint.datomic/connection
