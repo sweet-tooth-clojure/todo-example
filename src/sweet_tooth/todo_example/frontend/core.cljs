@@ -10,6 +10,7 @@
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.config :as stconfig]
             [sweet-tooth.frontend.handlers :as sthandlers]
+            [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.sync.dispatch.ajax :as stsda]
             [sweet-tooth.frontend.js-event-handlers.flow :as stjehf]
@@ -50,6 +51,7 @@
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
   #_(rf/dispatch-sync [:init])
   (r/render [app/app] (stcu/el-by-id "app")))
 
