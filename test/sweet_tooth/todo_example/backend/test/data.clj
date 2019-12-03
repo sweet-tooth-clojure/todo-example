@@ -17,10 +17,15 @@
 (s/def :todo-list/title :common/not-empty-string)
 (s/def :entity/todo-list (s/keys :req [:db/id :todo-list/title]))
 
+(s/def :todo/title :common/not-empty-string)
+(s/def :todo/todo-list :db/ref)
+(s/def :entity/todo (s/keys :req [:db/id :todo/title :todo/todo-list]))
+
 (def schema
   {:todo-list {:prefix :tl
                :spec   :entity/todo-list}
    :todo      {:prefix    :t
+               :spec      :entity/todo
                :relations {:todo/todo-list [:todo-list :db/id]}}})
 
 (defn gen1

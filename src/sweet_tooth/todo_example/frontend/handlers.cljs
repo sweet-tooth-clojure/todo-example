@@ -5,3 +5,7 @@
 (rf/reg-event-fx :load-todo-lists
   [rf/trim-v]
   (stsf/sync-fx [:get :todo-lists]))
+
+(rf/reg-event-fx :load-todo-list
+  [rf/trim-v]
+  (stsf/sync-fx [:get :todo-list]))

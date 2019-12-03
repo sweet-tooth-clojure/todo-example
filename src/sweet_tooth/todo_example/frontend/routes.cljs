@@ -7,8 +7,10 @@
      :lifecycle  {:param-change [:load-todo-lists]}
      :components {:main [tll/component]}
      :title      "Todo List"}]
+
    ["/todo-list/{db/id}"
     {:name       :show-todo-list
-     :lifecycle  {:param-change [:load-todo-lists]}
+     :lifecycle  {:param-change (fn [_ {:keys [params]}]
+                                  [:load-todo-list params])}
      :components {:main [tll/component]}
      :title      "Todo List"}]])
