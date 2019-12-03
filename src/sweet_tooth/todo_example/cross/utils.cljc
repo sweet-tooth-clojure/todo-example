@@ -2,10 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [clojure.walk :as walk]
-            #?(:clj [byte-transforms :as bt])
-            #?(:clj [byte-streams :as bs])
-            #?(:cljs [goog.object :as go]))
-  (:import #?(:clj org.mindrot.jbcrypt.BCrypt)))
+            #?(:cljs [goog.object :as go])))
 
 #?(:cljs (defn prevent-default
            [f]
@@ -129,18 +126,6 @@
                     keys))
           x
           update-map))
-
-#?(:clj (do (defn hash-bcrypt
-              [password]
-              (BCrypt/hashpw password (BCrypt/gensalt)))
-
-            (defn encode-64
-              [s]
-              (bs/to-string (bt/encode s :base64 {:url-safe? true})))
-
-            (defn decode-64
-              [s]
-              (bs/to-string (bt/decode s :base64)))))
 
 #?(:cljs (do (defn go-get
                "Google Object Get - Navigates into a javascript object and gets a nested value"

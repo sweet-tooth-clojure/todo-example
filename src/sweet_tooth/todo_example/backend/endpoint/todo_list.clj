@@ -6,4 +6,9 @@
             [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]))
 
 (def decisions
-  {:list {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}})
+  {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
+   :create {:post!          (fn [ctx]
+                              (-> @(d/transact (ed/conn ctx) [(merge {:db/id (d/tempid :db.part/user)}
+                                                                     (el/params ctx))])
+                                  (el/->ctx :result)))
+            :handle-created (fn [ctx] (tl/todo-lists (ed/db-after ctx)))}})

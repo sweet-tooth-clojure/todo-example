@@ -1,8 +1,9 @@
-(ns sweet-tooth.todo-example.frontend.routes)
+(ns sweet-tooth.todo-example.frontend.routes
+  (:require [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]))
 
 (def frontend-routes
   ["/"
    {:name       :home
-    :lifecycle  {}
-    :components {:main [:div "HOME"]}
+    :lifecycle  {:param-change [:load-todo-lists]}
+    :components {:main [tll/component]}
     :title      "Todo List"}])

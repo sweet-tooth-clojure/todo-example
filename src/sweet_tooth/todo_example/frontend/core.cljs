@@ -17,7 +17,9 @@
 
             [sweet-tooth.todo-example.frontend.components.app :as app]
             [sweet-tooth.todo-example.frontend.environment :as env]
+            [sweet-tooth.todo-example.frontend.handlers]
             [sweet-tooth.todo-example.frontend.routes :as froutes]
+            [sweet-tooth.todo-example.frontend.subs]
             [sweet-tooth.todo-example.cross.endpoint-routes :as eroutes]
 
             [goog.events]))
