@@ -10,6 +10,4 @@
 
 (rf/reg-sub :routed-todo-list
   (fn [db]
-    (let [x (stnu/routed-entity db :todo-list :db/id)]
-      (prn "ENT" x)
-      x)))
+    (stnu/routed-entity db :todo-list :db/id)))
