@@ -6,13 +6,13 @@
 ** DONE list todo list endpoint
 ** DONE create todo list endpoint
 ** DONE home page that lists todo lists
-** TODO click on a todo list, go to it
+** DONE click on a todo list, go to it
 *** DONE create frontend route
-*** column of todos
-*** a form to add a todo
-*** load that todo list
-*** query todo list, load list + todos
-*** place in :show of todo-list
-** TODO create todo endpoint
+*** DONE column of todos
+*** DONE a form to add a todo
+*** DONE load that todo list
+*** DONE query todo list, load list + todos
+*** DONE place in :show of todo-list
+** DONE create todo endpoint
 ** TODO update todo endpoint
 ** TODO delete todo endpoint
