@@ -18,7 +18,8 @@
    ["/todo-list/{db/id}"
     {:name       :show-todo-list
      :lifecycle  {:param-change (fn [_ {:keys [params]}]
-                                  [:load-todo-list params])}
+                                  [[:load-todo-lists]
+                                   [:load-todo-list params]])}
      :components {:side [tll/component]
                   :main [tls/component]}
      :coercion   rs/coercion

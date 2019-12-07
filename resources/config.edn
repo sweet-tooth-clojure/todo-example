@@ -29,6 +29,9 @@
 
   :sweet-tooth.todo-example.backend.endpoint.static/handler {}
 
+  :sweet-tooth.endpoint.middleware/format-exception
+  {:include-data true}
+
   ;; :sweet-tooth.endpoint.datomic/session-store
   ;; {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
 
