@@ -19,4 +19,7 @@
             :handle-created result-todos}
 
    :update {:put!      (comp #(el/->ctx % :result) deref ed/update)
-            :handle-ok result-todos}})
+            :handle-ok result-todos}
+
+   :delete {:delete!   ed/delete
+            :handle-ok []}})

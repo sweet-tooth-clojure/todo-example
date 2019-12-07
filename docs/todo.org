@@ -14,5 +14,7 @@
 *** DONE query todo list, load list + todos
 *** DONE place in :show of todo-list
 ** DONE create todo endpoint
-** TODO update todo endpoint
+** DONE update todo endpoint
 ** TODO delete todo endpoint
+** TODO click outside saves the endpoint
+- how to register with window? ooooh interesting

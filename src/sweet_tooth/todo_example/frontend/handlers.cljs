@@ -9,3 +9,9 @@
 (rf/reg-event-fx :load-todo-list
   [rf/trim-v]
   (stsf/sync-fx [:get :todo-list]))
+
+(rf/reg-event-fx :delete-todo
+  [rf/trim-v]
+  (fn [{:keys [db] :as cofx} args]
+    (merge ((stsf/sync-fx [:delete :todo]) cofx args)
+           {:db (update-in db [:entity :todo] dissoc (:db/id (first args)))})))

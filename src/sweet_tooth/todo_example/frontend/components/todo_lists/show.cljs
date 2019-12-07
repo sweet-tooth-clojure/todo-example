@@ -14,8 +14,9 @@
          [:form
           (on-submit {:data  (select-keys t [:todo/todo-list])
                       :clear :all})
-          [(ui/focus-child [input :text :todo/title] "input")]
-          [:span {:on-click toggle} "cancel"]]]
+          [(ui/focus-child [input :text :todo/title] "input")]]
+         [:span {:on-click toggle} "cancel"]
+         [:span {:on-click #(rf/dispatch [:delete-todo t])} "delete"]]
         [:li.todo
          {:on-click toggle}
          (:todo/title t)]))))
