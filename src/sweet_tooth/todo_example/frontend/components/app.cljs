@@ -4,12 +4,8 @@
 
             [sweet-tooth.frontend.nav.flow :as stnf]))
 
-(defn main-component
-  []
-  @(rf/subscribe [::stnf/routed-component :main]))
-
 (defn app
   []
-  [:div
-   [:div "App"]
-   [main-component]])
+  [:div.app
+   @(rf/subscribe [::stnf/routed-component :side])
+   @(rf/subscribe [::stnf/routed-component :main])])

@@ -11,14 +11,16 @@
   [["/"
     {:name       :home
      :lifecycle  {:param-change [:load-todo-lists]}
-     :components {:main [tll/component]}
+     :components {:side [tll/component]
+                  :main [tls/component]}
      :title      "Todo List"}]
 
    ["/todo-list/{db/id}"
     {:name       :show-todo-list
      :lifecycle  {:param-change (fn [_ {:keys [params]}]
                                   [:load-todo-list params])}
-     :components {:main [tls/component]}
+     :components {:side [tll/component]
+                  :main [tls/component]}
      :coercion   rs/coercion
      :parameters {:path (s/keys :req [:db/id])}
      :title      "Todo List"}]])
