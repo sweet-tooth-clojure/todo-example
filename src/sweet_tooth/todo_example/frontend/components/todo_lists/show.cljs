@@ -32,6 +32,7 @@
   [tl]
   (let [todos @(rf/subscribe [:todos])]
     [:div [:h2 (:todo-list/title tl)]
+     [:span {:on-click #(rf/dispatch [:delete-todo-list tl])} "delete"]
      (stfc/with-form [:todos :create]
        [:form (on-submit {:clear :all
                           :data  {:todo/todo-list (:db/id tl)}

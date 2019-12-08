@@ -16,5 +16,9 @@
 ** DONE create todo endpoint
 ** DONE update todo endpoint
 ** DONE delete todo endpoint
-** TODO click outside saves the endpoint
+** DONE click outside saves the endpoint
 - how to register with window? ooooh interesting
+** DONE delete a todo list
+** TODO rename a todo list
+** TODO select a todo list after it's createdtwi
+** TODO style
