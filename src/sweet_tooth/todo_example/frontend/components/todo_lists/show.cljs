@@ -1,24 +1,31 @@
 (ns sweet-tooth.todo-example.frontend.components.todo-lists.show
-  (:require [re-frame.core :as rf]
+  (:require [reagent.core :as r]
+            [re-frame.core :as rf]
             [sweet-tooth.frontend.form.components :as stfc]
             [sweet-tooth.frontend.form.flow :as stff]
+            [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
 (defn todo
   [t]
-  (let [path   [:todo :update (select-keys t [:db/id])]
-        toggle #(rf/dispatch [::stff/toggle-form path t])]
+  (let [path [:todo :update (select-keys t [:db/id])]
+        this (r/current-component)]
     (stfc/with-form path
       (if @form-ui-state
         [:li.todo
+         {:on-click #(let [this-dom-node (r/dom-node this)
+                           target (u/go-get % "target")]
+                       (when (or (= this-dom-node target)
+                                 (.contains this-dom-node target))
+                         (.stopImmediatePropagation (u/go-get % "nativeEvent"))))}
          [:form
-          (on-submit {:data  (select-keys t [:todo/todo-list])
-                      :clear :all})
+          (merge (on-submit {:data  (select-keys t [:todo/todo-list])
+                             :clear :all}))
           [(ui/focus-child [input :text :todo/title] "input")]]
-         [:span {:on-click toggle} "cancel"]
+         [:span {:on-click #(rf/dispatch [:close-todo-form path t])} "cancel"]
          [:span {:on-click #(rf/dispatch [:delete-todo t])} "delete"]]
         [:li.todo
-         {:on-click toggle}
+         {:on-click #(rf/dispatch [:open-todo-form path t])}
          (:todo/title t)]))))
 
 (defn todo-list

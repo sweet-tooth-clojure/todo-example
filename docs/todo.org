@@ -15,6 +15,6 @@
 *** DONE place in :show of todo-list
 ** DONE create todo endpoint
 ** DONE update todo endpoint
-** TODO delete todo endpoint
+** DONE delete todo endpoint
 ** TODO click outside saves the endpoint
 - how to register with window? ooooh interesting
