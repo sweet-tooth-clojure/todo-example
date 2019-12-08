@@ -1,5 +1,6 @@
 (ns sweet-tooth.todo-example.frontend.components.todo-lists.list
   (:require [re-frame.core :as rf]
+            [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.form.components :as stfc]
             [sweet-tooth.frontend.routes :as stfr]))
 
@@ -10,8 +11,10 @@
      [:div (count todo-lists) " Todo lists"]
 
      (stfc/with-form [:todo-lists :create]
-       [:form (on-submit)
-        [field :text :todo-list/title]
+       [:form (on-submit {:clear :all
+                          :sync  {:on {:success [[::stff/submit-form-success :$ctx]
+                                                 [:focus-element "#todo-list-title" 100]]}}})
+        [field :text :todo-list/title {:id "todo-list-title"}]
         [:input {:type "submit"}]])
 
      (->> todo-lists

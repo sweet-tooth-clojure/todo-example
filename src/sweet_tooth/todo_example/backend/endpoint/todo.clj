@@ -21,7 +21,5 @@
    :update {:put!      (comp #(el/->ctx % :result) deref ed/update)
             :handle-ok result-todos}
 
-   :delete {:delete!   (fn [ctx]
-                         (prn "ID" (ed/ctx-id ctx))
-                         ((comp deref ed/delete) ctx))
+   :delete {:delete!   (comp deref ed/delete)
             :handle-ok []}})

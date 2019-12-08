@@ -14,7 +14,7 @@
       (if @form-ui-state
         [:li.todo
          {:on-click #(let [this-dom-node (r/dom-node this)
-                           target (u/go-get % "target")]
+                           target        (u/go-get % "target")]
                        (when (or (= this-dom-node target)
                                  (.contains this-dom-node target))
                          (.stopImmediatePropagation (u/go-get % "nativeEvent"))))}
@@ -34,8 +34,10 @@
     [:div [:h2 (:todo-list/title tl)]
      (stfc/with-form [:todos :create]
        [:form (on-submit {:clear :all
-                          :data {:todo/todo-list (:db/id tl)}})
-        [field :text :todo/title {:label "New Todo"}]
+                          :data  {:todo/todo-list (:db/id tl)}
+                          :sync  {:on {:success [[::stff/submit-form-success :$ctx]
+                                                 [:focus-element "#todo-title" 100]]}}})
+        [field :text :todo/title {:label "New Todo" :id "todo-title"}]
         [:input {:type "submit"}]])
      [:ul (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
                       todos))]]))
