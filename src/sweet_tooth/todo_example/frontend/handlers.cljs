@@ -37,10 +37,12 @@
 (rf/reg-event-fx :submit-todo-form
   [rf/trim-v]
   (fn [{:keys [db]} [todo-path todo]]
-    {:db                 (assoc-in db (paths/full-path db :form todo-path :ui-state) nil)
-     :dispatch           [::stff/submit-form todo-path {:clear :all
-                                                        :data  (select-keys todo [:todo/todo-list])}]
-     ::stjehf/unregister [:submit-todo-form (:db/id todo)]}))
+    (cond-> {:db                 (assoc-in db (paths/full-path db :form todo-path :ui-state) nil)
+             ::stjehf/unregister [:submit-todo-form (:db/id todo)]}
+
+      (paths/get-path db :form todo-path :ui-state)
+      (assoc :dispatch [::stff/submit-form todo-path {:clear :all
+                                                      :data  (select-keys todo [:todo/todo-list])}]))))
 
 (rf/reg-event-fx :close-todo-form
   [rf/trim-v]

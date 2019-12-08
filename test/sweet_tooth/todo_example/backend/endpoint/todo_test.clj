@@ -1,5 +1,7 @@
 (ns sweet-tooth.todo-example.backend.endpoint.todo-test
   (:require [sweet-tooth.todo-example.backend.test.data :as td]
+            [sweet-tooth.todo-example.backend.db.query.todo :as t]
+            [sweet-tooth.todo-example.backend.test.db :as tdb]
             [sweet-tooth.endpoint.test.harness :as eth]
             [clojure.test :refer :all]))
 
@@ -11,3 +13,9 @@
         resp-data     (-> (eth/req :post "/api/v1/todo" t)
                           (eth/resp-read-transit))]
     (is (eth/contains-entity? resp-data :todo t))))
+
+
+(deftest deletes-todo
+  (let [{:keys [t0 tl0]} (td/transact! {:todo [[1 {:spec-gen {:todo/title "GET EGGS"}}]]})]
+    (eth/req :delete (str "/api/v1/todo/" t0))
+    (is (empty? (t/todos-by-todo-list (tdb/db) tl0)))))

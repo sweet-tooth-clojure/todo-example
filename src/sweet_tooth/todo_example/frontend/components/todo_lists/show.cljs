@@ -18,12 +18,12 @@
                        (when (or (= this-dom-node target)
                                  (.contains this-dom-node target))
                          (.stopImmediatePropagation (u/go-get % "nativeEvent"))))}
-         [:form
-          (merge (on-submit {:data  (select-keys t [:todo/todo-list])
-                             :clear :all}))
-          [(ui/focus-child [input :text :todo/title] "input")]]
+         [:form (on-submit {:data  (select-keys t [:todo/todo-list])
+                            :clear :all})
+          [(ui/focus-child [input :text :todo/title])]]
          [:span {:on-click #(rf/dispatch [:close-todo-form path t])} "cancel"]
-         [:span {:on-click #(rf/dispatch [:delete-todo t])} "delete"]]
+         [:span {:on-click #(do (rf/dispatch [:delete-todo t])
+                                (rf/dispatch [:close-todo-form path t]))} "delete"]]
         [:li.todo
          {:on-click #(rf/dispatch [:open-todo-form path t])}
          (:todo/title t)]))))
