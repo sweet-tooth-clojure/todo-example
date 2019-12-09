@@ -19,6 +19,6 @@
 ** DONE click outside saves the endpoint
 - how to register with window? ooooh interesting
 ** DONE delete a todo list
-** TODO rename a todo list
-** TODO select a todo list after it's createdtwi
+** DONE rename a todo list
+** TODO select a todo list after it's created
 ** TODO style

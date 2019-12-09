@@ -6,20 +6,23 @@
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
+(defn stop-clicks
+  []
+  (let [this (r/current-component)]
+    #(let [this-dom-node (r/dom-node this)
+           target        (u/go-get % "target")]
+       (when (or (= this-dom-node target)
+                 (.contains this-dom-node target))
+         (.stopImmediatePropagation (u/go-get % "nativeEvent"))))))
+
 (defn todo
   [t]
-  (let [path [:todo :update (select-keys t [:db/id])]
-        this (r/current-component)]
+  (let [path [:todo :update (select-keys t [:db/id])]]
     (stfc/with-form path
       (if @form-ui-state
         [:li.todo
-         {:on-click #(let [this-dom-node (r/dom-node this)
-                           target        (u/go-get % "target")]
-                       (when (or (= this-dom-node target)
-                                 (.contains this-dom-node target))
-                         (.stopImmediatePropagation (u/go-get % "nativeEvent"))))}
-         [:form (on-submit {:data  (select-keys t [:todo/todo-list])
-                            :clear :all})
+         {:on-click (stop-clicks)}
+         [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path t]))}
           [(ui/focus-child [input :text :todo/title])]]
          [:span {:on-click #(rf/dispatch [:close-form path t])} "cancel"]
          [:span {:on-click #(do (rf/dispatch [:delete-todo t])
@@ -33,12 +36,11 @@
   (let [path [:todo-list :update (select-keys tl [:db/id])]]
     (stfc/with-form path
       [:h2 (if @form-ui-state
-             [:div
-              [:form (on-submit {:data  tl
-                                 :clear :all})
+             [:div {:on-click (stop-clicks)}
+              [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path tl]))}
                [(ui/focus-child [input :text :todo-list/title])]]
               [:span {:on-click #(rf/dispatch [:close-form path tl])} "cancel"]
-              [:span {:on-click #(do (rf/dispatch [:delete-todo tl])
+              [:span {:on-click #(do (rf/dispatch [:delete-todo-list tl])
                                      (rf/dispatch [:close-form path tl]))} "delete"]]
              [:span
               {:on-click #(rf/dispatch [:open-form path tl])}
@@ -48,7 +50,6 @@
   [tl]
   (let [todos @(rf/subscribe [:todos])]
     [:div [todo-list-title tl]
-     [:span {:on-click #(rf/dispatch [:delete-todo-list tl])} "delete"]
      (stfc/with-form [:todos :create]
        [:form (on-submit {:clear :all
                           :data  {:todo/todo-list (:db/id tl)}
