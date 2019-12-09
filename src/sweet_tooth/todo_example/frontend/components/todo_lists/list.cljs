@@ -9,10 +9,10 @@
   (let [todo-lists @(rf/subscribe [:todo-lists])]
     [:div
      [:div (count todo-lists) " Todo lists"]
-
      (stfc/with-form [:todo-lists :create]
        [:form (on-submit {:clear :all
                           :sync  {:on {:success [[::stff/submit-form-success :$ctx]
+                                                 [:select-created-todo-list :$ctx]
                                                  [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title {:id "todo-list-title"}]
         [:input {:type "submit"}]])

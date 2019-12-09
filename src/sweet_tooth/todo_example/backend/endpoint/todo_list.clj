@@ -20,7 +20,8 @@
                               (-> @(d/transact (ed/conn ctx) [(merge {:db/id (d/tempid :db.part/user)}
                                                                      (el/params ctx))])
                                   (el/->ctx :result)))
-            :handle-created (fn [ctx] (tl/todo-lists (ed/db-after ctx)))}
+            :handle-created (fn [{:keys [result]}]
+                              (d/pull (:db-after result) '[:*] (first (vals (:tempids result)))))}
 
    :update {:put!      (comp #(el/->ctx % :result) deref ed/update)
             :handle-ok fetch-todo}

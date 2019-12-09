@@ -20,5 +20,6 @@
 - how to register with window? ooooh interesting
 ** DONE delete a todo list
 ** DONE rename a todo list
-** TODO select a todo list after it's created
+** DONE select a todo list after it's created
 ** TODO style
+** TODO highlight current todo list
