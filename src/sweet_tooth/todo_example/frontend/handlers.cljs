@@ -70,3 +70,16 @@
 (rf/reg-event-fx :close-form
   [rf/trim-v]
   close-form)
+
+;;------
+;; ui
+;;------
+
+(rf/reg-event-fx :focus-element
+  [rf/trim-v]
+  (fn [_ args]
+    {:focus-element args}))
+
+(rf/reg-fx :focus-element
+  (fn [[selector timeout]]
+    (js/setTimeout #(.focus (js/document.querySelector selector)) timeout)))
