@@ -41,28 +41,32 @@
   [rf/trim-v]
   (delete-and-remove-entity :todo))
 
-(rf/reg-event-fx :open-todo-form
+;;------
+;; inline forms
+;;------
+
+(rf/reg-event-fx :open-form
   [rf/trim-v]
-  (fn [{:keys [db]} [todo-path todo]]
-    {:db               (stff/toggle-form db todo-path todo)
-     ::stjehf/register [[:submit-todo-form (:db/id todo)]
+  (fn [{:keys [db]} [path ent]]
+    {:db               (stff/toggle-form db path ent)
+     ::stjehf/register [[:submit-form (:db/id ent)]
                         [[js/window
                           EventType.CLICK
-                          (fn [] (rf/dispatch [:submit-todo-form todo-path todo]))]]]}))
+                          (fn [] (rf/dispatch [:submit-form path ent]))]]]}))
 
-(defn close-todo-form
-  [{:keys [db]} [todo-path todo]]
-  {:db                 (assoc-in db (paths/full-path :form todo-path :ui-state) nil)
-   ::stjehf/unregister [:submit-todo-form (:db/id todo)]})
+(defn close-form
+  [{:keys [db]} [path ent]]
+  {:db                 (assoc-in db (paths/full-path :form path :ui-state) nil)
+   ::stjehf/unregister [:submit-form (:db/id ent)]})
 
-(rf/reg-event-fx :submit-todo-form
+(rf/reg-event-fx :submit-form
   [rf/trim-v]
-  (fn [{:keys [db] :as ctx} [todo-path todo :as args]]
-    (cond-> (close-todo-form ctx args)
-      (paths/get-path db :form todo-path :ui-state)
-      (assoc :dispatch [::stff/submit-form todo-path {:clear :all
-                                                      :data  (select-keys todo [:todo/todo-list])}]))))
+  (fn [{:keys [db] :as ctx} [path ent :as args]]
+    (cond-> (close-form ctx args)
+      (paths/get-path db :form path :ui-state)
+      (assoc :dispatch [::stff/submit-form path {:clear :all
+                                                 :data  ent}]))))
 
-(rf/reg-event-fx :close-todo-form
+(rf/reg-event-fx :close-form
   [rf/trim-v]
-  close-todo-form)
+  close-form)

@@ -21,17 +21,33 @@
          [:form (on-submit {:data  (select-keys t [:todo/todo-list])
                             :clear :all})
           [(ui/focus-child [input :text :todo/title])]]
-         [:span {:on-click #(rf/dispatch [:close-todo-form path t])} "cancel"]
+         [:span {:on-click #(rf/dispatch [:close-form path t])} "cancel"]
          [:span {:on-click #(do (rf/dispatch [:delete-todo t])
-                                (rf/dispatch [:close-todo-form path t]))} "delete"]]
+                                (rf/dispatch [:close-form path t]))} "delete"]]
         [:li.todo
-         {:on-click #(rf/dispatch [:open-todo-form path t])}
+         {:on-click #(rf/dispatch [:open-form path t])}
          (:todo/title t)]))))
+
+(defn todo-list-title
+  [tl]
+  (let [path [:todo-list :update (select-keys tl [:db/id])]]
+    (stfc/with-form path
+      [:h2 (if @form-ui-state
+             [:div
+              [:form (on-submit {:data  tl
+                                 :clear :all})
+               [(ui/focus-child [input :text :todo-list/title])]]
+              [:span {:on-click #(rf/dispatch [:close-form path tl])} "cancel"]
+              [:span {:on-click #(do (rf/dispatch [:delete-todo tl])
+                                     (rf/dispatch [:close-form path tl]))} "delete"]]
+             [:span
+              {:on-click #(rf/dispatch [:open-form path tl])}
+              (:todo-list/title tl)])])))
 
 (defn todo-list
   [tl]
   (let [todos @(rf/subscribe [:todos])]
-    [:div [:h2 (:todo-list/title tl)]
+    [:div [todo-list-title tl]
      [:span {:on-click #(rf/dispatch [:delete-todo-list tl])} "delete"]
      (stfc/with-form [:todos :create]
        [:form (on-submit {:clear :all

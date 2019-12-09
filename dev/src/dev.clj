@@ -7,6 +7,8 @@
             [duct.core :as duct]
             [duct.core.repl :as duct-repl]
 
+            [datomic.api :as d]
+
             [sweet-tooth.todo-example.backend.duct :as app-duct] ;; for multimethod definitions
             [sweet-tooth.todo-example.backend.db.tasks :as dbt]
 
@@ -26,3 +28,7 @@
   (es/config :dev))
 
 (integrant.repl/set-prep! prep)
+
+(defn db
+  []
+  (d/db (d/connect (:uri (:sweet-tooth.endpoint.datomic/connection system)))))
