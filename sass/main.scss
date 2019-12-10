@@ -10,31 +10,129 @@ html, #app {
 }
 
 body {
-  min-height: 100%;
+  height: 100%;
   position: relative;
   color: $charcoal;
   margin: 0;
   padding-top: 0.1px;
   box-sizing: border-box;
-  padding-bottom: 4rem;
+  font-family: Source Sans Pro;
+}
+
+#app {
+  height: calc(100% - 3rem);
 }
 
 .app {
   display: grid;
+  height: 100%;
   grid-template-columns: 1fr 3fr;
   grid-column-gap: 1rem;
   column-gap: 1rem;
   max-width: 60em;
   margin: 0 auto;
+  padding-top: 1rem;
 }
 
-.todo {
+.side {
+  background: #30c8d9;
+  padding: 1rem;
+}
+
+.main {
+  background: #cbd966;
+  padding: 1rem;
+}
+
+.todo, h2 {
   cursor: pointer;
   &:hover {
-    background: #eeffee;
+    background: white;
   }
 
   form {
     display: inline-block;
+    width: calc(100% - 4em);
+  }
+  i {
+    margin-left: .5rem;
+  }
+}
+
+.todo-lists {
+  form {
+    margin-bottom: 1rem;
+  }
+  
+  .todo-list {
+    margin-bottom: 1px;
+    a {
+      color: #155961;
+      text-decoration: none;
+      padding: .5rem;
+      background: rgba(255,255,255,0.5);
+      display: block;
+      &:hover {
+        background: white;
+      }
+    }
+  }
+
+}
+
+.new-todo {
+  margin-bottom: 1rem;
+}
+
+.todos {
+  list-style: none;
+  margin: 0 0;
+  padding: 0;
+}
+
+.todo {
+  padding: .5rem;
+  background: rgba(255,255,255,0.5);
+  margin-bottom: 1px;
+}
+
+h2 {
+  margin: 0 0 1rem;
+}
+
+input[type=text], input[type=email], input[type=password],
+input[type=search], input[type=number], textarea {
+  font-size: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: .3em;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+  width: 100%;
+}
+
+input[type=submit], a.submit, button {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 .75em;
+  line-height: 2;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  border-radius: .25rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+
+  &:active {
+    outline: none;
+  }
+  &:focus {
+    outline: none;
+  }
+  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.4);
+  //color: white;
+  &:focus {
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
   }
 }

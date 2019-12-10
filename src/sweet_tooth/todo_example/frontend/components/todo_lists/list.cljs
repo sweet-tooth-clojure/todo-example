@@ -7,18 +7,19 @@
 (defn component
   []
   (let [todo-lists @(rf/subscribe [:todo-lists])]
-    [:div
-     [:div (count todo-lists) " Todo lists"]
+    [:div.todo-lists
      (stfc/with-form [:todo-lists :create]
        [:form (on-submit {:clear :all
                           :sync  {:on {:success [[::stff/submit-form-success :$ctx]
                                                  [:select-created-todo-list :$ctx]
                                                  [:focus-element "#todo-list-title" 100]]}}})
-        [field :text :todo-list/title {:id "todo-list-title"}]
+        [input :text :todo-list/title {:id "todo-list-title" :placeholder "New Todo List"}]
         [:input {:type "submit"}]])
+
+     [:h3 (count todo-lists) " Todo lists"]
 
      (->> todo-lists
           (map (fn [tl]
                  ^{:key (:db/id tl)}
-                 [:div [:a {:href (stfr/path :show-todo-list tl)} (:todo-list/title tl)]]))
+                 [:div.todo-list [:a {:href (stfr/path :show-todo-list tl)} (:todo-list/title tl)]]))
           doall)]))

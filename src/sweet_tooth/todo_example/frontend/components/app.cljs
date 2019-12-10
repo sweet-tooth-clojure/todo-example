@@ -7,5 +7,5 @@
 (defn app
   []
   [:div.app
-   @(rf/subscribe [::stnf/routed-component :side])
-   @(rf/subscribe [::stnf/routed-component :main])])
+   [:div.side @(rf/subscribe [::stnf/routed-component :side])]
+   [:div.main @(rf/subscribe [::stnf/routed-component :main])]])

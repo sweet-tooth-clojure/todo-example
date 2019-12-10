@@ -24,9 +24,12 @@
          {:on-click (stop-clicks)}
          [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path t]))}
           [(ui/focus-child [input :text :todo/title])]]
-         [:span {:on-click #(rf/dispatch [:close-form path t])} "cancel"]
+         [:span {:on-click #(rf/dispatch [:close-form path t])}
+          [:i.fas.fa-window-close]]
+         " "
          [:span {:on-click #(do (rf/dispatch [:delete-todo t])
-                                (rf/dispatch [:close-form path t]))} "delete"]]
+                                (rf/dispatch [:close-form path t]))}
+          [:i.fas.fa-trash]]]
         [:li.todo
          {:on-click #(rf/dispatch [:open-form path t])}
          (:todo/title t)]))))
@@ -39,26 +42,32 @@
              [:div {:on-click (stop-clicks)}
               [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path tl]))}
                [(ui/focus-child [input :text :todo-list/title])]]
-              [:span {:on-click #(rf/dispatch [:close-form path tl])} "cancel"]
+              [:span {:on-click #(rf/dispatch [:close-form path tl])}
+               [:i.fas.fa-window-close]]
+              " "
               [:span {:on-click #(do (rf/dispatch [:delete-todo-list tl])
-                                     (rf/dispatch [:close-form path tl]))} "delete"]]
-             [:span
+                                     (rf/dispatch [:close-form path tl]))}
+               [:i.fas.fa-trash]]]
+             [:div
               {:on-click #(rf/dispatch [:open-form path tl])}
               (:todo-list/title tl)])])))
 
 (defn todo-list
   [tl]
   (let [todos @(rf/subscribe [:todos])]
-    [:div [todo-list-title tl]
+    [:div.todo-list
+     [todo-list-title tl]
      (stfc/with-form [:todos :create]
-       [:form (on-submit {:clear :all
-                          :data  {:todo/todo-list (:db/id tl)}
-                          :sync  {:on {:success [[::stff/submit-form-success :$ctx]
-                                                 [:focus-element "#todo-title" 100]]}}})
-        [field :text :todo/title {:label "New Todo" :id "todo-title"}]
+       [:form.new-todo (on-submit {:clear :all
+                                   :data  {:todo/todo-list (:db/id tl)}
+                                   :sync  {:on {:success [[::stff/submit-form-success :$ctx]
+                                                          [:focus-element "#todo-title" 100]]}}})
+        [input :text :todo/title {:placeholder "New Todo" :id "todo-title"}]
         [:input {:type "submit"}]])
-     [:ul (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
-                      todos))]]))
+     (if (empty? todos)
+       [:div "No todos yet"]
+       [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
+                              todos))])]))
 
 (defn component
   []
