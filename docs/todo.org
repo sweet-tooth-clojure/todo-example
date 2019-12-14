@@ -21,5 +21,7 @@
 ** DONE delete a todo list
 ** DONE rename a todo list
 ** DONE select a todo list after it's created
-** TODO style
-** TODO highlight current todo list
+** DONE style
+** DONE highlight current todo list
+** do in memory? populate with specmonstah?
+** write tests?

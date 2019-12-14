@@ -23,14 +23,6 @@
 ;; todo lists
 ;;------
 
-(rf/reg-event-fx :load-todo-lists
-  [rf/trim-v]
-  (stsf/sync-fx [:get :todo-lists]))
-
-(rf/reg-event-fx :load-todo-list
-  [rf/trim-v]
-  (stsf/sync-fx [:get :todo-list]))
-
 (rf/reg-event-fx :delete-todo-list
   [rf/trim-v]
   (delete-and-remove-entity :todo-list))
@@ -55,6 +47,7 @@
 ;; inline forms
 ;;------
 
+;; clicks outside of the form will submit the form
 (rf/reg-event-fx :open-form
   [rf/trim-v]
   (fn [{:keys [db]} [path ent]]
