@@ -11,15 +11,11 @@
   (t/todos-by-todo-list (ed/db-after ctx) (:todo/todo-list (el/params ctx))))
 
 (def decisions
-  {:create {:post!          (fn [ctx]
-                              (-> @(d/transact (ed/conn ctx)
-                                               [(merge {:db/id (d/tempid :db.part/user)}
-                                                       (el/params ctx))])
-                                  (el/->ctx :result)))
+  {:create {:post!          ed/create->:result
             :handle-created result-todos}
 
-   :update {:put!      (comp #(el/->ctx % :result) deref ed/update)
+   :update {:put!      ed/update->:result
             :handle-ok result-todos}
 
-   :delete {:delete!   (comp deref ed/delete)
+   :delete {:delete!   ed/delete->:result
             :handle-ok []}})

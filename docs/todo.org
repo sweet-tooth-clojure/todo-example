@@ -23,5 +23,15 @@
 ** DONE select a todo list after it's created
 ** DONE style
 ** DONE highlight current todo list
+** TODO add latency to show activity indicators
+** TODO show validation
+** TODO try client-side validation
+** TODO convert datomic to in-memory so anyone can run in
+** TODO managing pull result for references
+if i pull a todo, the todo-list is {:todo/todo-list {:db/id 123}} when
+i probably want it to be
+{:todo/todo-list 123}
+
+what's the right thing to do here?
 ** do in memory? populate with specmonstah?
 ** write tests?

@@ -12,19 +12,14 @@
 
 (def decisions
   {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
-   :show   {:handle-ok (fn [ctx]
-                         (let [todo (fetch-todo ctx)]
-                           [todo
-                            (t/todos-by-todo-list (ed/db ctx) (:db/id todo))]))}
-   :create {:post!          (fn [ctx]
-                              (-> @(d/transact (ed/conn ctx) [(merge {:db/id (d/tempid :db.part/user)}
-                                                                     (el/params ctx))])
-                                  (el/->ctx :result)))
-            :handle-created (fn [{:keys [result]}]
-                              (d/pull (:db-after result) '[:*] (first (vals (:tempids result)))))}
+   :show   {:handle-ok (fn [ctx] (let [todo (fetch-todo ctx)]
+                                   [todo (t/todos-by-todo-list (ed/db ctx) (:db/id todo))]))}
 
-   :update {:put!      (comp #(el/->ctx % :result) deref ed/update)
-            :handle-ok fetch-todo}
+   :create {:post!          ed/create->:result
+            :handle-created ed/created-pull}
+
+   :update {:put!      ed/update->:result
+            :handle-ok ed/updated-pull}
 
    :delete {:delete!   (fn [ctx]
                          (let [tl-id (ed/ctx-id ctx)
