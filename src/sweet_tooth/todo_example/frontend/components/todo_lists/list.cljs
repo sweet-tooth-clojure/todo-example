@@ -6,7 +6,8 @@
 
 (defn component
   []
-  (let [todo-lists @(rf/subscribe [:todo-lists])]
+  (let [todo-lists         @(rf/subscribe [:todo-lists])
+        current-todo-list@ (rf/subscribe [:routed-todo-list])]
     [:div.todo-lists
      (stfc/with-form [:todo-lists :create]
        [:form (on-submit {:clear :all
@@ -21,5 +22,8 @@
      (->> todo-lists
           (map (fn [tl]
                  ^{:key (:db/id tl)}
-                 [:div.todo-list [:a {:href (stfr/path :show-todo-list tl)} (:todo-list/title tl)]]))
+                 [:div.todo-list
+                  [:a {:class (when (= current-todo-list tl) "active")
+                       :href  (stfr/path :show-todo-list tl)}
+                   (:todo-list/title tl)]]))
           doall)]))

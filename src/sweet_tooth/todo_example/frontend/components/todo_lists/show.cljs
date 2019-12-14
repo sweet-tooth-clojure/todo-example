@@ -73,4 +73,4 @@
   []
   (if-let [tl @(rf/subscribe [:routed-todo-list])]
     [todo-list tl]
-    [:div "Select a todo list"]))
+    [:div "Select a todo list to view its todos"]))
