@@ -6,7 +6,7 @@
          integrant                        {:mvn/version "0.8.0-alpha2"}
          funcool/bide                     {:mvn/version "1.6.0"}
          com.cognitect/transit-cljs       {:mvn/version "0.8.243"}
-         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.6.0"}
+         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.7.0"}
          thheller/shadow-cljs             {:mvn/version "2.8.60"}
          ;; TODO figure out how to handle dev mode of this
          sweet-tooth/sweet-tooth-frontend {:mvn/version "0.11.0"}}

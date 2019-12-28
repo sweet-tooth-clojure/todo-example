@@ -2,8 +2,8 @@
   (:require [sweet-tooth.endpoint.routes.reitit :as serr]
             [integrant.core :as ig]))
 
-(def ns-routes
-  (serr/ns-pairs->ns-routes
+(def routes
+  (serr/expand-routes
     [{:ctx         {:db (ig/ref :sweet-tooth.endpoint.datomic/connection)}
       :id-key      :db/id
       :auth-id-key :db/id
@@ -18,5 +18,5 @@
 (defmethod ig/init-key ::routes [_ prefix]
   ;; Adding a prefix allows the frontend to e.g. specify a different
   ;; port number for requests when the prefix is `http://localhost:3010`
-  (cond->> ns-routes
+  (cond->> routes
     prefix (mapv (fn [route] (update route 1 #(assoc % :prefix prefix))))))

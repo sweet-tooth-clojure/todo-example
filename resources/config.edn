@@ -111,10 +111,10 @@
  :duct.module.web/api  {}
  :duct.module.web/site {}
 
- :sweet-tooth.endpoint/middleware {}
+ :sweet-tooth.endpoint.module/middleware {}
 
- :sweet-tooth.endpoint.liberator.reitit-routes/ns-routes
- {:ns-routes :sweet-tooth.todo-example.cross.endpoint-routes/ns-routes}
+ :sweet-tooth.endpoint.module/liberator-reitit-router
+ {:routes :sweet-tooth.todo-example.cross.endpoint-routes/routes}
 
  :sweet-tooth.todo-example.backend.duct/merge-many
  {:configs [{:duct.handler/root {:middleware ^:distinct [:sweet-tooth.todo-example.backend.duct/buddy]}}
