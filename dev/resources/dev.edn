@@ -1,6 +1,12 @@
 {:duct.handler/root
  {:middleware ^:distinct [#ig/ref :sweet-tooth.todo-example.backend.duct/wrap-cors]}
 
+ :duct.logger/timbre
+ {:level :debug}
+
+ :duct.server.http/jetty
+ {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
+
  :sweet-tooth.todo-example.backend.duct/wrap-cors
  {:access-control-allow-origin  ".*"
   :access-control-allow-methods [:get :put :post :delete]}}

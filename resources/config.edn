@@ -36,7 +36,7 @@
   ;; {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
 
   :duct.server.http/jetty
-  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
+  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
 
   ;; datomic
   :sweet-tooth.endpoint.datomic/connection
@@ -44,7 +44,13 @@
    :create? true
    :schema  ["db/base/todo.edn"
              "db/base/todo-list.edn"]
-   :data    []}}
+   :data    []}
+
+  :duct.logger/timbre
+  {:level     :info
+   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
+
+  :duct.logger.timbre/println {}}
  ;; end base profile
  ;;-----------------
 
@@ -58,50 +64,23 @@
  :duct.profile/local-staging
  {:duct.core/environment :local-staging
 
-  :duct.server.http/jetty
-  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
-
   :sweet-tooth.endpoint.datomic/connection
-  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/localhost"]}
-
-  :duct.logger/timbre
-  {:level     :debug
-   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
-
-  :duct.logger.timbre/println {}}
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/localhost"]}}
  ;; end local staging profile
 
  :duct.profile/staging
  {:duct.core/environment :staging
 
-  :duct.server.http/jetty
-  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
-
   :sweet-tooth.endpoint.datomic/connection
-  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-staging"]}
-
-  :duct.logger/timbre
-  {:level     :debug
-   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
-
-  :duct.logger.timbre/println {}}
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-staging"]}}
  ;; end staging profile
 
 
  :duct.profile/prod
  {:duct.core/environment :production
 
-  :duct.server.http/jetty
-  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
-
   :sweet-tooth.endpoint.datomic/connection
-  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-prod"]}
-
-  :duct.logger/timbre
-  {:level     :info
-   :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
-
-  :duct.logger.timbre/println {}}
+  {:uri #duct/env ["DATOMIC_URI" Str :or "datomic:free://localhost:4334/stte-prod"]}}
 
  ;;--------
  ;; modules
