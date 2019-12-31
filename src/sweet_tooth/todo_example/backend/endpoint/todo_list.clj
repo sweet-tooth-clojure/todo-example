@@ -9,9 +9,7 @@
   (d/pull (ed/db ctx) '[:*] (ed/ctx-id ctx)))
 
 (def decisions
-  {:list   {:handle-ok (fn [ctx]
-                         (prn "TODO LISTS")
-                         (tl/todo-lists (ed/db ctx)))}
+  {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
    :show   {:handle-ok (fn [ctx] (let [todo (fetch-todo ctx)]
                                    [todo (t/todos-by-todo-list (ed/db ctx) (:db/id todo))]))}
 

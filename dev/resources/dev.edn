@@ -2,7 +2,10 @@
  {:middleware ^:distinct [#ig/ref :sweet-tooth.todo-example.backend.duct/wrap-cors]}
 
  :duct.logger/timbre
- {:level :debug}
+ {:appenders ^:replace {:duct.logger.timbre/brief #ig/ref :duct.logger.timbre/brief}}
+
+ :duct.logger.timbre/brief
+ {:min-level :debug}
 
  :duct.server.http/jetty
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
