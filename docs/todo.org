@@ -23,6 +23,10 @@
 ** DONE select a todo list after it's created
 ** DONE style
 ** DONE highlight current todo list
+** TODO look into using ed/created-pull and ed/updated-pull for todos
+[[file:~/projects/web/sweet-tooth/todo-example/src/sweet_tooth/todo_example/backend/endpoint/todo.clj:::handle-created%20result-todos}][created-pull here]]
+** TODO look into getting rid of "merge-many"
+*** use buddy-session-auth middleware
 ** TODO add latency to show activity indicators
 ** TODO show validation
 ** TODO try client-side validation

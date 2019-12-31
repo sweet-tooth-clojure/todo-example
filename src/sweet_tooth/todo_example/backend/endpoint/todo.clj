@@ -1,9 +1,6 @@
 (ns sweet-tooth.todo-example.backend.endpoint.todo
-  (:require [datomic.api :as d]
-            [sweet-tooth.endpoint.utils :as eu]
+  (:require [sweet-tooth.endpoint.datomic.liberator :as ed]
             [sweet-tooth.endpoint.liberator :as el]
-            [sweet-tooth.endpoint.datomic.liberator :as ed]
-            [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]
             [sweet-tooth.todo-example.backend.db.query.todo :as t]))
 
 (defn result-todos

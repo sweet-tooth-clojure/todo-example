@@ -31,3 +31,4 @@ dev/resources/local.edn
 VERSION
 .sass-cache
 *-test.png
+.clj-kondo
