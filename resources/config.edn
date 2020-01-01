@@ -100,6 +100,4 @@
  :sweet-tooth.endpoint.module/liberator-reitit-router
  {:routes :sweet-tooth.todo-example.cross.endpoint-routes/routes}
 
- :sweet-tooth.todo-example.backend.duct/merge-many
- {:configs [{:duct.handler/root {:middleware ^:distinct [:sweet-tooth.todo-example.backend.duct/buddy]}}
-            {:duct.handler/root {:middleware ^:prepend  [:sweet-tooth.todo-example.backend.duct/wrap-gzip]}}]}}
+ :sweet-tooth.endpoint.module.datomic/tasks {}}

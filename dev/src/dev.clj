@@ -10,7 +10,6 @@
             [datomic.api :as d]
 
             [sweet-tooth.todo-example.backend.duct :as app-duct] ;; for multimethod definitions
-            [sweet-tooth.todo-example.backend.db.tasks :as dbt]
 
             [integrant.core :as ig]
             [integrant.repl :refer [clear halt go init reset]]
