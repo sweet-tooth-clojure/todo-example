@@ -1,8 +1,6 @@
 (ns sweet-tooth.todo-example.backend.core
   (:gen-class)
-  (:require [clojure.java.io :as io]
-            [clojure.stacktrace :as stacktrace]
-            [duct.core :as duct]
+  (:require [duct.core :as duct]
             [integrant.core :as ig]
             [sweet-tooth.todo-example.backend.duct]
             [taoensso.timbre :as log]
@@ -19,7 +17,7 @@
 
 ;; TODO this is probably unnecessary
 (defmacro final
-  [env & body]
+  [& body]
   `(do (try (do ~@body)
             (catch Exception exc#
               (throw exc#)
@@ -37,7 +35,7 @@
   (:sweet-tooth.endpoint.datomic/connection (init-system env [:duct/database])))
 
 (defn -main
-  [cmd & args]
+  [cmd]
   (let [env (keyword (env/env :app-env :dev))]
     (log/info "-main" ::-main {:cmd cmd})
     (case cmd
@@ -45,13 +43,13 @@
       (start-server env)
 
       "db/recreate"
-      (final env (dbt/recreate-db (db-config env)))
+      (final (dbt/recreate-db (db-config env)))
 
       "db/install-schemas"
-      (final env (dbt/install-schemas (db-config env)))
+      (final (dbt/install-schemas (db-config env)))
 
       "db/delete-db"
-      (final env (d/delete-database (:uri (db-config env))))
+      (final (d/delete-database (:uri (db-config env))))
 
       "deploy/check"
       (final env
