@@ -50,7 +50,12 @@
   {:level     :info
    :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
 
-  :duct.logger.timbre/println {}}
+  :duct.logger.timbre/println {}
+
+  ;; tasks
+  :sweet-tooth.endpoint.datomic.tasks/recreate
+  {:db     #ig/ref :sweet-tooth.endpoint.datomic/connection
+   :logger #ig/ref :duct/logger}}
  ;; end base profile
  ;;-----------------
 

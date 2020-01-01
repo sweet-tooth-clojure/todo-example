@@ -5,9 +5,9 @@
             [sweet-tooth.todo-example.backend.duct]
             [taoensso.timbre :as log]
             [sweet-tooth.endpoint.system :as es]
-            [sweet-tooth.todo-example.backend.db.tasks :as dbt]
-            [environ.core :as env]
-            [datomic.api :as d]))
+            [sweet-tooth.endpoint.tasks :as tasks]
+            [sweet-tooth.endpoint.datomic.tasks :as dt]
+            [environ.core :as env]))
 
 (duct/load-hierarchy)
 
@@ -15,43 +15,30 @@
   [env-str profiles]
   (ig/init (es/config (keyword env-str)) profiles))
 
-;; TODO this is probably unnecessary
-(defmacro final
-  [& body]
-  `(do (try (do ~@body)
-            (catch Exception exc#
-              (throw exc#)
-              (System/exit 1)))
-       (System/exit 0)))
-
 (defn start-server
-  [env]
-  (let [system (init-system env [:duct/daemon])]
+  [config]
+  (let [system (ig/init config [:duct/daemon])]
     (log/info "initialized system" ::system-init-success {:system (keys system)})
     (duct/await-daemons system)))
 
-(defn db-config
-  [env]
-  (:sweet-tooth.endpoint.datomic/connection (init-system env [:duct/database])))
-
 (defn -main
   [cmd]
-  (let [env (keyword (env/env :app-env :dev))]
-    (log/info "-main" ::-main {:cmd cmd})
+  (let [env    (keyword (env/env :app-env :dev))
+        config (es/config env)]
+    (log/info "-main" ::-main {:cmd cmd :env env})
     (case cmd
       "server"
-      (start-server env)
+      (start-server config)
 
       "db/recreate"
-      (final (dbt/recreate-db (db-config env)))
+      (tasks/run-task-final config ::dt/recreate)
 
       "db/install-schemas"
-      (final (dbt/install-schemas (db-config env)))
+      (tasks/run-task-final config ::dt/install-schemas)
 
       "db/delete-db"
-      (final (d/delete-database (:uri (db-config env))))
+      (tasks/run-task-final config ::dt/delete-db)
 
       "deploy/check"
-      (final env
-             (es/config (keyword env))
-             (println "a-ok!")))))
+      (do (println "a-ok!")
+          (System/exit 0)))))

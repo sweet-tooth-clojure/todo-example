@@ -9,14 +9,14 @@
 
 (duct/load-hierarchy)
 
-(defmethod ig/init-key ::buddy [_ config]
+(defmethod ig/init-key ::buddy [_ _]
   #(buddy/wrap-authentication % (backends/session)))
 
 ;;--------------------
 ;; middleware integrant
 ;;--------------------
 
-(defmethod ig/init-key ::wrap-cors [_ config]
+(defmethod ig/init-key ::wrap-cors [_ _]
   (fn [handler]
     (fn [req]
       (let [headers {"Access-Control-Allow-Origin" "http://localhost:3000"
@@ -34,7 +34,7 @@
       (Thread/sleep sleep)
       (handler req))))
 
-(defmethod ig/init-key ::wrap-gzip [_ config]
+(defmethod ig/init-key ::wrap-gzip [_ _]
   ring-gzip/wrap-gzip)
 
 ;; module for more targeted duct config merging

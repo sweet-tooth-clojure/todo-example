@@ -17,7 +17,8 @@
             [integrant.repl.state :refer [config system]]
 
             [sweet-tooth.endpoint.system :as es]
-            [sweet-tooth.endpoint.test.harness :as eth]))
+            [sweet-tooth.endpoint.test.harness :as eth]
+            [com.flyingmachine.datomic-junk :as dj]))
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
 
