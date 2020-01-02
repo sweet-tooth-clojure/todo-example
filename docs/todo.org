@@ -45,20 +45,17 @@ is the sync state function wrong?
 is not showing checkmark
 *** DONE update todo list title
 ** DONE todo list not updated when todo added
-** TODO get the magic bindings working with kondo
+** DONE get the magic bindings working with kondo
+** TODO have "enter" submit form
 ** TODO show validation
+*** validate that todo list has title
 ** TODO reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
 ** TODO try client-side validation
 ** TODO convert datomic to in-memory so anyone can run in
-** TODO managing pull result for references
-if i pull a todo, the todo-list is {:todo/todo-list {:db/id 123}} when
-i probably want it to be
-{:todo/todo-list 123}
-
-what's the right thing to do here?
 ** TODO multiple users
-** TODO specmonstah schema
-** do in memory? populate with specmonstah?
-** write tests?
+** TODO specmonstah schema and data gen
+** TODO write tests
+** TODO simplify shadow / don't use local path / get rid of deps.edn?
+

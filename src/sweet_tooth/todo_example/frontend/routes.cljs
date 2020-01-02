@@ -1,6 +1,5 @@
 (ns sweet-tooth.todo-example.frontend.routes
   (:require [sweet-tooth.frontend.sync.flow :as stsf]
-
             [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
             [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
             [clojure.spec.alpha :as s]

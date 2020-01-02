@@ -9,7 +9,6 @@
             [sweet-tooth.frontend.load-all-handler-ns]
             [sweet-tooth.frontend.core.utils :as stcu]
             [sweet-tooth.frontend.config :as stconfig]
-            [sweet-tooth.frontend.handlers :as sthandlers]
             [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.sync.dispatch.ajax :as stsda]

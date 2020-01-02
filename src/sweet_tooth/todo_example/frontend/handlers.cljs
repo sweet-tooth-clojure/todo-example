@@ -29,7 +29,7 @@
 
 (rf/reg-event-fx :select-created-todo-list
   [rf/trim-v]
-  (fn [cofx [args]]
+  (fn [_cofx [args]]
     {:dispatch [::stnf/navigate (stfr/path :show-todo-list (-> (get-in args [:resp :response-data 0 1])
                                                                :todo-list
                                                                vals
