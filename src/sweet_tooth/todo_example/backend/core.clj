@@ -5,7 +5,7 @@
             [sweet-tooth.todo-example.backend.duct]
             [taoensso.timbre :as log]
             [sweet-tooth.endpoint.system :as es]
-            [sweet-tooth.endpoint.tasks :as tasks]
+            [sweet-tooth.endpoint.task :as task]
             [sweet-tooth.endpoint.datomic.tasks :as dt]
             [environ.core :as env]))
 
@@ -31,13 +31,13 @@
       (start-server config)
 
       "db/recreate"
-      (tasks/run-task-final config ::dt/recreate)
+      (task/run-task-final config ::dt/recreate)
 
       "db/install-schemas"
-      (tasks/run-task-final config ::dt/install-schemas)
+      (task/run-task-final config ::dt/install-schemas)
 
       "db/delete-db"
-      (tasks/run-task-final config ::dt/delete-db)
+      (task/run-task-final config ::dt/delete-db)
 
       "deploy/check"
       (do (println "a-ok!")

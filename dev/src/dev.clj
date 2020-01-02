@@ -17,6 +17,7 @@
 
             [sweet-tooth.endpoint.system :as es]
             [sweet-tooth.endpoint.test.harness :as eth]
+            [sweet-tooth.endpoint.datomic.tasks :as dt]
             [com.flyingmachine.datomic-junk :as dj]))
 
 (clojure.tools.namespace.repl/set-refresh-dirs "dev/src" "src" "test")
@@ -32,3 +33,7 @@
 (defn db
   []
   (d/db (d/connect (:uri (:sweet-tooth.endpoint.datomic/connection system)))))
+
+(defn recreate-db
+  []
+  ((::dt/recreate system)))

@@ -1,5 +1,6 @@
 {:duct.handler/root
- {:middleware ^:distinct [#ig/ref :sweet-tooth.todo-example.backend.duct/wrap-cors]}
+ {:middleware ^:distinct [#ig/ref :sweet-tooth.endpoint.middleware/dev-cors
+                          #ig/ref :sweet-tooth.endpoint.middleware/latency]}
 
  :duct.logger/timbre
  {:appenders ^:replace {:duct.logger.timbre/brief #ig/ref :duct.logger.timbre/brief}}
@@ -10,6 +11,5 @@
  :duct.server.http/jetty
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
 
- :sweet-tooth.todo-example.backend.duct/wrap-cors
- {:access-control-allow-origin  ".*"
-  :access-control-allow-methods [:get :put :post :delete]}}
+ :sweet-tooth.endpoint.middleware/dev-cors {}
+ :sweet-tooth.endpoint.middleware/latency  {:sleep 1000}}

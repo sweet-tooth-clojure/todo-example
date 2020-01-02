@@ -2,32 +2,36 @@
 ** list many todo lists
 ** interact with individual todo list
 * todo
-** DONE create schema
-** DONE list todo list endpoint
-** DONE create todo list endpoint
-** DONE home page that lists todo lists
-** DONE click on a todo list, go to it
-*** DONE create frontend route
-*** DONE column of todos
-*** DONE a form to add a todo
-*** DONE load that todo list
-*** DONE query todo list, load list + todos
-*** DONE place in :show of todo-list
-** DONE create todo endpoint
-** DONE update todo endpoint
-** DONE delete todo endpoint
-** DONE click outside saves the endpoint
+** archive
+*** DONE create schema
+*** DONE list todo list endpoint
+*** DONE create todo list endpoint
+*** DONE home page that lists todo lists
+*** DONE click on a todo list, go to it
+**** DONE create frontend route
+**** DONE column of todos
+**** DONE a form to add a todo
+**** DONE load that todo list
+**** DONE query todo list, load list + todos
+**** DONE place in :show of todo-list
+*** DONE create todo endpoint
+*** DONE update todo endpoint
+*** DONE delete todo endpoint
+*** DONE click outside saves the endpoint
 - how to register with window? ooooh interesting
-** DONE delete a todo list
-** DONE rename a todo list
-** DONE select a todo list after it's created
-** DONE style
-** DONE highlight current todo list
-** TODO look into using ed/created-pull and ed/updated-pull for todos
+*** DONE delete a todo list
+*** DONE rename a todo list
+*** DONE select a todo list after it's created
+*** DONE style
+*** DONE highlight current todo listt
+*** DONE look into using ed/created-pull and ed/updated-pull for todos
 [[file:~/projects/web/sweet-tooth/todo-example/src/sweet_tooth/todo_example/backend/endpoint/todo.clj:::handle-created%20result-todos}][created-pull here]]
-** TODO look into getting rid of "merge-many"
-*** use buddy-session-auth middleware
+*** DONE look into getting rid of "merge-many"
+**** use buddy-session-auth middleware
 ** TODO add latency to show activity indicators
+*** add latency
+*** add activity indicator component
+*** show activity indicator component
 ** TODO show validation
 ** TODO try client-side validation
 ** TODO convert datomic to in-memory so anyone can run in
@@ -37,5 +41,7 @@ i probably want it to be
 {:todo/todo-list 123}
 
 what's the right thing to do here?
+** TODO multiple users
+** TODO specmonstah schema
 ** do in memory? populate with specmonstah?
 ** write tests?

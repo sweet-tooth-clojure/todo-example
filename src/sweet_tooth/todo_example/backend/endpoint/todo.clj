@@ -9,10 +9,10 @@
 
 (def decisions
   {:create {:post!          ed/create->:result
-            :handle-created result-todos}
+            :handle-created ed/created-pull}
 
    :update {:put!      ed/update->:result
-            :handle-ok result-todos}
+            :handle-ok ed/updated-pull}
 
    :delete {:delete!   ed/delete->:result
             :handle-ok []}})
