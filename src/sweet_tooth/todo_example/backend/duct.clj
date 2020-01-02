@@ -1,49 +1,9 @@
 (ns sweet-tooth.todo-example.backend.duct
-  (:require [buddy.auth.backends :as backends]
-            [buddy.auth.middleware :as buddy]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [duct.core :as duct]
-            [integrant.core :as ig]
-            [ring.middleware.gzip :as ring-gzip]
             [sweet-tooth.endpoint.system :as es]))
 
 (duct/load-hierarchy)
-
-(defmethod ig/init-key ::buddy [_ _]
-  #(buddy/wrap-authentication % (backends/session)))
-
-;;--------------------
-;; middleware integrant
-;;--------------------
-
-(defmethod ig/init-key ::wrap-cors [_ _]
-  (fn [handler]
-    (fn [req]
-      (let [headers {"Access-Control-Allow-Origin" "http://localhost:3000"
-                     "Access-Control-Allow-Methods" "GET, PUT, POST, DELETE, OPTIONS"
-                     "Access-Control-Allow-Headers" "Content-Type, *"
-                     "Access-Control-Allow-Credentials" "true"}]
-        (if (= (:request-method req) :options)
-          {:status 200 :headers headers :body "preflight complete"}
-          (-> (handler req)
-              (update :headers merge headers)))))))
-
-(defmethod ig/init-key ::wrap-latency [_ {:keys [sleep]}]
-  (fn [handler]
-    (fn [req]
-      (Thread/sleep sleep)
-      (handler req))))
-
-(defmethod ig/init-key ::wrap-gzip [_ _]
-  ring-gzip/wrap-gzip)
-
-;; module for more targeted duct config merging
-(defmethod ig/init-key ::merge-many [_ {:keys [configs]}]
-  (fn [config]
-    (reduce (fn [config c]
-              (duct/merge-configs config (update-in c [:duct.handler/root :middleware] #(mapv ig/ref %))))
-            config
-            configs)))
 
 ;;--------
 ;; Configs

@@ -24,16 +24,10 @@
                :content-types          true
                :default-charset        "utf-8"}}
 
-  :sweet-tooth.todo-example.backend.duct/buddy     {}
-  :sweet-tooth.todo-example.backend.duct/wrap-gzip {}
-
   :sweet-tooth.todo-example.backend.endpoint.static/handler {}
 
   :sweet-tooth.endpoint.middleware/format-exception
   {:include-data true}
-
-  ;; :sweet-tooth.endpoint.datomic/session-store
-  ;; {:db #ig/ref :sweet-tooth.endpoint.datomic/connection}
 
   :duct.server.http/jetty
   {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3000]}
@@ -50,12 +44,7 @@
   {:level     :info
    :appenders {:duct.logger.timbre/println #ig/ref :duct.logger.timbre/println}}
 
-  :duct.logger.timbre/println {}
-
-  ;; tasks
-  :sweet-tooth.endpoint.datomic.tasks/recreate
-  {:db     #ig/ref :sweet-tooth.endpoint.datomic/connection
-   :logger #ig/ref :duct/logger}}
+  :duct.logger.timbre/println {}}
  ;; end base profile
  ;;-----------------
 
@@ -95,9 +84,8 @@
  :duct.module.web/api  {}
  :duct.module.web/site {}
 
- :sweet-tooth.endpoint.module/middleware {}
-
  :sweet-tooth.endpoint.module/liberator-reitit-router
- {:routes :sweet-tooth.todo-example.cross.endpoint-routes/routes}
+ {:routes sweet-tooth.todo-example.cross.endpoint-routes/routes}
 
+ :sweet-tooth.endpoint.module/middleware {}
  :sweet-tooth.endpoint.module.datomic/tasks {}}

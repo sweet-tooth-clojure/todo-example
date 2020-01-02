@@ -33,6 +33,8 @@
 *** add activity indicator component
 *** show activity indicator component
 ** TODO show validation
+** TODO reexamine the duct middleware web defaults
+if necessary, move them to sweet tooth and document them
 ** TODO try client-side validation
 ** TODO convert datomic to in-memory so anyone can run in
 ** TODO managing pull result for references
