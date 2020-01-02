@@ -2,7 +2,9 @@
   (:require [re-frame.core :as rf]
             [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.form.components :as stfc]
-            [sweet-tooth.frontend.routes :as stfr]))
+            [sweet-tooth.frontend.routes :as stfr]
+            [sweet-tooth.frontend.sync.flow :as stsf]
+            [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
 (defn component
   []
@@ -17,13 +19,16 @@
         [input :text :todo-list/title {:id "todo-list-title" :placeholder "New Todo List"}]
         [:input {:type "submit"}]])
 
-     [:h3 (count todo-lists) " Todo lists"]
-
-     (->> todo-lists
-          (map (fn [tl]
-                 ^{:key (:db/id tl)}
-                 [:div.todo-list
-                  [:a {:class (when (= current-todo-list tl) "active")
-                       :href  (stfr/path :show-todo-list tl)}
-                   (:todo-list/title tl)]]))
-          doall)]))
+     [ui/loadable-component
+      [::stsf/sync-state [:get :todo-lists]]
+      "no todo lists"
+      [:div
+       [:h3 (count todo-lists) " Todo lists"]
+       (->> todo-lists
+            (map (fn [tl]
+                   ^{:key (:db/id tl)}
+                   [:div.todo-list
+                    [:a {:class (when (= current-todo-list tl) "active")
+                         :href  (stfr/path :show-todo-list tl)}
+                     (:todo-list/title tl)]]))
+            doall)]]]))
