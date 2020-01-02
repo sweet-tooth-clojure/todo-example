@@ -162,3 +162,15 @@ input[type=submit] + .activity-indicator {
   opacity: 0.01;
   transition: opacity 125ms ease-in;
 }
+
+.todo {
+  position: relative;
+}
+
+.todo .activity-indicator {
+  float: right;
+}
+
+.todo .success-message, :h2 .success-message {
+  display: none;
+}

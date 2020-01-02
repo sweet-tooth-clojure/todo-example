@@ -52,23 +52,24 @@
   [rf/trim-v]
   (fn [{:keys [db]} [path ent]]
     {:db               (stff/toggle-form db path ent)
-     ::stjehf/register [[:submit-form (:db/id ent)]
+     ::stjehf/register [[:close-and-submit-form (:db/id ent)]
                         [[js/window
                           EventType.CLICK
-                          (fn [] (rf/dispatch [:submit-form path ent]))]]]}))
+                          (fn [] (rf/dispatch [:close-and-submit-form path ent]))]]]}))
 
 (defn close-form
   [{:keys [db]} [path ent]]
   {:db                 (assoc-in db (paths/full-path :form path :ui-state) nil)
-   ::stjehf/unregister [:submit-form (:db/id ent)]})
+   ::stjehf/unregister [:close-and-submit-form (:db/id ent)]})
 
-(rf/reg-event-fx :submit-form
+(rf/reg-event-fx :close-and-submit-form
   [rf/trim-v]
   (fn [{:keys [db] :as ctx} [path ent :as args]]
     (cond-> (close-form ctx args)
       (paths/get-path db :form path :ui-state)
-      (assoc :dispatch [::stff/submit-form path {:clear :all
-                                                 :data  ent}]))))
+      (assoc :dispatch [::stff/submit-form path {:clear  [:buffer]
+                                                 :expire {:state 3000}
+                                                 :data   ent}]))))
 
 (rf/reg-event-fx :close-form
   [rf/trim-v]

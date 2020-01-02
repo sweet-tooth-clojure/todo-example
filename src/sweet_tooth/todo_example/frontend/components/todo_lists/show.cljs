@@ -24,7 +24,7 @@
       (if @form-ui-state
         [:li.todo
          {:on-click (stop-clicks)}
-         [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path t]))}
+         [:form {:on-submit (u/prevent-default #(rf/dispatch [:close-and-submit-form path t]))}
           [(ui/focus-child [input :text :todo/title])]]
          [:span {:on-click #(rf/dispatch [:close-form path t])}
           [:i.fas.fa-window-close]]
@@ -34,7 +34,8 @@
           [:i.fas.fa-trash]]]
         [:li.todo
          {:on-click #(rf/dispatch [:open-form path t])}
-         (:todo/title t)]))))
+         (:todo/title t)
+         [ui/form-state-feedback form]]))))
 
 (defn todo-list-title
   [tl]
@@ -52,7 +53,8 @@
                [:i.fas.fa-trash]]]
              [:div
               {:on-click #(rf/dispatch [:open-form path tl])}
-              (:todo-list/title tl)])])))
+              (:todo-list/title tl)
+              [ui/form-state-feedback form]])])))
 
 (defn component
   []

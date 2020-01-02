@@ -38,7 +38,7 @@
      [:> CSSTransition
       {:classNames "fade"
        :timeout    300}
-      [:span [:i.fas.fa-check-circle] " success!"]])])
+      [:span [:i.fas.fa-check-circle] [:span.success-message " success!"]]])])
 
 (defn form-state-feedback
   [{:keys [sync-active? state-success?]}]

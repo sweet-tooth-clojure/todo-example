@@ -36,16 +36,16 @@
 *** sync once?
 ** DONE show activity indicator for individual todo lists
 ** DONE going to invalid todo list, the TL shows up in the side for some reason?
-** TODO todo list not updated when todo added
-** TODO show an activity indicator for forms
-*** create todo list
+** DONE show an activity indicator for forms
+*** DONE create todo list
 **** following state-success?, broken somewhere in the chain
 is the sync state function wrong?
-*** delete todo list
-*** update todo list title
-*** create todo
-*** update todo
-*** delete todo
+*** DONE create todo
+*** DONE update todo
+is not showing checkmark
+*** DONE update todo list title
+** DONE todo list not updated when todo added
+** TODO get the magic bindings working with kondo
 ** TODO show validation
 ** TODO reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
