@@ -68,12 +68,14 @@
          [:div.todo-list
           [todo-list-title tl]
           (stfc/with-form [:todos :create]
-            [:form.new-todo (on-submit {:clear :all
+            [:form.new-todo (on-submit {:clear  [:buffer :ui-state]
+                                        :expire {:state 3000}
                                         :data  {:todo/todo-list (:db/id tl)}
                                         :sync  {:on {:success [[::stff/submit-form-success :$ctx]
                                                                [:focus-element "#todo-title" 100]]}}})
              [input :text :todo/title {:placeholder "New Todo" :id "todo-title"}]
-             [:input {:type "submit"}]])
+             [:input {:type "submit"}]
+             [ui/form-state-feedback form]])
           (if (seq todos)
             [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
                                    todos))]

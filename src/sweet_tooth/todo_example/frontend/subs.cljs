@@ -19,4 +19,4 @@
     (let [tl (routed-todo-list db)]
       (->> (get-in db [:entity :todo])
            vals
-           (filter #(= (:todo/todo-list %) (:db/id tl)))))))
+           (filter #(= (get-in % [:todo/todo-list :db/id]) (:db/id tl)))))))
