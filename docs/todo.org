@@ -34,10 +34,20 @@
 *** show activity indicator component
 ** DONE only show activity indicator first time
 *** sync once?
-** TODO show activity indicator for individual todo lists
-** TODO going to invalid todo list, the TL shows up in the side for some reason?
+** DONE show activity indicator for individual todo lists
+** DONE going to invalid todo list, the TL shows up in the side for some reason?
+** TODO show an activity indicator for forms
+*** create todo list
+**** following state-success?, broken somewhere in the chain
+is the sync state function wrong?
+*** delete todo list
+*** update todo list title
+*** create todo
+*** update todo
+*** delete todo
 ** TODO show validation
 ** TODO reexamine the duct middleware web defaults
+[[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
 ** TODO try client-side validation
 ** TODO convert datomic to in-memory so anyone can run in

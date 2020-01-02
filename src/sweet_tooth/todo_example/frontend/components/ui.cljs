@@ -20,6 +20,35 @@
              (js/setTimeout #(.focus node) timeout)
              (.focus node))))})))
 
+;;---
+;; activity icon
+;;---
+(def activity-icon [:i.fas.fa-spinner.fa-pulse.activity-indicator])
+
+(defn submitting-indicator
+  [sync-active?]
+  (when @sync-active? activity-icon))
+
+(defn success-indicator
+  [state-success? & [opts]]
+  [:> TransitionGroup
+   {:component "span"
+    :className (or (:class opts) "success")}
+   (when @state-success?
+     [:> CSSTransition
+      {:classNames "fade"
+       :timeout    300}
+      [:span [:i.fas.fa-check-circle] " success!"]])])
+
+(defn form-state-feedback
+  [{:keys [sync-active? state-success?]}]
+  [:span.activity-indicator
+   [submitting-indicator sync-active?]
+   [success-indicator state-success?]])
+
+;;---
+;; loadable component
+;;---
 (defn loadable-transition
   [component]
   (when component
@@ -31,6 +60,6 @@
   [:> TransitionGroup {:component "div"}
    [stsc/loadable-component
     sync-state-sub
-    (loadable-transition [:div "loading... " [:i.fas.fa-spinner.fa-pulse]])
+    (loadable-transition [:div "loading... " activity-icon])
     (loadable-transition [:div empty-msg])
     (loadable-transition component)]])

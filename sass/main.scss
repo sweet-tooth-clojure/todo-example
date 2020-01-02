@@ -139,6 +139,26 @@ input[type=submit], a.submit, button {
   }
 }
 
+input[type=submit] + .activity-indicator {
+  margin-left: .5rem;
+}
+
 .todo-list a.active {
   background: white;
+}
+
+// fade
+.fade-enter {
+  opacity: 0.01;
+}
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+.fade-exit {
+  opacity: 1;
+}
+.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 125ms ease-in;
 }
