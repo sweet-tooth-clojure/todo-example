@@ -3,6 +3,8 @@
             [re-frame.core :as rf]
             [sweet-tooth.frontend.form.components :as stfc]
             [sweet-tooth.frontend.form.flow :as stff]
+            [sweet-tooth.frontend.nav.flow :as stnf]
+            [sweet-tooth.frontend.sync.flow :as stsf]
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
@@ -52,25 +54,27 @@
               {:on-click #(rf/dispatch [:open-form path tl])}
               (:todo-list/title tl)])])))
 
-(defn todo-list
-  [tl]
-  (let [todos @(rf/subscribe [:todos])]
-    [:div.todo-list
-     [todo-list-title tl]
-     (stfc/with-form [:todos :create]
-       [:form.new-todo (on-submit {:clear :all
-                                   :data  {:todo/todo-list (:db/id tl)}
-                                   :sync  {:on {:success [[::stff/submit-form-success :$ctx]
-                                                          [:focus-element "#todo-title" 100]]}}})
-        [input :text :todo/title {:placeholder "New Todo" :id "todo-title"}]
-        [:input {:type "submit"}]])
-     (if (empty? todos)
-       [:div "No todos yet"]
-       [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
-                              todos))])]))
-
 (defn component
   []
-  (if-let [tl @(rf/subscribe [:routed-todo-list])]
-    [todo-list tl]
-    [:div "Select a todo list to view its todos"]))
+  (let [route @(rf/subscribe [::stnf/route])
+        tl    @(rf/subscribe [:routed-todo-list])
+        todos @(rf/subscribe [:todos])]
+    (if (= :home (:route-name route))
+      [:div "Select a todo list to view its todos"]
+      [ui/loadable-component
+       [::stsf/sync-state [:get :todo-list (:params route)]]
+       "Could not find that todo list"
+       (when tl
+         [:div.todo-list
+          [todo-list-title tl]
+          (stfc/with-form [:todos :create]
+            [:form.new-todo (on-submit {:clear :all
+                                        :data  {:todo/todo-list (:db/id tl)}
+                                        :sync  {:on {:success [[::stff/submit-form-success :$ctx]
+                                                               [:focus-element "#todo-title" 100]]}}})
+             [input :text :todo/title {:placeholder "New Todo" :id "todo-title"}]
+             [:input {:type "submit"}]])
+          (if (seq todos)
+            [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
+                                   todos))]
+            "No todos yet")])])))

@@ -28,10 +28,14 @@
 [[file:~/projects/web/sweet-tooth/todo-example/src/sweet_tooth/todo_example/backend/endpoint/todo.clj:::handle-created%20result-todos}][created-pull here]]
 *** DONE look into getting rid of "merge-many"
 **** use buddy-session-auth middleware
-** TODO add latency to show activity indicators
+** DONE add latency to show activity indicators
 *** add latency
 *** add activity indicator component
 *** show activity indicator component
+** DONE only show activity indicator first time
+*** sync once?
+** TODO show activity indicator for individual todo lists
+** TODO going to invalid todo list, the TL shows up in the side for some reason?
 ** TODO show validation
 ** TODO reexamine the duct middleware web defaults
 if necessary, move them to sweet tooth and document them

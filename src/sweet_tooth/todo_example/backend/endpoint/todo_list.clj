@@ -4,14 +4,15 @@
             [sweet-tooth.todo-example.backend.db.query.todo :as t]
             [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]))
 
-(defn fetch-todo
+(defn fetch-todo-list
   [ctx]
-  (d/pull (ed/db ctx) '[:*] (ed/ctx-id ctx)))
+  (let [x (d/pull (ed/db ctx) '[:*] (ed/ctx-id ctx))]
+    (when (:todo-list/title x) x)))
 
 (def decisions
   {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
-   :show   {:handle-ok (fn [ctx] (let [todo (fetch-todo ctx)]
-                                   [todo (t/todos-by-todo-list (ed/db ctx) (:db/id todo))]))}
+   :show   {:handle-ok (fn [ctx] (when-let [todo-list (fetch-todo-list ctx)]
+                                   [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
 
    :create {:post!          ed/create->:result
             :handle-created ed/created-pull}
