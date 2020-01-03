@@ -1,15 +1,10 @@
 (ns sweet-tooth.todo-example.backend.endpoint.todo
   (:require [sweet-tooth.endpoint.datomic.liberator :as ed]
             [sweet-tooth.endpoint.liberator :as el]
-            [sweet-tooth.todo-example.backend.db.query.todo :as t]
-            [sweet-tooth.todo-example.backend.db.validate :as v]))
-
-(defn result-todos
-  [ctx]
-  (t/todos-by-todo-list (ed/db-after ctx) (:todo/todo-list (el/params ctx))))
+            [sweet-tooth.todo-example.cross.validate :as v]))
 
 (def decisions
-  {:create {:malformed?     (v/validate-describe v/todo-rules)
+  {:create {:malformed?     (el/validate-describe v/todo-rules)
             :post!          ed/create->:result
             :handle-created ed/created-pull}
 

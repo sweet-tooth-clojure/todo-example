@@ -8,7 +8,7 @@
                  [liberator "0.15.3"]
                  [com.datomic/datomic-free "0.9.5697" :exclusions [com.google.guava/guava]]
                  [medley "0.7.1"]
-                 [sweet-tooth/describe "0.1.0"]
+                 [sweet-tooth/describe "0.3.0"]
                  [sweet-tooth/sweet-tooth-endpoint "0.7.0"]
                  [bk/ring-gzip "0.3.0"]
                  [org.clojure/test.check "0.9.0"]

@@ -9,7 +9,8 @@
          sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.7.0"}
          thheller/shadow-cljs             {:mvn/version "2.8.60"}
          ;; TODO figure out how to handle dev mode of this
-         sweet-tooth/sweet-tooth-frontend {:mvn/version "0.11.0"}}
+         sweet-tooth/sweet-tooth-frontend {:mvn/version "0.11.0"}
+         sweet-tooth/describe             {:mvn/version "0.3.0"}}
 
  :aliases
  {:dev  {:extra-deps {sweet-tooth/sweet-tooth-frontend {:local/root "/Users/daniel/projects/web/sweet-tooth/frontend"}

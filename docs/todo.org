@@ -28,34 +28,40 @@
 [[file:~/projects/web/sweet-tooth/todo-example/src/sweet_tooth/todo_example/backend/endpoint/todo.clj:::handle-created%20result-todos}][created-pull here]]
 *** DONE look into getting rid of "merge-many"
 **** use buddy-session-auth middleware
-** DONE add latency to show activity indicators
-*** add latency
-*** add activity indicator component
-*** show activity indicator component
-** DONE only show activity indicator first time
-*** sync once?
-** DONE show activity indicator for individual todo lists
-** DONE going to invalid todo list, the TL shows up in the side for some reason?
-** DONE show an activity indicator for forms
-*** DONE create todo list
-**** following state-success?, broken somewhere in the chain
+*** DONE add latency to show activity indicators
+**** add latency
+**** add activity indicator component
+**** show activity indicator component
+*** DONE only show activity indicator first time
+**** sync once?
+*** DONE show activity indicator for individual todo lists
+*** DONE going to invalid todo list, the TL shows up in the side for some reason?
+*** DONE show an activity indicator for forms
+**** DONE create todo list
+***** following state-success?, broken somewhere in the chain
 is the sync state function wrong?
-*** DONE create todo
-*** DONE update todo
+**** DONE create todo
+**** DONE update todo
 is not showing checkmark
-*** DONE update todo list title
-** DONE todo list not updated when todo added
-** DONE get the magic bindings working with kondo
-** TODO show validation
-*** validate that todo list has title
-**** server side validation
-**** display validation frontend side
-**** review process, is it good
+**** DONE update todo list title
+*** DONE todo list not updated when todo added
+*** DONE get the magic bindings working with kondo
+*** DONE clear validation error for new todo when navigating to another todo list
+*** DONE show validation
+**** validate that todo list has title
+***** DONE server side validation
+***** DONE display validation frontend side
+****** review process, is it good
+** TODO only submit todo edit form if it's dirty
+** TODO try client-side validation
+*** could happen on blur
+*** could happen on submit
+*** prevent submission
 ** TODO reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
-** TODO try client-side validation
-** TODO convert datomic to in-memory so anyone can run in
+** TODO convert datomic to in-memory so anyone can run it
+*** auto run create, migrate?
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
 ** TODO write tests

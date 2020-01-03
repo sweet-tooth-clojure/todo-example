@@ -3,6 +3,7 @@
             [clojure.string :as str]
             ["react-transition-group/TransitionGroup" :as TransitionGroup]
             ["react-transition-group/CSSTransition" :as CSSTransition]
+            [sweet-tooth.describe :as d]
             [sweet-tooth.frontend.sync.components :as stsc]
             [sweet-tooth.todo-example.cross.utils :as u]))
 
@@ -63,3 +64,13 @@
     (loadable-transition [:div "loading... " activity-icon])
     (loadable-transition [:div empty-msg])
     (loadable-transition component)]])
+
+;;---
+;; validation with describe
+;;---
+(defn validate-with
+  [rules]
+  (fn [form-data attr-path _val]
+    (-> (d/describe form-data rules)
+        (d/map-rollup-descriptions)
+        (get-in attr-path))))

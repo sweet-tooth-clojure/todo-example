@@ -5,15 +5,13 @@
             [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]
             [sweet-tooth.todo-example.backend.db.validate :as v]))
 
-(defn fetch-todo-list
-  [ctx]
-  (let [x (d/pull (ed/db ctx) '[:*] (ed/ctx-id ctx))]
-    (when (:todo-list/title x) x)))
-
 (def decisions
-  {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
-   :show   {:handle-ok (fn [ctx] (when-let [todo-list (fetch-todo-list ctx)]
-                                   [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
+  {:list   {:handle-ok (comp tl/todo-lists ed/db)}
+   ;; TODO break this up, use exists? decision
+   :show   {:handle-ok (fn [ctx]
+                         (when-let [todo-list (ed/pull-ctx-id ctx)]
+                           [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
+
    :create {:malformed?     (v/validate-describe v/todo-list-rules)
             :post!          ed/create->:result
             :handle-created ed/created-pull}
@@ -25,6 +23,6 @@
                          (let [tl-id (ed/ctx-id ctx)
                                todos (t/todos-by-todo-list (ed/db ctx) tl-id)]
                            @(d/transact (ed/conn ctx) (->> todos
-                                                           (map (fn [t] [:db.fn/retractEntity (:db/id t)]))
-                                                           (into [[:db.fn/retractEntity tl-id]])))))
+                                                           (into [tl-id])
+                                                           (map (fn [t] [:db.fn/retractEntity (:db/id t)]))))))
             :handle-ok []}})
