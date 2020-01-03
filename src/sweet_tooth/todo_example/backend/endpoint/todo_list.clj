@@ -2,7 +2,8 @@
   (:require [datomic.api :as d]
             [sweet-tooth.endpoint.datomic.liberator :as ed]
             [sweet-tooth.todo-example.backend.db.query.todo :as t]
-            [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]))
+            [sweet-tooth.todo-example.backend.db.query.todo-list :as tl]
+            [sweet-tooth.todo-example.backend.db.validate :as v]))
 
 (defn fetch-todo-list
   [ctx]
@@ -13,8 +14,8 @@
   {:list   {:handle-ok (fn [ctx] (tl/todo-lists (ed/db ctx)))}
    :show   {:handle-ok (fn [ctx] (when-let [todo-list (fetch-todo-list ctx)]
                                    [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
-
-   :create {:post!          ed/create->:result
+   :create {:malformed?     (v/validate-describe v/todo-list-rules)
+            :post!          ed/create->:result
             :handle-created ed/created-pull}
 
    :update {:put!      ed/update->:result

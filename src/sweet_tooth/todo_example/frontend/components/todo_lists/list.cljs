@@ -17,7 +17,10 @@
                           :sync   {:on {:success [[::stff/submit-form-success :$ctx]
                                                   [:select-created-todo-list :$ctx]
                                                   [:focus-element "#todo-list-title" 100]]}}})
-        [input :text :todo-list/title {:id "todo-list-title" :placeholder "New Todo List"}]
+        [field :text :todo-list/title
+         {:id          "todo-list-title"
+          :placeholder "New Todo List"
+          :no-label    true}]
         [:input {:type "submit"}]
         [ui/form-state-feedback form]])
 

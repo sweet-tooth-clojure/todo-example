@@ -163,6 +163,7 @@ input[type=submit] + .activity-indicator {
   transition: opacity 125ms ease-in;
 }
 
+// todo activity indicator
 .todo {
   position: relative;
 }
@@ -173,4 +174,25 @@ input[type=submit] + .activity-indicator {
 
 .todo .success-message, :h2 .success-message {
   display: none;
+}
+
+// error messages
+.error input {
+  border: 5px solid #fffe93;
+}
+
+.error-messages {
+  margin: 0 0 1rem;
+  padding-left: 0;
+  list-style: none;
+  color: #fffe93;
+}
+
+.main {
+  .error input {
+    border-color: #b55478;
+  }
+  .error-messages {
+    color: #b55478;
+  }
 }

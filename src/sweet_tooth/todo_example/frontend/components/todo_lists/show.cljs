@@ -8,7 +8,10 @@
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
-(defn stop-clicks
+(defn- stop-clicks
+  "Prevent click propagation. For cases where we've registered a window
+  event to close and submit a form, and we don't want clicks on the
+  form or its children to trigger the form close event."
   []
   (let [this (r/current-component)]
     #(let [this-dom-node (r/dom-node this)
@@ -72,10 +75,12 @@
           (stfc/with-form [:todos :create]
             [:form.new-todo (on-submit {:clear  [:buffer :ui-state]
                                         :expire {:state 3000}
-                                        :data  {:todo/todo-list (:db/id tl)}
-                                        :sync  {:on {:success [[::stff/submit-form-success :$ctx]
-                                                               [:focus-element "#todo-title" 100]]}}})
-             [input :text :todo/title {:placeholder "New Todo" :id "todo-title"}]
+                                        :data   {:todo/todo-list (:db/id tl)}
+                                        :sync   {:on {:success [[::stff/submit-form-success :$ctx]
+                                                                [:focus-element "#todo-title" 100]]}}})
+             [field :text :todo/title {:placeholder "New Todo"
+                                       :id          "todo-title"
+                                       :no-label    true}]
              [:input {:type "submit"}]
              [ui/form-state-feedback form]])
           (if (seq todos)

@@ -46,9 +46,11 @@ is not showing checkmark
 *** DONE update todo list title
 ** DONE todo list not updated when todo added
 ** DONE get the magic bindings working with kondo
-** TODO have "enter" submit form
 ** TODO show validation
 *** validate that todo list has title
+**** server side validation
+**** display validation frontend side
+**** review process, is it good
 ** TODO reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
@@ -58,4 +60,3 @@ if necessary, move them to sweet tooth and document them
 ** TODO specmonstah schema and data gen
 ** TODO write tests
 ** TODO simplify shadow / don't use local path / get rid of deps.edn?
-
