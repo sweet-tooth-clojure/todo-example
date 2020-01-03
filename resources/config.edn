@@ -7,22 +7,7 @@
   ;;-----------
 
   :duct.middleware.web/defaults
-  {:params    {:urlencoded true
-               :keywordize true
-               :multipart  true
-               :nested     true}
-   :session   {;; :store        #ig/ref :sweet-tooth.endpoint.datomic/session-store
-               ;; one year
-               :cookie-attrs {:max-age 31556952}}
-   :security  {:anti-forgery         false
-               :xss-protection       {:enable? true, :mode :block}
-               :frame-options        :sameorigin
-               :content-type-options :nosniff}
-   :static    {:resources "public"}
-   :responses {:not-modified-responses true
-               :absolute-redirects     true
-               :content-types          true
-               :default-charset        "utf-8"}}
+  {:static {:resources "public"}}
 
   :sweet-tooth.todo-example.backend.endpoint.static/handler {}
 
@@ -80,12 +65,11 @@
  ;; modules
  ;;--------
 
- :duct.module/logging  {}
- :duct.module.web/api  {}
- :duct.module.web/site {}
+ :duct.module/logging {}
+ :duct.module.web/api {}
 
  :sweet-tooth.endpoint.module/liberator-reitit-router
  {:routes sweet-tooth.todo-example.cross.endpoint-routes/routes}
 
- :sweet-tooth.endpoint.module/middleware {}
+ :sweet-tooth.endpoint.module/middleware    {}
  :sweet-tooth.endpoint.module.datomic/tasks {}}

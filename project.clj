@@ -40,6 +40,7 @@
    :profiles/dev {}
    :project/dev  {:source-paths   ["dev/src"]
                   :resource-paths ["dev/resources" "target/dev/resources"]
+                  :target-path    "target/dev/"
                   :dependencies   [[integrant/repl "0.3.1"]
                                    [eftest "0.5.4"]
                                    [kerodon "0.9.0"]

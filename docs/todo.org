@@ -52,17 +52,20 @@ is not showing checkmark
 ***** DONE server side validation
 ***** DONE display validation frontend side
 ****** review process, is it good
-** TODO only submit todo edit form if it's dirty
-** TODO try client-side validation
-*** could happen on blur
-*** could happen on submit
-*** prevent submission
+*** DONE inline "success" text should be hidden
+*** DONE only submit todo edit form if it's dirty
 ** TODO reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
+*** figure out anti-forgery
+** TODO "new todo" showing error after submission
 ** TODO convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
+** TODO try client-side validation
+*** prevent submission
+**** don't submit if it's invalid
+**** run the validator on submit
 ** TODO write tests
 ** TODO simplify shadow / don't use local path / get rid of deps.edn?

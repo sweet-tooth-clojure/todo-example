@@ -1,10 +1,7 @@
 (ns sweet-tooth.todo-example.frontend.handlers
   (:require [goog.events]
-            [goog.events.KeyCodes :as KeyCodes]
-            [goog.events.KeyHandler :as KeyHandler]
-            [goog.events.KeyHandler.EventType :as KeyEventType]
-
             [re-frame.core :as rf]
+
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.paths :as paths]
             [sweet-tooth.frontend.form.flow :as stff]
@@ -13,7 +10,7 @@
             [sweet-tooth.frontend.js-event-handlers.flow :as stjehf])
   (:import [goog.events EventType]))
 
-(defn delete-and-remove-entity
+(defn delete-entity-optimistic
   [ent-type]
   (fn [{:keys [db] :as cofx} args]
     (merge ((stsf/sync-fx [:delete ent-type]) cofx args)
@@ -25,7 +22,7 @@
 
 (rf/reg-event-fx :delete-todo-list
   [rf/trim-v]
-  (delete-and-remove-entity :todo-list))
+  (delete-entity-optimistic :todo-list))
 
 (rf/reg-event-fx :select-created-todo-list
   [rf/trim-v]
@@ -41,7 +38,7 @@
 
 (rf/reg-event-fx :delete-todo
   [rf/trim-v]
-  (delete-and-remove-entity :todo))
+  (delete-entity-optimistic :todo))
 
 ;;------
 ;; inline forms
@@ -65,11 +62,12 @@
 (rf/reg-event-fx :close-and-submit-form
   [rf/trim-v]
   (fn [{:keys [db] :as ctx} [path ent :as args]]
-    (cond-> (close-form ctx args)
-      (paths/get-path db :form path :ui-state)
-      (assoc :dispatch [::stff/submit-form path {:clear  [:buffer]
-                                                 :expire {:state 3000}
-                                                 :data   ent}]))))
+    (let [form (paths/get-path db :form path)]
+      (cond-> (close-form ctx args)
+        (and (:ui-state form) (not= (:base form) (:buffer form)))
+        (assoc :dispatch [::stff/submit-form path {:clear  [:buffer]
+                                                   :expire {:state 3000}
+                                                   :data   ent}])))))
 
 (rf/reg-event-fx :close-form
   [rf/trim-v]
