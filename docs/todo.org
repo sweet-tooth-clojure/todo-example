@@ -59,7 +59,7 @@ is not showing checkmark
 if necessary, move them to sweet tooth and document them
 *** figure out anti-forgery
 ** DONE figure out re-ajax in uberjar
-** TODO uberjar server is not working with todo list URLs
+** DONE uberjar server is not working with todo list URLs
 *** they weren't in the config
 *** how to make this cross as well?
 ** TODO "new todo" showing error after submission
