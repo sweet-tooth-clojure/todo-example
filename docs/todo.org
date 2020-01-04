@@ -54,10 +54,14 @@ is not showing checkmark
 ****** review process, is it good
 *** DONE inline "success" text should be hidden
 *** DONE only submit todo edit form if it's dirty
-** TODO reexamine the duct middleware web defaults
+** DONE reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
 *** figure out anti-forgery
+** DONE figure out re-ajax in uberjar
+** TODO uberjar server is not working with todo list URLs
+*** they weren't in the config
+*** how to make this cross as well?
 ** TODO "new todo" showing error after submission
 ** TODO convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?

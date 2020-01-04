@@ -10,10 +10,7 @@
       :path-prefix "/api/v1"}
 
      [:sweet-tooth.todo-example.backend.endpoint.todo-list]
-     [:sweet-tooth.todo-example.backend.endpoint.todo]
-
-     {:handler (ig/ref :sweet-tooth.todo-example.backend.endpoint.static/handler)}
-     ["/"]]))
+     [:sweet-tooth.todo-example.backend.endpoint.todo]]))
 
 (defmethod ig/init-key ::routes [_ prefix]
   ;; Adding a prefix allows the frontend to e.g. specify a different

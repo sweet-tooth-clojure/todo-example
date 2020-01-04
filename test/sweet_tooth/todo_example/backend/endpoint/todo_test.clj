@@ -3,7 +3,7 @@
             [sweet-tooth.todo-example.backend.db.query.todo :as t]
             [sweet-tooth.todo-example.backend.test.db :as tdb]
             [sweet-tooth.endpoint.test.harness :as eth]
-            [clojure.test :refer :all]))
+            [clojure.test :refer [deftest is use-fixtures]]))
 
 (use-fixtures :each (eth/system-fixture :test))
 
@@ -13,7 +13,6 @@
         resp-data     (-> (eth/req :post "/api/v1/todo" t)
                           (eth/resp-read-transit))]
     (is (eth/contains-entity? resp-data :todo t))))
-
 
 (deftest deletes-todo
   (let [{:keys [t0 tl0]} (td/transact! {:todo [[1 {:spec-gen {:todo/title "GET EGGS"}}]]})]
