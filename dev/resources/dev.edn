@@ -2,6 +2,11 @@
  {:middleware ^:distinct [#ig/ref :sweet-tooth.endpoint.middleware/dev-cors
                           #ig/ref :sweet-tooth.endpoint.middleware/latency]}
 
+ :sweet-tooth.endpoint.datomic/connection
+ {:uri      #duct/env ["DATOMIC_URI" Str :or "datomic:mem://sweet-tooth-todo-example-dev"]
+  :create?  true
+  :migrate? true}
+
  :duct.logger/timbre
  {:appenders ^:replace {:duct.logger.timbre/brief #ig/ref :duct.logger.timbre/brief}}
 

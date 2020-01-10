@@ -79,10 +79,9 @@
                                         :data   {:todo/todo-list (:db/id tl)}
                                         :sync   {:on {:success [[::stff/submit-form-success :$ctx]
                                                                 [:focus-element "#todo-title" 100]]}}})
-             [field :text :todo/title {:placeholder   "New Todo"
-                                       :id            "todo-title"
-                                       :no-label      true
-                                       :validate-with (ui/validate-with v/todo-rules)}]
+             [field :text :todo/title {:placeholder "New Todo"
+                                       :id          "todo-title"
+                                       :no-label    true}]
              [:input {:type "submit"}]
              [ui/form-state-feedback form]])
           (if (seq todos)

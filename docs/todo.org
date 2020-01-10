@@ -62,7 +62,8 @@ if necessary, move them to sweet tooth and document them
 ** DONE uberjar server is not working with todo list URLs
 *** they weren't in the config
 *** how to make this cross as well?
-** TODO "new todo" showing error after submission
+** DONE update to 0.7.1
+** DONE "new todo" showing error after submission
 ** TODO convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
 ** TODO multiple users
