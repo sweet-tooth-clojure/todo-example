@@ -81,7 +81,8 @@
                                                                 [:focus-element "#todo-title" 100]]}}})
              [field :text :todo/title {:placeholder "New Todo"
                                        :id          "todo-title"
-                                       :no-label    true}]
+                                       :no-label    true
+                                       :validate    (ui/validate-with v/todo-rules)}]
              [:input {:type "submit"}]
              [ui/form-state-feedback form]])
           (if (seq todos)

@@ -70,7 +70,6 @@
 ;;---
 (defn validate-with
   [rules]
-  (fn [form-data attr-path _val]
+  (fn [form-data]
     (-> (d/describe form-data rules)
-        (d/map-rollup-descriptions)
-        (get-in attr-path))))
+        (d/map-rollup-descriptions))))
