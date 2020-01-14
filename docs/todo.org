@@ -64,7 +64,7 @@ if necessary, move them to sweet tooth and document them
 *** how to make this cross as well?
 ** DONE update to 0.7.1
 ** DONE "new todo" showing error after submission
-** TODO convert datomic to in-memory so anyone can run it
+** DONE convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
