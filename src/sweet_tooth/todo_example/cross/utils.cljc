@@ -1,6 +1,5 @@
 (ns sweet-tooth.todo-example.cross.utils
   (:require [clojure.string :as str]
-            [clojure.set :as set]
             [clojure.walk :as walk]
             #?(:cljs [goog.object :as go])))
 
@@ -27,10 +26,10 @@
   [e]
   (aget e "target" "value"))
 
-(defn capitalize-words 
+(defn capitalize-words
   "Capitalize every word in a string"
   [s]
-  (->> (str/split (str s) #"\b") 
+  (->> (str/split (str s) #"\b")
        (map str/capitalize)
        (str/join)))
 
@@ -62,7 +61,7 @@
 
 (defn slugify
   [txt]
-  (if txt
+  (when txt
     (->> (-> txt
              str/lower-case
              (str/replace #"-+$" "")
@@ -79,10 +78,6 @@
   [id-str]
   (re-find #"^\d+" id-str))
 
-(defn topic-url
-  [t p]
-  (str "/topic/" (:db/id t) "-" (slugify (:topic/title t))))
-
 ;; bs
 
 (defn deep-merge-with
@@ -93,11 +88,11 @@
   -> {:a {:b {:z 3, :c 3, :d {:z 9, :x 1, :y 2}}, :e 103}, :f 4}"
   [f & maps]
   (apply
-    (fn m [& maps]
-      (if (every? map? maps)
-        (apply merge-with m maps)
-        (apply f maps)))
-    maps))
+   (fn m [& maps]
+     (if (every? map? maps)
+       (apply merge-with m maps)
+       (apply f maps)))
+   maps))
 
 (defn update-vals
   "Takes a map to be updated, x, and a map of

@@ -60,6 +60,11 @@
               (:todo-list/title tl)
               [ui/form-state-feedback form]])])))
 
+(defn submit-btn
+  [form-errors]
+  [:input {:type     "submit"
+           :disabled (not-empty @form-errors)}])
+
 (defn component
   []
   (let [route @(rf/subscribe [::stnf/route])
@@ -74,16 +79,17 @@
          [:div.todo-list
           [todo-list-title tl]
           (stfc/with-form [:todos :create]
-            [:form.new-todo (on-submit {:clear  [:buffer :ui-state]
+            [:form.new-todo (on-submit {:clear  [:buffer :ui-state :input-events]
                                         :expire {:state 3000}
                                         :data   {:todo/todo-list (:db/id tl)}
                                         :sync   {:on {:success [[::stff/submit-form-success :$ctx]
                                                                 [:focus-element "#todo-title" 100]]}}})
-             [field :text :todo/title {:placeholder "New Todo"
-                                       :id          "todo-title"
-                                       :no-label    true
-                                       :validate    (ui/validate-with v/todo-rules)}]
-             [:input {:type "submit"}]
+             [field :text :todo/title {:placeholder    "New Todo"
+                                       :id             "todo-title"
+                                       :no-label       true
+                                       :validate       (ui/validate-with v/todo-rules)
+                                       :show-errors-on #{"submit"}}]
+             [submit-btn form-errors]
              [ui/form-state-feedback form]])
           (if (seq todos)
             [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
