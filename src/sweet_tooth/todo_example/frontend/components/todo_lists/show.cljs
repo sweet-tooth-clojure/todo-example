@@ -6,7 +6,6 @@
             [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.frontend.sync.flow :as stsf]
             [sweet-tooth.todo-example.cross.utils :as u]
-            [sweet-tooth.todo-example.cross.validate :as v]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
 (defn- stop-clicks
@@ -79,15 +78,16 @@
          [:div.todo-list
           [todo-list-title tl]
           (stfc/with-form [:todos :create]
-            [:form.new-todo (on-submit {:clear  [:buffer :ui-state :input-events]
-                                        :expire {:state 3000}
-                                        :data   {:todo/todo-list (:db/id tl)}
-                                        :sync   {:on {:success [[::stff/submit-form-success :$ctx]
-                                                                [:focus-element "#todo-title" 100]]}}})
+            [:form.new-todo
+             (on-submit {:data {:todo/todo-list (:db/id tl)}
+                         :sync {:on {:success [[::stff/submit-form-success
+                                                :$ctx
+                                                {:clear  [:buffer :ui-state :input-events]
+                                                 :expire {:state 3000}}]
+                                               [:focus-element "#todo-title" 100]]}}})
              [field :text :todo/title {:placeholder    "New Todo"
                                        :id             "todo-title"
                                        :no-label       true
-                                       :validate       (ui/validate-with v/todo-rules)
                                        :show-errors-on #{"submit"}}]
              [submit-btn form-errors]
              [ui/form-state-feedback form]])

@@ -12,11 +12,10 @@
         current-todo-list@ (rf/subscribe [:routed-todo-list])]
     [:div.todo-lists
      (stfc/with-form [:todo-lists :create]
-       [:form (on-submit {:clear  [:buffer :ui-state]
-                          :expire {:state 3000}
-                          :sync   {:on {:success [[::stff/submit-form-success :$ctx]
-                                                  [:select-created-todo-list :$ctx]
-                                                  [:focus-element "#todo-list-title" 100]]}}})
+       [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear  [:buffer :ui-state]
+                                                                                   :expire {:state 3000}}]
+                                                [:select-created-todo-list :$ctx]
+                                                [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title
          {:id          "todo-list-title"
           :placeholder "New Todo List"
