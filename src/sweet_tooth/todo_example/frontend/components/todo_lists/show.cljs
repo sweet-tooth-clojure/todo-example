@@ -82,8 +82,7 @@
              (on-submit {:data {:todo/todo-list (:db/id tl)}
                          :sync {:on {:success [[::stff/submit-form-success
                                                 :$ctx
-                                                {:clear  [:buffer :ui-state :input-events]
-                                                 :expire {:state 3000}}]
+                                                {:clear [:buffer :ui-state :input-events]}]
                                                [:focus-element "#todo-title" 100]]}}})
              [field :text :todo/title {:placeholder    "New Todo"
                                        :id             "todo-title"
