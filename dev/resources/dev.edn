@@ -17,4 +17,4 @@
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
 
  :sweet-tooth.endpoint.middleware/dev-cors {}
- :sweet-tooth.endpoint.middleware/latency  {:sleep 1000}}
+ :sweet-tooth.endpoint.middleware/latency  {:sleep 200}}
