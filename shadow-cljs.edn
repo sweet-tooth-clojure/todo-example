@@ -1,5 +1,5 @@
 ;; shadow-cljs configuration
-{:deps   true
+{:deps   {:aliases [:cljs :dev :cljs-dev]}
  :builds {:dev
           {:target           :browser
            :output-dir       "frontend-target/dev/public/js"

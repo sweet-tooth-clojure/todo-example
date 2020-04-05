@@ -32,3 +32,4 @@ VERSION
 .sass-cache
 *-test.png
 .clj-kondo
+deps.edn.local

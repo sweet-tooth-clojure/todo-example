@@ -1,34 +1,17 @@
 (defproject sweet-tooth-todo-example "0.1.0-SNAPSHOT"
   :description "a sweet little todo example"
   :min-lein-version "2.0.0"
-  :dependencies [[org.clojure/clojure "1.10.0"]
-                 [org.clojure/clojurescript "1.10.439"]
-                 [com.taoensso/timbre "4.10.0"]
-                 [ring "1.7.1" :exclusions [org.clojure/tools.namespace]]
-                 [liberator "0.15.3"]
-                 [com.datomic/datomic-free "0.9.5697" :exclusions [com.google.guava/guava]]
-                 [medley "0.7.1"]
-                 [sweet-tooth/describe "0.3.0"]
-                 [sweet-tooth/sweet-tooth-endpoint "0.7.1"]
-                 [bk/ring-gzip "0.3.0"]
-                 [org.clojure/test.check "0.9.0"]
-                 [environ "1.1.0"]
-                 [metosin/reitit-spec "0.3.7"]
 
-                 ;; java 11 deps
-                 [org.yaml/snakeyaml "1.23"]
-                 [org.flatland/ordered "1.5.7"]
+  :plugins [[duct/lein-duct "0.12.1"]
+            [lein-tools-deps "0.4.5"]]
 
-                 ;; duct
-                 [duct/core "0.7.0"]
-                 [duct/module.logging "0.4.0"]
-                 [duct/module.web "0.7.0"]
-                 [integrant "0.7.0"]]
-
-  :plugins [[duct/lein-duct "0.12.0"]]
+  :lein-tools-deps/config {:config-files [:install :user :project]
+                           :aliases      [:backend :dev]}
 
   :resource-paths ["resources" "target/resources"]
-  :middleware     [lein-duct.plugin/middleware]
+  :middleware     [lein-duct.plugin/middleware
+                   lein-tools-deps.plugin/resolve-dependencies-with-deps-edn]
+
   :target-path    "target/%s/"
   :main           ^:skip-aot sweet-tooth.todo-example.backend.core
 
@@ -53,16 +36,12 @@
 
    :local-staging {:target-path    "target/local-staging/"
                    :resource-paths ["dev/resources" "frontend-target/local-staging"]}
+   :staging       {:target-path            "target/staging/"
+                   :resource-paths         ["dev/resources" "frontend-target/staging"]
+                   :lein-tools-deps/config {:aliases ^:replace [:backend]}}
+   :prod          {:target-path            "target/prod/"
+                   :resource-paths         ["frontend-target/prod"]
+                   :lein-tools-deps/config {:aliases ^:replace [:backend]}}
 
-   :staging       {:target-path    "target/staging/"
-                   :resource-paths ["dev/resources" "frontend-target/staging"]}
-
-   :prod          {:target-path    "target/prod/"
-                   :resource-paths ["frontend-target/prod"]}
-
-   :test {:resource-paths ["dev/resources" "frontend-target/test"]
-          :dependencies   [[eftest "0.5.4"]
-                           [kerodon "0.9.0"]
-                           [com.gfredericks/test.chuck "0.2.7"]
-                           [reifyhealth/specmonstah "2.0.0"]
-                           [test2junit "1.4.2"]]}})
+   :test {:resource-paths         ["dev/resources" "frontend-target/test"]
+          :lein-tools-deps/config {:aliases [:test]}}})

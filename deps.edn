@@ -1,22 +1,38 @@
 {:paths ["src"]
  :deps  {org.clojure/clojure              {:mvn/version "1.10.1"}
          org.clojure/clojurescript        {:mvn/version "1.10.520"}
-         re-frame                         {:mvn/version "0.10.6"}
-         reagent                          {:mvn/version "0.9.0-rc3"}
+         com.cognitect/transit-cljs       {:mvn/version "0.8.243"}
+         com.taoensso/timbre              {:mvn/version "4.10.0"}
          integrant                        {:mvn/version "0.8.0-alpha2"}
          funcool/bide                     {:mvn/version "1.6.0"}
-         com.cognitect/transit-cljs       {:mvn/version "0.8.243"}
-         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.7.0"}
-         thheller/shadow-cljs             {:mvn/version "2.8.60"}
-         ;; TODO figure out how to handle dev mode of this
-         sweet-tooth/sweet-tooth-frontend {:mvn/version "0.11.0"}
-         sweet-tooth/describe             {:mvn/version "0.3.0"}}
+         medley                           {:mvn/version "0.7.1"}
+         metosin/reitit-spec              {:mvn/version "0.3.7"}
+         sweet-tooth/describe             {:mvn/version "0.3.0"}
+         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.7.4"}}
 
  :aliases
- {:dev  {:extra-deps {sweet-tooth/sweet-tooth-frontend {:local/root "/Users/daniel/projects/web/sweet-tooth/frontend"}
-                      cider/cider-nrepl                {:mvn/version "0.21.0"}
-                      refactor-nrepl                   {:mvn/version "2.4.0"}
-                      binaryage/devtools               {:mvn/version "0.9.4"}
-                      day8.re-frame/re-frame-10x       {:mvn/version "0.4.5"}}}
-  :test {:extra-deps {sweet-tooth/sweet-tooth-frontend {:mvn/version "0.11.0"}
-                      thheller/shadow-cljs             {:mvn/version "2.8.60"}}}}}
+ {:dev        {:extra-deps {cider/cider-nrepl {:mvn/version "0.21.0"}
+                            refactor-nrepl    {:mvn/version "2.4.0"}}}
+  :test       {:extra-deps {com.gfredericks/test.chuck {:mvn/version "0.2.7"}
+                            eftest                     {:mvn/version "0.5.4"}
+                            kerodon                    {:mvn/version "0.9.0"}
+                            reifyhealth/specmonstah    {:mvn/version "2.0.0"}
+                            test2junit                 {:mvn/version "1.4.2"}}}
+  :backend    {:extra-deps {bk/ring-gzip             {:mvn/version "0.3.0"}
+                            com.datomic/datomic-free {:mvn/version "0.9.5697" :exclusions [com.google.guava/guava]}
+                            duct/core                {:mvn/version "0.7.0"}
+                            duct/module.logging      {:mvn/version "0.4.0"}
+                            duct/module.web          {:mvn/version "0.7.0"}
+                            liberator                {:mvn/version "0.15.3"}
+                            environ                  {:mvn/version "1.1.0"}
+                            org.yaml/snakeyaml       {:mvn/version "1.23"}
+                            org.flatland/ordered     {:mvn/version "1.5.7"}
+                            ring                     {:mvn/version "1.7.1"
+                                                      :exclusions  [org.clojure/tools.namespace]}}}
+  :cljs       {:extra-deps {re-frame                         {:mvn/version "0.10.6"}
+                            reagent                          {:mvn/version "0.9.0-rc3"}
+                            thheller/shadow-cljs             {:mvn/version "2.8.60"}
+                            sweet-tooth/sweet-tooth-frontend {:mvn/version "0.12.1"}}}
+  :cljs-dev   {:extra-deps {binaryage/devtools         {:mvn/version "0.9.4"}
+                            day8.re-frame/re-frame-10x {:mvn/version "0.4.5"}}}
+  :cljs-local {}}}
