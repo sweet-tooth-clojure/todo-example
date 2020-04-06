@@ -46,7 +46,7 @@
     (stfc/with-form path
       [:h2 (if @form-ui-state
              [:div {:on-click (stop-clicks)}
-              [:form {:on-submit (u/prevent-default #(rf/dispatch [:submit-form path tl]))}
+              [:form {:on-submit (u/prevent-default #(rf/dispatch [:close-and-submit-form path tl]))}
                [(ui/focus-child [input :text :todo-list/title])]]
               [:span {:on-click #(rf/dispatch [:close-form path tl])}
                [:i.fas.fa-window-close]]
