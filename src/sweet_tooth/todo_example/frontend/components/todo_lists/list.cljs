@@ -8,8 +8,8 @@
 
 (defn component
   []
-  (let [todo-lists         @(rf/subscribe [:todo-lists])
-        current-todo-list@ (rf/subscribe [:routed-todo-list])]
+  (let [todo-lists        @(rf/subscribe [:todo-lists])
+        current-todo-list @(rf/subscribe [:routed-todo-list])]
     [:div.todo-lists
      (stfc/with-form [:todo-lists :create]
        [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
