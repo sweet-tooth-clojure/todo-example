@@ -1,6 +1,5 @@
 {:duct.handler/root
- {:middleware ^:distinct [#ig/ref :sweet-tooth.endpoint.middleware/dev-cors
-                          #ig/ref :sweet-tooth.endpoint.middleware/latency]}
+ {:middleware ^:distinct [#ig/ref :sweet-tooth.endpoint.middleware/latency]}
 
  :sweet-tooth.endpoint.datomic/connection
  {:uri      #duct/env ["DATOMIC_URI" Str :or "datomic:mem://sweet-tooth-todo-example-dev"]
@@ -16,5 +15,4 @@
  :duct.server.http/jetty
  {:port #duct/env ["HTTP_SERVER_PORT" Int :or 3010]}
 
- :sweet-tooth.endpoint.middleware/dev-cors {}
  :sweet-tooth.endpoint.middleware/latency  {:sleep 200}}

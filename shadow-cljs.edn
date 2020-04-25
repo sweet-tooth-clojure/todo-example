@@ -1,5 +1,7 @@
 ;; shadow-cljs configuration
-{:deps   {:aliases [:cljs :dev :cljs-dev]}
+{:deps     {:aliases [:cljs :dev :cljs-dev]}
+ :dev-http {3000 {:roots     ["resources/public" "frontend-target/dev/public"]
+                  :proxy-url "http://localhost:3010"}}
  :builds {:dev
           {:target           :browser
            :output-dir       "frontend-target/dev/public/js"
@@ -11,9 +13,7 @@
 
            ;; start a development http server on http://localhost:3000
            :devtools
-           {:http-root   "frontend-target/dev/public"
-            :http-port   3000
-            :preloads    [day8.re-frame-10x.preload]
+           {:preloads    [day8.re-frame-10x.preload]
             :before-load sweet-tooth.todo-example.frontend.core/stop
             :after-load  sweet-tooth.todo-example.frontend.core/-main}}
 

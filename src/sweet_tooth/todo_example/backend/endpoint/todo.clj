@@ -4,12 +4,14 @@
             [sweet-tooth.todo-example.cross.validate :as v]))
 
 (def decisions
-  {:create {:malformed?     (el/validate-describe v/todo-rules)
-            :post!          ed/create->:result
-            :handle-created ed/created-pull}
+  {:coll
+   {:post {:malformed?     (el/validate-describe v/todo-rules)
+           :post!          ed/create->:result
+           :handle-created ed/created-pull}}
 
-   :update {:put!      ed/update->:result
-            :handle-ok ed/updated-pull}
+   :ent
+   {:update {:put!      ed/update->:result
+             :handle-ok ed/updated-pull}
 
-   :delete {:delete!   ed/delete->:result
-            :handle-ok []}})
+    :delete {:delete!   ed/delete->:result
+             :handle-ok []}}})

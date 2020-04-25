@@ -15,7 +15,6 @@
             [sweet-tooth.frontend.js-event-handlers.flow :as stjehf]
 
             [sweet-tooth.todo-example.frontend.components.app :as app]
-            [sweet-tooth.todo-example.frontend.environment :as env]
             [sweet-tooth.todo-example.frontend.handlers]
             [sweet-tooth.todo-example.frontend.routes :as froutes]
             [sweet-tooth.todo-example.frontend.subs]
@@ -44,11 +43,7 @@
                        ::stfr/sync-router       {:use :reitit
                                                  :routes (ig/ref ::eroutes/routes)}
                        ::stjehf/handlers        {}
-                       ::eroutes/routes         ""})
-    ;; for integration testing
-
-    (= env/environment :dev)         (assoc ::eroutes/routes "http://localhost:3010")
-    (= env/environment :integration) (assoc ::eroutes/routes "http://localhost:4010")))
+                       ::eroutes/routes         ""})))
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
