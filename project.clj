@@ -6,7 +6,7 @@
             [lein-tools-deps "0.4.5"]]
 
   :lein-tools-deps/config {:config-files [:install :user :project]
-                           :aliases      [:backend :dev]}
+                           :aliases      [:backend :dev :test]}
 
   :resource-paths ["resources" "target/resources"]
   :middleware     [lein-duct.plugin/middleware

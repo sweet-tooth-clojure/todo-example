@@ -1,10 +1,10 @@
 (ns sweet-tooth.todo-example.backend.test.data
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as gen]
-            [com.flyingmachine.datomic-junk :as dj]
             [datomic.api :as d]
             [reifyhealth.specmonstah.core :as rs]
             [reifyhealth.specmonstah.spec-gen :as rsg]
+            [sweet-tooth.todo-example.backend.duct] ;; for side effects
             [sweet-tooth.todo-example.backend.test.db :as tdb]))
 
 (s/def :db/id (s/with-gen

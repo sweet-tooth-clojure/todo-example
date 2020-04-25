@@ -14,9 +14,9 @@
 
    :ent
    {;; TODO break this up, use exists? decision
-    :show {:handle-ok (fn [ctx]
-                        (when-let [todo-list (ed/pull-ctx-id ctx)]
-                          [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
+    :get {:handle-ok (fn [ctx]
+                       (when-let [todo-list (ed/pull-ctx-id ctx)]
+                         [todo-list (t/todos-by-todo-list (ed/db ctx) (:db/id todo-list))]))}
 
 
     :put {:put!      ed/update->:result

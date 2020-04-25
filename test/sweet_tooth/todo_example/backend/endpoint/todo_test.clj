@@ -11,8 +11,8 @@
   (let [{:keys [tl0]} (td/transact! {:todo-list [[1 {:spec-gen {:todo-list/title "GET EGGS"}}]]})
         t             {:todo/title "yeah eggs" :todo/todo-list tl0}
         resp-data     (-> (eth/req :post "/api/v1/todo" t)
-                          (eth/resp-read-transit))]
-    (is (eth/contains-entity? resp-data :todo t))))
+                          (eth/read-body))]
+    (is (eth/contains-entity? resp-data :todo (update t :todo/todo-list (fn [id] {:db/id id}))))))
 
 (deftest deletes-todo
   (let [{:keys [t0 tl0]} (td/transact! {:todo [[1 {:spec-gen {:todo/title "GET EGGS"}}]]})]
