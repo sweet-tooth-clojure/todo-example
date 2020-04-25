@@ -10,8 +10,8 @@
            :handle-created ed/created-pull}}
 
    :ent
-   {:update {:put!      ed/update->:result
-             :handle-ok ed/updated-pull}
+   {:put {:put!      ed/update->:result
+          :handle-ok ed/updated-pull}
 
     :delete {:delete!   ed/delete->:result
              :handle-ok []}}})

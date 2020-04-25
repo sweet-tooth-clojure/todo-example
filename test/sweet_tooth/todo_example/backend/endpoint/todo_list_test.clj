@@ -1,7 +1,9 @@
 (ns sweet-tooth.todo-example.backend.endpoint.todo-list-test
-  (:require [sweet-tooth.todo-example.backend.test.data :as td]
+  (:require [clojure.test :refer :all]
+            [datomic.api :as d]
             [sweet-tooth.endpoint.test.harness :as eth]
-            [clojure.test :refer :all]))
+            [sweet-tooth.todo-example.backend.test.data :as td]
+            [sweet-tooth.todo-example.backend.test.db :as tdb]))
 
 (use-fixtures :each (eth/system-fixture :test))
 
@@ -21,6 +23,14 @@
     (is (eth/contains-entity? resp-data :todo {:db/id t0}))
     (is (eth/contains-entity? resp-data :todo {:db/id t1}))
     (is (eth/contains-entity? resp-data :todo {:db/id t2}))))
+
+(deftest updates-todo-list
+  (let [{:keys [tl0]} (td/transact! {:todo-list [[1 {:spec-gen {:todo-list/title "GET EGGS"}}]]})]
+    (is (eth/contains-entity? (-> (eth/req :put (str "/api/v1/todo-list/" tl0) {:todo-list/title "GET MILK"})
+                                  (eth/read-body))
+                              :todo-list
+                              {:db/id tl0 :todo-list/title "GET MILK"}))
+    (is (= "GET MILK" (:todo-list/title (d/entity (tdb/db) tl0))))))
 
 (deftest creates-todo-list
   (let [tl            {:todo-list/title "GET EGGS"}

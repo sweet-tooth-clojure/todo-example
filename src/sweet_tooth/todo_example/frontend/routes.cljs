@@ -1,6 +1,7 @@
 (ns sweet-tooth.todo-example.frontend.routes
   (:require [sweet-tooth.frontend.sync.flow :as stsf]
             [sweet-tooth.frontend.form.flow :as stff]
+            [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.todo-example.cross.validate :as v]
             [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
             [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
@@ -20,10 +21,9 @@
 
    ["/todo-list/{db/id}"
     {:name       :show-todo-list
-     :lifecycle  {:param-change (fn [_ {:keys [params]}]
-                                  [[::stff/initialize-form [:todos :create] {:validate (ui/validate-with v/todo-rules)}]
-                                   [::stsf/sync-once [:get :todo-lists]]
-                                   [::stsf/sync [:get :todo-list {:params params}]]])}
+     :lifecycle  {:param-change [[::stff/initialize-form [:todos :create] {:validate (ui/validate-with v/todo-rules)}]
+                                 [::stsf/sync-once [:get :todo-lists]]
+                                 [::stnf/sync-with-route-params [:get :todo-list]]]}
      :components {:side [tll/component]
                   :main [tls/component]}
      :coercion   rs/coercion
