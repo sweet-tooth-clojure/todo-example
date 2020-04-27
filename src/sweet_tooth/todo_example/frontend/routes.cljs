@@ -23,7 +23,7 @@
     {:name       :show-todo-list
      :lifecycle  {:param-change [[::stff/initialize-form [:todos :create] {:validate (ui/validate-with v/todo-rules)}]
                                  [::stsf/sync-once [:get :todo-lists]]
-                                 [::stnf/sync-with-route-params [:get :todo-list]]]}
+                                 [::stnf/get-with-route-params :todo-list]]}
      :components {:side [tll/component]
                   :main [tls/component]}
      :coercion   rs/coercion
