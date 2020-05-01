@@ -63,6 +63,7 @@ body {
   padding: 1rem;
   border-radius: .25rem;
   border-top: 1rem solid $green;
+  border-bottom: 1rem solid $green;
 }
 
 .main {  
@@ -76,7 +77,7 @@ body {
 
 .todo, h2 {
   cursor: pointer;
-  border-radius: .25rem;
+  //border-radius: .25rem;
   &:hover {
     background: #ffd8de;
   }
@@ -88,6 +89,18 @@ body {
   i {
     margin-left: .5rem;
   }
+}
+
+.todo {
+  border-bottom: 1px solid #eee;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.todo-list h2 {
+  margin: 0 -.5rem 1rem;
+  padding: 0 .5rem;
 }
 
 .todo-lists {
@@ -103,7 +116,7 @@ body {
       padding: .5rem;
       background: rgba(255,255,255,0.5);
       display: block;
-      border-radius:.25rem;
+      //border-radius:.25rem;
       &:hover {
         background: white;
       }
