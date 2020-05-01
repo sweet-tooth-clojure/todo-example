@@ -1,6 +1,7 @@
 $green: #cbd966;
 $hot: #e92444;
 $hot: #e95d74;
+$hot-light: #ffd8de;
 
 html {
   box-sizing: border-box;
@@ -67,7 +68,7 @@ body {
 }
 
 .main {  
-  background: white;
+  background: $hot-light;
   padding: 1rem;
   border-radius: .25rem;
   border-top: 1rem solid $hot;
@@ -79,7 +80,7 @@ body {
   cursor: pointer;
   //border-radius: .25rem;
   &:hover {
-    background: #ffd8de;
+    background: white;
   }
 
   form {
