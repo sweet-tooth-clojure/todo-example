@@ -66,7 +66,9 @@ if necessary, move them to sweet tooth and document them
 ** DONE "new todo" showing error after submission
 ** DONE convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
+** TODO un-tie the two create forms
 ** TODO fix deletion
+** TODO recreate-db doesn't work
 ** TODO home page experience?
 - show all todo lists on home page?
 - big ol' new todo list on empty page?

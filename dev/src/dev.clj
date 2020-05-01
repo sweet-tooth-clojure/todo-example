@@ -36,4 +36,5 @@
 
 (defn recreate-db
   []
-  ((::dt/recreate system)))
+  ((::dt/recreate system))
+  (reset))
