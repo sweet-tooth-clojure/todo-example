@@ -66,6 +66,10 @@ if necessary, move them to sweet tooth and document them
 ** DONE "new todo" showing error after submission
 ** DONE convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
+** TODO fix deletion
+** TODO home page experience?
+- show all todo lists on home page?
+- big ol' new todo list on empty page?
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
 ** TODO try client-side validation

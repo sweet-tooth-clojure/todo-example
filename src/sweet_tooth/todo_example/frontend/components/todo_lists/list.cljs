@@ -17,14 +17,14 @@
                                                 [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title
          {:id          "todo-list-title"
-          :placeholder "New Todo List"
+          :placeholder "new todo list title"
           :no-label    true}]
         [:input {:type "submit"}]
         [ui/form-state-feedback form]])
 
      [ui/loadable-component
       [::stsf/sync-state [:get :todo-lists]]
-      "no todo lists"
+      [:em "no todo lists"]
       [:div
        [:h3 (count todo-lists) " Todo lists"]
        (->> todo-lists

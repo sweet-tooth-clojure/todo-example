@@ -3,6 +3,7 @@
             [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.todo-example.cross.validate :as v]
+            [sweet-tooth.todo-example.frontend.components.home :as h]
             [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
             [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]
@@ -16,7 +17,7 @@
     {:name       :home
      :lifecycle  {:param-change [::stsf/sync-once [:get :todo-lists]]}
      :components {:side [tll/component]
-                  :main [tls/component]}
+                  :main [h/component]}
      :title      "Todo List"}]
 
    ["/todo-list/{db/id}"

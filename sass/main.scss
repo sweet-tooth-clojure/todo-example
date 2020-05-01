@@ -23,6 +23,10 @@ body {
   background:url(/images/watercolor.png);
 }
 
+h1, h2 {
+  margin: 0 0 1rem;
+}
+
 #app {
   height: calc(100% - 7rem);
 }
@@ -126,6 +130,38 @@ body {
 
 }
 
+.home {
+  max-width: 80%;
+  margin: 2rem auto;
+}
+
+.todo-list-summary {
+  a {
+    text-decoration: none;
+    background: rgba(255,255,255,10.9);
+    color: $hot;
+    padding: 1rem;
+    display: block;
+    border: .25rem solid $hot;
+    margin: 1rem 0;
+    font-weight: bold;
+    &:hover {
+      background: $hot;
+      color: white;
+    }
+  }
+}
+
+.new-todo-list {
+  form {
+    margin-top: 1rem;
+    border: 1rem solid $hot;
+    padding: 1rem;
+    background: white;
+    border-radius: .5rem;
+  }
+}
+
 .new-todo {
   margin-bottom: 1rem;
 }
@@ -140,10 +176,6 @@ body {
   padding: .5rem;
   background: rgba(255,255,255,0.5);
   margin-bottom: 1px;
-}
-
-h2 {
-  margin: 0 0 1rem;
 }
 
 input[type=text], input[type=email], input[type=password],

@@ -84,7 +84,7 @@
                                                 :$ctx
                                                 {:clear [:buffer :ui-state :input-events]}]
                                                [:focus-element "#todo-title" 100]]}}})
-             [field :text :todo/title {:placeholder    "New Todo"
+             [field :text :todo/title {:placeholder    "new todo"
                                        :id             "todo-title"
                                        :no-label       true
                                        :show-errors-on #{"submit"}}]
