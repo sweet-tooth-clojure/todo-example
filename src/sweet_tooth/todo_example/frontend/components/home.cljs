@@ -23,7 +23,7 @@
             {:id          "todo-list-title"
              :placeholder "new todo list title"
              :no-label    true}]
-           [:input {:type "submit"}]
+           [:input {:type "submit" :value "create todo list"}]
            [ui/form-state-feedback form]])]
        [:div.todo-list-summary
         [:h1 "Welcome!"]

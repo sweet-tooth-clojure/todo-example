@@ -62,6 +62,7 @@
 (defn submit-btn
   [form-errors]
   [:input {:type     "submit"
+           :value    "create todo"
            :disabled (not-empty @form-errors)}])
 
 (defn component
