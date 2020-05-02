@@ -92,6 +92,40 @@ In even these two simple steps there's a lot going on, including:
 
 Let's dig in!
 
+### App Initialization
+
+When you open the home page, the app renders the correct components.
+
+CLJS apps need to get initialized somehow, even if that's simply a
+matter of rendering a component to the DOM.
+
+If you look in the `sweet-tooth.todo-example.frontend.core`
+namespace, you'll see this:
+
+```clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+```
+
+
+
 ### Frontend Route Handling
 
 

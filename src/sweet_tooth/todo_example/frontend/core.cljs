@@ -34,20 +34,19 @@
   reloaded changes"
   []
   (mm/meta-merge stconfig/default-config
-                 {::stfr/frontend-router   {:use :reitit
-                                            :routes froutes/frontend-routes}
-                  ::stfr/sync-router       {:use :reitit
-                                            :routes (ig/ref ::eroutes/routes)}
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
 
                   ;; Treat handler registration as an external service,
                   ;; interact with it via re-frame effects
-                  ::stjehf/handlers        {}
-                  ::eroutes/routes         ""}))
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
   (rf/dispatch-sync [::stnf/dispatch-current])
-  #_(rf/dispatch-sync [:init])
   (r/render [app/app] (stcu/el-by-id "app")))
 
 (defonce initial-load (delay (-main)))

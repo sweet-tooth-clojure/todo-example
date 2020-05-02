@@ -1,7 +1,14 @@
 $green: #cbd966;
+$green: #93efec;
+
 $hot: #e92444;
 $hot: #e95d74;
+// $hot: #facf3b;
+
 $hot-light: #ffd8de;
+$hot-light: #fff1c1;
+
+$body: #3f464c;
 
 html {
   box-sizing: border-box;
@@ -96,10 +103,24 @@ h1, h2 {
   }
 }
 
+
+.todos {
+  list-style: none;
+  margin: 0 0;
+  padding: 0;
+}
+
 .todo {
-  border-bottom: 1px solid #eee;
+  padding: .5rem;
+  background: white;
+  margin-bottom: 1px;
+
   &:last-child {
     border-bottom: none;
+  }
+  &:hover {
+    background: $hot;
+    color: white;
   }
 }
 
@@ -138,7 +159,7 @@ h1, h2 {
 .todo-list-summary {
   a {
     text-decoration: none;
-    background: rgba(255,255,255,10.9);
+    background: white;
     color: $hot;
     padding: 1rem;
     display: block;
@@ -164,18 +185,6 @@ h1, h2 {
 
 .new-todo {
   margin-bottom: 1rem;
-}
-
-.todos {
-  list-style: none;
-  margin: 0 0;
-  padding: 0;
-}
-
-.todo {
-  padding: .5rem;
-  background: rgba(255,255,255,0.5);
-  margin-bottom: 1px;
 }
 
 input[type=text], input[type=email], input[type=password],
