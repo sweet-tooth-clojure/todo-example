@@ -93,4 +93,4 @@
           (if (seq todos)
             [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
                                    todos))]
-            "No todos yet")])])))
+            [:em "No todos yet"])])])))
