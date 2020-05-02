@@ -72,16 +72,27 @@ something like this:
 
 ![01 running](docs/walkthrough/01-running.png)
 
-Now, create a todo list by entering its title and hitting enter
+Now, create a todo list by entering its title and hitting enter or
 clicking the "create todo list" button. You should see a little
 activity indicator appear for a split second, then you should get
 redirected to your newly-created todo list. The URL should have
 changed to something like
 `http://localhost:3000/todo-list/17592186045431`.
 
+In even these two simple steps there's a lot going on, including:
 
+* App initialization
+* Route handling for `http://localhost:3000/`
+* Managing the input for the todo list title
+* Submitting the form
+* Displaying an activity indicator during
+* API request handling
+* Frontend response handling
+* Navigating to the new todo list
 
-## Guided Tour
+Let's dig in!
+
+### Frontend Route Handling
 
 
 
