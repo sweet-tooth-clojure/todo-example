@@ -150,13 +150,20 @@ overview, which I'll explain in detail in the sections that follow:
 
 1. Integrant initializes system components
 2. One component is a _router_ that associates URL patterns with
+
    * What components to display
    * Lifecycle events that should get dispatched on entering or
      exiting a route
+     
+   (I haven't shown the router code that ties routes to components and
+   lifecycle events, but I'll introduce you to it later.)
 3. Another component is a _nav handler_ that reacts to nav events by
    looking up the corresponding _route_, dispatching its lifecycle
    events, and setting it as the current route in the appdb
-4. The `::stnf/routed-component` subscription pulls components for the
+4. The `[::stnf/dispatch-current]` re-frame event causes the nav
+   handler to handle the current URL, dispatching lifecycle events and
+   setting the current route
+5. The `::stnf/routed-component` subscription pulls components for the
    current route out of the app db, and those components get rendered
 
 Now let's go through all this in detail.
