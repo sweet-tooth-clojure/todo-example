@@ -82,16 +82,84 @@ changed to something like
 
 In even these two simple steps there's a lot going on, including:
 
-* App initialization
-* Route handling for `http://localhost:3000/`
-* Managing the input for the todo list title
-* Submitting the form
-* Displaying an activity indicator during
+* Initial rendering
+  * App initialization
+  * Route handling for `http://localhost:3000/`
+* Form handling
+  * Managing the input for the todo list title
+  * Submitting the form
+  * Displaying an activity indicator
 * API request handling
 * Frontend response handling
 * Navigating to the new todo list
 
 Let's dig in!
+
+### Initial Rendering
+
+What's involved in displaying the initial form and sidebar? If you
+look in the `sweet-tooth.todo-example.frontend.core` namespace, you'll
+see:
+
+```clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+```
+
+Most of this will be unfamiliar, but you look at the very last line
+you'll see some code you might recognize:
+
+```clojure
+(r/render [app/app] (stcu/el-by-id "app"))
+```
+
+We're rendering the `app/app` component to the `<div id="app"></div>`
+DOM element. Here's what that looks like:
+
+```clojure
+(defn app
+  []
+  [:div.app
+   [:div.head
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A Todo List!"]]]
+   [:div.container.grid
+    [:div.side @(rf/subscribe [::stnf/routed-component :side])]
+    [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])
+```
+
+Hmm. There's still nothing here that looks like the forms we see in
+the sidebar and main area. What's going on? Here's the high level
+overview, which I'll explain in detail in the sections that follow:
+
+1. Integrant initializes system components
+2. One component is a _router_ that associates URL patterns with
+   * What components to display
+   * Lifecycle events that should get dispatched on entering or
+     exiting a route
+3. Another component is a _nav handler_ that reacts to nav events by
+   looking up the corresponding _route_, dispatching its lifecycle
+   events, and setting it as the current route in the appdb
+4. The `::stnf/routed-component` subscription pulls components for the
+   current route out of the app db, and those components get rendered
+
+Now let's go through all this in detail.
 
 ### App Initialization
 
@@ -122,7 +190,7 @@ namespace, you'll see this:
   "This is a function instead of a static value so that it will pick up
   reloaded changes"
   []
-  (mm/meta-merge stconfig/default-config ;; <2>
+  (mm/meta-merge stconfig/default-config
                  {::stfr/frontend-router {:use    :reitit
                                           :routes froutes/frontend-routes}
                   ::stfr/sync-router     {:use    :reitit
@@ -133,7 +201,6 @@ namespace, you'll see this:
                   ::stjehf/handlers {}
                   ::eroutes/routes  ""}))
 
-;; <1>
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
   (rf/dispatch-sync [::stnf/dispatch-current])
@@ -141,10 +208,10 @@ namespace, you'll see this:
 ```
 
 As is tradition for Lispers, let's start at the bottom and work our
-way up. In the `-main` function at `<1>`, you can see we're
-dispatching two events and then rendering a component. Let's walk
-through the mechanics of what's going on, and then we'll talk about
-why it works the way it does.
+way up. In the `-main` function, you can see we're dispatching two
+events and then rendering a component. Let's walk through the
+mechanics of what's going on, and then we'll talk about why it works
+the way it does.
 
 The first event is:
 
@@ -153,18 +220,74 @@ The first event is:
 ```
 
 `(system-config)` returns an Integrant config, a map describing a
-system where each key corresponds to the name of a component and each
-value is that component's configuration.
+system where each key corresponds to the name of a _system component_
+(as opposed to a React compononent) and each value is that component's
+configuration. Examples of system components include nav handlers that
+react to History events and web worker managers.
 
-Sweet Tooth comes with a bunch o' components that are meant to make
-your life easier, and the default config for those components lives at
-`stconfig/default-config`. In the `system-config` function we merge
-the default Sweet Tooth config with our app's particular config. We
-use [`meta-merge`](https://github.com/weavejester/meta-merge) because
-of its support for deep merging and because of how it gives you some
+Sweet Tooth comes with a bunch o' system components that are meant to
+make your life easier, and the default config for those components
+lives at `stconfig/default-config`. In the `system-config` function we
+merge the default Sweet Tooth config with our app's particular
+config. We use
+[`meta-merge`](https://github.com/weavejester/meta-merge) because of
+its support for deep merging and because of how it gives you some
 control over how the two values get merged.
 
-One of the components that gets initialized is the _navigation
+This system config is the payload for the `::stcf/init-system`
+event. This event [results in integrant getting
+called](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/core/flow.cljc#L123)
+to _initialize_ the system:
+
+```clojure
+(rf/reg-event-fx ::init-system
+  (fn [_ [_ config]]
+    {::init-system config}))
+
+(rf/reg-fx ::init-system
+  (fn [config]
+    (reset! rfdb/app-db {:sweet-tooth/system (-> config
+                                                 ig/prep
+                                                 ig/init)})))
+```
+
+Integrant initializes an app by initializing individual components in
+dependency order; the nav handler component depends on a router
+component, so the router gets initialized before the nav handler.
+
+Why do we use Integrant to initialize our app? Two reasons:
+
+1. Sometimes we want to render different React components at different
+   stages of the system's readiness. For example, you might want to
+   show a loading indicator while the app sets up whatever state is
+   necessary for it to be used, and then render the app proper once
+   the system is ready. Integrant makes it a lot easier to determine
+   when the system is ready.
+2. Integrant has a very simple model for handling both initializing
+   _and_ halting a system. This is very useful for local development
+   with livereload when you have components that modify global state,
+   for example by attaching event listeners to the window. Livereload
+   can call `(ig/halt!)` on the system, giving each component to clean
+   up after itself (remove its listeners) before code gets reloaded.
+
+So that explains Integrant and how it fits into the app initialization
+process. Let's back up and look at what else we need examine:
+
+```clojure
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+```
+
+We still need to describe `(rf/dispatch-sync
+[::stnf/dispatch-current])` and `(r/render [app/app] (stcu/el-by-id
+"app"))`. To do that, we'll take a closer look at Sweet Tooth's _nav
+handler_ component.
+
+### The nav handler component
+
+One of the components that Integrnat initializes is the _nav
 handler_. You can see its default config in the
 [`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs)
 namespace:
@@ -176,8 +299,7 @@ namespace:
                  :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
 ```
 
-When this component is initialized, it [uses an adapted version of the
-accountant
+On initialization, it [uses an adapted version of the accountant
 library](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26)
 to register javascript event handlers for nav events. These
 _javascript event_ handlers will dispatch _re-frame events_; Sweet
@@ -189,15 +311,6 @@ evaluated when the nav component is initialized:
 ```clojure
 (js/listen js/NavEvent #(rf/dispatch [::stnf/dispatch-route]))
 ```
-
-In the next section I'll explain what the `::stnf/dispatch-route`
-event actually does, but for now let's recap what we've learned so far
-about the initialization process:
-
-* `(rf/dispatch-sync [::stcf/init-system (system-config)])` fires off
-  an event that results in an Integrant system being initialized
-* The Integrant system 
-
 
 `::stnf/dispatch-route` is one of the gnarlier bits of Sweet Tooth,
 and we don't need to go into all the details of how it works.
