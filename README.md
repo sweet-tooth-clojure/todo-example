@@ -164,10 +164,10 @@ use [`meta-merge`](https://github.com/weavejester/meta-merge) because
 of its support for deep merging and because of how it gives you some
 control over how the two values get merged.
 
-To understand our app, we'll need to understand some of Sweet Tooth's
-components, starting with the _navigation handler_. You can see its
-default config in the
-[`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs) namespace:
+One of the components that gets initialized is the _navigation
+handler_. You can see its default config in the
+[`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs)
+namespace:
 
 ```clojure
 {::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
@@ -190,49 +190,30 @@ evaluated when the nav component is initialized:
 (js/listen js/NavEvent #(rf/dispatch [::stnf/dispatch-route]))
 ```
 
-`::stnf/dispatch-route` is one of the gnarlier bits of Sweet Tooth,
-but ultimately what it does is 1) dispatch route lifecycle events and
-2) update the currently active route in the re-frame app db.
+In the next section I'll explain what the `::stnf/dispatch-route`
+event actually does, but for now let's recap what we've learned so far
+about the initialization process:
 
-- the route includes components
-- the components are subscribed and dereferenced
+* `(rf/dispatch-sync [::stcf/init-system (system-config)])` fires off
+  an event that results in an Integrant system being initialized
+* The Integrant system 
+
+
+`::stnf/dispatch-route` is one of the gnarlier bits of Sweet Tooth,
+and we don't need to go into all the details of how it works.
+Ultimately what it does is:
+
+1. dispatch _route lifecycle_ events
+2. update the currently active route in the re-frame app db.
+
+
 
 ---
 #### Detour: Accountant, Integrant, re-frame
 
 ---
 
-
-`::stnf/handler` is the name of the component, and the corresponding
-map is the component's configuration.
-
-and the map is its
-configuration. `:dispatch-router-handler` lets you specify what 
-
-
-* uses a router
-* calls lifecycles
-
-
-So that's a slice of the system configuration. The
-`::stcf/init-system` event results in the following event getting
-called:
-
-That results in the following effect handler (from
-`sweet-tooth.frontend.core.flow`) getting called:
-
-```clojure
-(rf/reg-fx ::init-system
-  (fn [config]
-    (reset! rfdb/app-db {:sweet-tooth/system (-> config
-                                                 ig/prep
-                                                 ig/init)})))
-```
-
-
-
-### Frontend Route Handling
-
+### Route Handling
 
 
 ### Frontend
