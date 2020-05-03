@@ -1,0 +1,255 @@
+html {
+  box-sizing: border-box;
+}
+
+html, #app {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  position: relative;
+  color: #3f464c;
+  margin: 0;
+  padding-top: 0.1px;
+  box-sizing: border-box;
+  font-family: Source Sans Pro;
+  background: url(/images/watercolor.png);
+}
+
+h1, h2 {
+  margin: 0 0 1rem;
+}
+
+#app {
+  height: calc(100% - 7rem);
+}
+
+.app {
+  height: 100%;
+  margin: 0 auto;
+}
+
+.head {
+  background: #e95d74;
+  padding: 1em 0;
+  margin: 0 0 1.5em;
+}
+.head a {
+  letter-spacing: 0.1rem;
+  color: white;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 2rem;
+  font-family: Raleway;
+}
+
+.container {
+  max-width: 60em;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.container.grid {
+  display: grid;
+  grid-template-columns: 1.25fr 3fr;
+  grid-column-gap: 1.5rem;
+  column-gap: 1.5rem;
+}
+
+.side {
+  background: #30c8d9;
+  padding: 1.25rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid #93efec;
+  border-bottom: 1rem solid #93efec;
+}
+
+.main {
+  background: #fff1c1;
+  padding: 1.25rem;
+  border-radius: 0.25rem;
+  border-top: 1rem solid #e95d74;
+  border-bottom: 1rem solid #e95d74;
+}
+
+.todo, h2 {
+  cursor: pointer;
+}
+.todo:hover, h2:hover {
+  background: white;
+}
+.todo form, h2 form {
+  display: inline-block;
+  width: calc(100% - 4em);
+}
+.todo i, h2 i {
+  margin-left: 0.5rem;
+}
+
+.todos {
+  list-style: none;
+  margin: 0 0;
+  padding: 0;
+}
+
+.todo {
+  padding: 0.5rem;
+  background: white;
+  margin-bottom: 1px;
+}
+.todo:last-child {
+  border-bottom: none;
+}
+.todo:hover {
+  background: #e95d74;
+  color: white;
+}
+
+.todo-list h2 {
+  margin: 0 -0.5rem 1rem;
+  padding: 0 0.5rem;
+}
+
+.todo-lists form {
+  margin-bottom: 1rem;
+}
+.todo-lists .todo-list {
+  margin-bottom: 1px;
+}
+.todo-lists .todo-list a {
+  color: #155961;
+  text-decoration: none;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  display: block;
+}
+.todo-lists .todo-list a:hover {
+  background: white;
+}
+
+.home {
+  max-width: 90%;
+  margin: 2rem auto;
+}
+
+.todo-list-summary a {
+  text-decoration: none;
+  background: white;
+  color: #e95d74;
+  padding: 1rem;
+  display: block;
+  border: 0.25rem solid #e95d74;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+.todo-list-summary a:hover {
+  background: #e95d74;
+  color: white;
+}
+
+.new-todo-list form {
+  margin-top: 1rem;
+  border: 1rem solid #e95d74;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.5rem;
+}
+
+.new-todo {
+  margin-bottom: 1rem;
+}
+
+input[type=text], input[type=email], input[type=password],
+input[type=search], input[type=number], textarea {
+  font-size: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 0.3em;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+  width: 100%;
+}
+
+input[type=submit], a.submit, button {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0 0.75em;
+  line-height: 2;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+  box-shadow: 0 1px 1px 0px rgba(0, 0, 0, 0.4);
+}
+input[type=submit]:active, a.submit:active, button:active {
+  outline: none;
+}
+input[type=submit]:focus, a.submit:focus, button:focus {
+  outline: none;
+}
+input[type=submit]:focus, a.submit:focus, button:focus {
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+input[type=submit] + .activity-indicator {
+  margin-left: 0.5rem;
+}
+
+.todo-list a.active {
+  background: white;
+}
+
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 125ms ease-in;
+}
+
+.todo {
+  position: relative;
+}
+
+.todo .activity-indicator {
+  float: right;
+}
+
+.todo .success-message, h2 .success-message {
+  display: none;
+}
+
+.error input {
+  border: 5px solid #fffe93;
+}
+
+.error-messages {
+  margin: 0 0 1rem;
+  padding-left: 0;
+  list-style: none;
+  color: #fffe93;
+}
+
+.main .error input {
+  border-color: #b55478;
+}
+.main .error-messages {
+  color: #b55478;
+}
+
+/*# sourceMappingURL=main.css.map */
