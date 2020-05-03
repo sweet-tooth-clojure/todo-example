@@ -158,10 +158,11 @@ value is that component's configuration.
 
 Sweet Tooth comes with a bunch o' components that are meant to make
 your life easier, and the default config for those components lives at
-`stconfig/default-config`. We merge that with our app's particular
-config using [`meta-merge`](https://github.com/weavejester/meta-merge)
-is because of its support for deep merging and because of how it gives
-you some control over how the two values get merged.
+`stconfig/default-config`. In the `system-config` function we merge
+the default Sweet Tooth config with our app's particular config. We
+use [`meta-merge`](https://github.com/weavejester/meta-merge) because
+of its support for deep merging and because of how it gives you some
+control over how the two values get merged.
 
 To understand our app, we'll need to understand some of Sweet Tooth's
 components, starting with the _navigation handler_. You can see its
@@ -180,15 +181,21 @@ accountant
 library](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26)
 to register javascript event handlers for nav events. These
 _javascript event_ handlers will dispatch _re-frame events_; Sweet
-Tooth's default configuration, above, has the javascript event
-handlers dispatching the `::stnf/disptach-route` re-frame event by
-default. In extremely simplified and somewhat in accurate pseudocode,
-it's as if the following gets evaluated when the nav component is
-initialized:
+Tooth's default configuration, above, has the js event handlers
+dispatching the `::stnf/disptach-route` re-frame event by default. In
+extremely simplified pseudocode, it's as if the following gets
+evaluated when the nav component is initialized:
 
 ```clojure
 (js/listen js/NavEvent #(rf/dispatch [::stnf/dispatch-route]))
 ```
+
+`::stnf/dispatch-route` is one of the gnarlier bits of Sweet Tooth,
+but ultimately what it does is 1) dispatch route lifecycle events and
+2) update the currently active route in the re-frame app db.
+
+- the route includes components
+- the components are subscribed and dereferenced
 
 ---
 #### Detour: Accountant, Integrant, re-frame
