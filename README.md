@@ -102,10 +102,11 @@ to this point. How does a Sweet Tooth app do it?
 
 Briefly, Sweet Tooth provides a re-frame handler to initialize an
 [Integrant](https://github.com/weavejester/integrant) _system_ (check
-out the Integrant docs for description of what a system is). The
-system includes a component for managing navigation events, like
-loading the initial page or clicking a link. This nav component looks
-up the _route_ for the current URL in a
+out the Integrant docs for a description of what a system is and how
+Integrant provides a mechanism for starting and stopping
+components). The system includes a component for managing navigation
+events, like loading the initial page or clicking a link. This nav
+component looks up the _route_ for the current URL in a
 [reitit](https://github.com/metosin/reitit) router. The route defines
 _lifecycle events_ and also defines which components should get
 displayed.
@@ -151,27 +152,56 @@ The first event is:
 (rf/dispatch-sync [::stcf/init-system (system-config)])
 ```
 
-`(system-config)` returns an Integrant config. Briefly, integrant
-allows you to describe where each key corresponds to the name of a
-component and each value is that component's configuration.
+`(system-config)` returns an Integrant config, a map describing a
+system where each key corresponds to the name of a component and each
+value is that component's configuration.
 
-We merge `stconfig/default-config` (which has default configurations
-for Sweet Tooth components) with this app's particular
-config. [`meta-merge`](https://github.com/weavejester/meta-merge) is
-used because of its support for deep merging and because of how it
-gives you some control over how the two values get merged.
+Sweet Tooth comes with a bunch o' components that are meant to make
+your life easier, and the default config for those components lives at
+`stconfig/default-config`. We merge that with our app's particular
+config using [`meta-merge`](https://github.com/weavejester/meta-merge)
+is because of its support for deep merging and because of how it gives
+you some control over how the two values get merged.
 
-The Sweet Tooth default config includes a _navigation handler_
-component, seen in the `sweet-tooth.frontend.config` namespace:
+To understand our app, we'll need to understand some of Sweet Tooth's
+components, starting with the _navigation handler_. You can see its
+default config in the
+[`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs) namespace:
 
 ```clojure
-::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
-                :check-can-unload?      true
-                :router                 (ig/ref ::stfr/frontend-router)
-                :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}
+{::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
+                 :check-can-unload?      true
+                 :router                 (ig/ref ::stfr/frontend-router)
+                 :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
 ```
 
-This navigation handler...
+When this component is initialized, it [uses an adapted version of the
+accountant
+library](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26)
+to register javascript event handlers for nav events. These
+_javascript event_ handlers will dispatch _re-frame events_; Sweet
+Tooth's default configuration, above, has the javascript event
+handlers dispatching the `::stnf/disptach-route` re-frame event by
+default. In extremely simplified and somewhat in accurate pseudocode,
+it's as if the following gets evaluated when the nav component is
+initialized:
+
+```clojure
+(js/listen js/NavEvent #(rf/dispatch [::stnf/dispatch-route]))
+```
+
+---
+#### Detour: Accountant, Integrant, re-frame
+
+---
+
+
+`::stnf/handler` is the name of the component, and the corresponding
+map is the component's configuration.
+
+and the map is its
+configuration. `:dispatch-router-handler` lets you specify what 
+
 
 * uses a router
 * calls lifecycles
