@@ -2,8 +2,9 @@
 
 Get a _taste_ of what it's like to work with Sweet Tooth, a
 single-page app framework for Clojure! In this README, I'll guide you
-through many of its features by walking you through a single action:
-creating a new todo list in a simple todo list app.
+through many of its features by taking you on a depth-first walk
+through a single action: creating a new todo list in a simple todo
+list app.
 
 ## Preamble
 
@@ -50,8 +51,8 @@ either.
 This README has been written for people who have written at least one
 Clojure web app. It assumes knowledge of web app development; it is
 not intended for complete for beginners. (Maybe one day I'll write
-that!) In particular, I'll refer to re-frame concepts without
-explaining them.
+that!) In particular, I'll refer to Integrant and re-frame concepts
+and explain them only briefly, if at all.
 
 ## Walkthrough
 
@@ -94,12 +95,25 @@ Let's dig in!
 
 ### App Initialization
 
-When you open the home page, the app renders the correct components.
+When you open the home page, the app renders the home page's
+components. For most projects, your app must perform some kind of
+initialization process (to set up route handling, for example) to get
+to this point. How does a Sweet Tooth app do it?
 
-CLJS apps need to get initialized somehow, even if that's simply a
-matter of rendering a component to the DOM.
+Briefly, Sweet Tooth provides a re-frame handler to initialize an
+[Integrant](https://github.com/weavejester/integrant) _system_ (check
+out the Integrant docs for description of what a system is). The
+system includes a component for managing navigation events, like
+loading the initial page or clicking a link. This nav component looks
+up the _route_ for the current URL in a
+[reitit](https://github.com/metosin/reitit) router. The route defines
+_lifecycle events_ and also defines which components should get
+displayed.
 
-If you look in the `sweet-tooth.todo-example.frontend.core`
+We'll look at each of these parts of the framework and how we use them
+in our app.
+
+First, if you look in the `sweet-tooth.todo-example.frontend.core`
 namespace, you'll see this:
 
 ```clojure
@@ -107,7 +121,7 @@ namespace, you'll see this:
   "This is a function instead of a static value so that it will pick up
   reloaded changes"
   []
-  (mm/meta-merge stconfig/default-config
+  (mm/meta-merge stconfig/default-config ;; <2>
                  {::stfr/frontend-router {:use    :reitit
                                           :routes froutes/frontend-routes}
                   ::stfr/sync-router     {:use    :reitit
@@ -118,10 +132,64 @@ namespace, you'll see this:
                   ::stjehf/handlers {}
                   ::eroutes/routes  ""}))
 
+;; <1>
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
   (rf/dispatch-sync [::stnf/dispatch-current])
   (r/render [app/app] (stcu/el-by-id "app")))
+```
+
+As is tradition for Lispers, let's start at the bottom and work our
+way up. In the `-main` function at `<1>`, you can see we're
+dispatching two events and then rendering a component. Let's walk
+through the mechanics of what's going on, and then we'll talk about
+why it works the way it does.
+
+The first event is:
+
+```clojure
+(rf/dispatch-sync [::stcf/init-system (system-config)])
+```
+
+`(system-config)` returns an Integrant config. Briefly, integrant
+allows you to describe where each key corresponds to the name of a
+component and each value is that component's configuration.
+
+We merge `stconfig/default-config` (which has default configurations
+for Sweet Tooth components) with this app's particular
+config. [`meta-merge`](https://github.com/weavejester/meta-merge) is
+used because of its support for deep merging and because of how it
+gives you some control over how the two values get merged.
+
+The Sweet Tooth default config includes a _navigation handler_
+component, seen in the `sweet-tooth.frontend.config` namespace:
+
+```clojure
+::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
+                :check-can-unload?      true
+                :router                 (ig/ref ::stfr/frontend-router)
+                :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}
+```
+
+This navigation handler...
+
+* uses a router
+* calls lifecycles
+
+
+So that's a slice of the system configuration. The
+`::stcf/init-system` event results in the following event getting
+called:
+
+That results in the following effect handler (from
+`sweet-tooth.frontend.core.flow`) getting called:
+
+```clojure
+(rf/reg-fx ::init-system
+  (fn [config]
+    (reset! rfdb/app-db {:sweet-tooth/system (-> config
+                                                 ig/prep
+                                                 ig/init)})))
 ```
 
 

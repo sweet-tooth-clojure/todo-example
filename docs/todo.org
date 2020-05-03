@@ -67,7 +67,9 @@ if necessary, move them to sweet tooth and document them
 ** DONE convert datomic to in-memory so anyone can run it
 *** auto run create, migrate?
 ** TODO un-tie the two create forms
+** TODO add check boxes with an animation
 ** TODO fix deletion
+** TODO from todo to to-do
 ** TODO recreate-db doesn't work
 ** TODO home page experience?
 - show all todo lists on home page?
