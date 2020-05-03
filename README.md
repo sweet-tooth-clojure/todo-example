@@ -54,6 +54,11 @@ not intended for complete for beginners. (Maybe one day I'll write
 that!) In particular, I'll refer to Integrant and re-frame concepts
 and explain them only briefly, if at all.
 
+I dive into Sweet Tooth internals more than I would in a tutorial that
+was focused solely on building stuff with the framework because you're
+experienced and I'm hoping to reveal some of its design and get your
+valuable feedback :)
+
 ## Walkthrough
 
 For the rest of this doc I'll show you Sweet Tooth's ideas and
@@ -85,6 +90,7 @@ In even these two simple steps there's a lot going on, including:
 * Initial rendering
   * App initialization
   * Route handling for `http://localhost:3000/`
+  * Rendering the "home page"
 * Form handling
   * Managing the input for the todo list title
   * Submitting the form
@@ -355,7 +361,99 @@ for the nav handler:
                  :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
 ```
 
+The config includes a _reference_ to another component,
+`::stfr/frontend-router`. We actually saw the configuration for _that_
+component in `sweet-tooth.todo-example.frontend.core`:
 
+```clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit ;; <--- There it is!
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+```
+
+So the `::stfr/frontend-router` component gets initialized with this
+configuration:
+
+```clojure
+{:use    :reitit
+ :routes froutes/frontend-routes}
+```
+
+`:use` specifies what library should be use to parse route data into a
+router, and reitit is supported out of the box. `:routes` specifies
+the route data. Here's `froutes/frontend-routes`:
+
+```clojure
+(ns sweet-tooth.todo-example.frontend.routes
+  (:require [sweet-tooth.frontend.sync.flow :as stsf]
+            [sweet-tooth.frontend.form.flow :as stff]
+            [sweet-tooth.frontend.nav.flow :as stnf]
+            [sweet-tooth.todo-example.cross.validate :as v]
+            [sweet-tooth.todo-example.frontend.components.home :as h]
+            [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
+            [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
+            [sweet-tooth.todo-example.frontend.components.ui :as ui]
+            [clojure.spec.alpha :as s]
+            [reitit.coercion.spec :as rs]))
+
+(s/def :db/id int?)
+
+(def frontend-routes
+  [["/"
+    {:name       :home
+     :lifecycle  {:param-change [::stsf/sync-once [:get :todo-lists]]}
+     :components {:side [tll/component]
+                  :main [h/component]}
+     :title      "Todo List"}]
+
+   ["/todo-list/{db/id}"
+    {:name       :show-todo-list
+     :lifecycle  {:param-change [[::stff/initialize-form [:todos :create] {:validate (ui/validate-with v/todo-rules)}]
+                                 [::stsf/sync-once [:get :todo-lists]]
+                                 [::stnf/get-with-route-params :todo-list]]}
+     :components {:side [tll/component]
+                  :main [tls/component]}
+     :coercion   rs/coercion
+     :parameters {:path (s/keys :req [:db/id])}
+     :title      "Todo List"}]])
+```
+
+You can see that each route has a `:components` key, a map with
+`:side` and `:main` keys.
+
+At the beginning of all this I asked how the `app` component worked:
+
+```clojure
+(defn app
+  []
+  [:div.app
+   [:div.head
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A Todo List!"]]]
+   [:div.container.grid
+    [:div.side @(rf/subscribe [::stnf/routed-component :side])]
+    [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])
+```
+
+Now we have all the pieces to solve the puzzle:
+
+1. A nav handler gets created on initialization
+2. It's passed a router that associates URL paths with components
+3. We dispatch `(rf/dispatch-sync [::stnf/dispatch-current])`. This
+   sets the current route in the re-frame app db.
+4. The `::stnf/routed-component` subscription looks up the
+   `:component` key for the current route in the app db.
+5. Those components get rendered.
 
 ## notes to self
 
