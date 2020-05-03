@@ -284,7 +284,7 @@ Why do we use Integrant to initialize our app? A few reasons:
    it in because why not!?)
 
 So that explains Integrant and how it fits into the app initialization
-process. Let's back up and look at what else we need examine:
+process, the first step in the `-main` function:
 
 ```clojure
 (defn -main []
@@ -293,10 +293,9 @@ process. Let's back up and look at what else we need examine:
   (r/render [app/app] (stcu/el-by-id "app")))
 ```
 
-We still need to describe `(rf/dispatch-sync
-[::stnf/dispatch-current])` and `(r/render [app/app] (stcu/el-by-id
-"app"))`. To do that, we'll take a closer look at Sweet Tooth's _nav
-handler_ component.
+To understand the next step, `(rf/dispatch-sync
+[::stnf/dispatch-current])`, we'll take a closer look at Sweet Tooth's
+_nav handler_ component.
 
 ### The nav handler component
 
@@ -328,18 +327,39 @@ evaluated when the nav component is initialized:
 and we don't need to go into all the details of how it works.
 Ultimately what it does is:
 
-1. dispatch _route lifecycle_ events
-2. update the currently active route in the re-frame app db.
+1. Figures out what _route_ corresponds to the potential new URL
+   proposed by the navigation event using a _router_. (I say
+   _potential_ URL because it's possible for nav events to get
+   rejected.)
+1. Dispatches the route's _lifecycle callbacks_
+2. Sets the currently active route in the re-frame app db
+
+In the -main function, we see `(rf/dispatch-sync
+[::stnf/dispatch-current])`. This behaves almost identically to
+`::stnf/dispatch-route`; the only difference is that it operates on
+the current URL.
+
+To understand this process fully, we'll need to look at this router
+that I keep talking about.
+
+### The router component
+
+I kept saying that the nav handler uses a router to look up
+routes. Where does the router come from? You can see it in the config
+for the nav handler:
+
+```clojure
+{::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
+                 :check-can-unload?      true
+                 :router                 (ig/ref ::stfr/frontend-router) ;; <--- There it is!
+                 :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
+```
 
 
 
----
-#### Detour: Accountant, Integrant, re-frame
+## notes to self
 
----
-
-### Route Handling
-
+You should ignore everything after this point; it's just notes to myself.
 
 ### Frontend
 
