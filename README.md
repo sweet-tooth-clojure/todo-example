@@ -152,16 +152,16 @@ overview, which I'll explain in detail in the sections that follow:
 2. One component is a _router_ that associates URL patterns with
 
    * What components to display
-   * Lifecycle events that should get dispatched on entering or
+   * Lifecycle callbacks that should get dispatched on entering or
      exiting a route
      
    (I haven't shown the router code that ties routes to components and
-   lifecycle events, but I'll introduce you to it later.)
+   lifecycle callbacks, but I'll introduce you to it later.)
 3. Another component is a _nav handler_ that reacts to nav events by
-   looking up the corresponding _route_, dispatching its lifecycle
-   events, and setting it as the current route in the appdb
+   looking up the corresponding _route_, dispatching its lifecycle,
+   and setting it as the current route in the appdb
 4. The `[::stnf/dispatch-current]` re-frame event causes the nav
-   handler to handle the current URL, dispatching lifecycle events and
+   handler to handle the current URL, dispatching its lifecycle and
    setting the current route
 5. The `::stnf/routed-component` subscription pulls components for the
    current route out of the app db, and those components get rendered
@@ -179,18 +179,18 @@ Briefly, Sweet Tooth provides a re-frame handler to initialize an
 [Integrant](https://github.com/weavejester/integrant) _system_ (check
 out the Integrant docs for a description of what a system is and how
 Integrant provides a mechanism for starting and stopping
-components). The system includes a component for managing navigation
-events, like loading the initial page or clicking a link. This nav
-component looks up the _route_ for the current URL in a
+components). The system includes a component for managing nav events,
+like loading the initial page or clicking a link. This nav component
+looks up the _route_ for the current URL in a
 [reitit](https://github.com/metosin/reitit) router. The route defines
-_lifecycle events_ and also defines which components should get
-displayed.
+_lifecycle callbacks_ and also defines which high-level components
+should get displayed.
 
 We'll look at each of these parts of the framework and how we use them
 in our app.
 
-First, if you look in the `sweet-tooth.todo-example.frontend.core`
-namespace, you'll see this:
+First, let's look at the `sweet-tooth.todo-example.frontend.core`
+namespace again:
 
 ```clojure
 (defn system-config
@@ -262,7 +262,7 @@ Integrant initializes an app by initializing individual components in
 dependency order; the nav handler component depends on a router
 component, so the router gets initialized before the nav handler.
 
-Why do we use Integrant to initialize our app? Two reasons:
+Why do we use Integrant to initialize our app? A few reasons:
 
 1. Sometimes we want to render different React components at different
    stages of the system's readiness. For example, you might want to
@@ -276,6 +276,12 @@ Why do we use Integrant to initialize our app? Two reasons:
    for example by attaching event listeners to the window. Livereload
    can call `(ig/halt!)` on the system, giving each component to clean
    up after itself (remove its listeners) before code gets reloaded.
+3. Integrant makes it easier to code to interfaces. The nav handler
+   component depends on a router, and by default it depends on a
+   reitit router. However, you could provide a bidi or silk router
+   instead, as long as it can conform to the same interface. (This
+   isn't particular to the initialization process per se but I threw
+   it in because why not!?)
 
 So that explains Integrant and how it fits into the app initialization
 process. Let's back up and look at what else we need examine:
@@ -294,8 +300,7 @@ handler_ component.
 
 ### The nav handler component
 
-One of the components that Integrnat initializes is the _nav
-handler_. You can see its default config in the
+You can see the nav handler's default config in the
 [`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs)
 namespace:
 
