@@ -62,7 +62,7 @@
 (defn submit-btn
   [form-errors]
   [:input {:type     "submit"
-           :value    "create todo"
+           :value    "create to-do"
            :disabled (not-empty @form-errors)}])
 
 (defn component
@@ -71,10 +71,10 @@
         tl    @(rf/subscribe [:routed-todo-list])
         todos @(rf/subscribe [:todos])]
     (if (= :home (:route-name route))
-      [:div "Select a todo list to view its todos"]
+      [:div "Select a to-do list to view its to-dos"]
       [ui/loadable-component
        [::stsf/sync-state [:get :todo-list (:params route)]]
-       "Could not find that todo list"
+       "Could not find that to-do list"
        (when tl
          [:div.todo-list
           [todo-list-title tl]
@@ -85,7 +85,7 @@
                                                 :$ctx
                                                 {:clear [:buffer :ui-state :input-events]}]
                                                [:focus-element "#todo-title" 100]]}}})
-             [field :text :todo/title {:placeholder    "new todo"
+             [field :text :todo/title {:placeholder    "new to-do"
                                        :id             "todo-title"
                                        :no-label       true
                                        :show-errors-on #{"submit"}}]
@@ -94,4 +94,4 @@
           (if (seq todos)
             [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
                                    todos))]
-            [:em "No todos yet"])])])))
+            [:em "No to-dos yet"])])])))

@@ -14,20 +14,20 @@
      (if (empty? todo-lists)
        [:div.new-todo-list
         [:h1 "Welcome!"]
-        [:div "To get started, create a new todo list:"]
+        [:div "To get started, create a new to-do list:"]
         (stfc/with-form [:todo-lists :create]
           [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
                                                    [:select-created-todo-list :$ctx]
                                                    [:focus-element "#todo-list-title" 100]]}}})
            [field :text :todo-list/title
             {:id          "todo-list-title"
-             :placeholder "new todo list title"
+             :placeholder "new to-do list title"
              :no-label    true}]
-           [:input {:type "submit" :value "create todo list"}]
+           [:input {:type "submit" :value "create to-do list"}]
            [ui/form-state-feedback form]])]
        [:div.todo-list-summary
         [:h1 "Welcome!"]
-        [:div "Select a todo list:"]
+        [:div "Select a to-do list:"]
         (->> todo-lists
              (map (fn [tl]
                     ^{:key (:db/id tl)}

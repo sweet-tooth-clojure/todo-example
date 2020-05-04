@@ -7,7 +7,7 @@
   []
   [:div.app
    [:div.head
-    [:div.container [:a {:href (stfr/path :home)} "Wow! A Todo List!"]]]
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A To-Do List!"]]]
    [:div.container.grid
     [:div.side @(rf/subscribe [::stnf/routed-component :side])]
     [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])

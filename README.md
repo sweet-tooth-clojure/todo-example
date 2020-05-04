@@ -1,9 +1,9 @@
-# Sweet Tooth Todo List Example
+# Sweet Tooth To-Do List Example
 
 Get a _taste_ of what it's like to work with Sweet Tooth, a
 single-page app framework for Clojure! In this README, I'll guide you
 through many of its features by taking you on a depth-first walk
-through a single action: creating a new todo list in a simple todo
+through a single action: creating a new to-do list in a simple to-do
 list app.
 
 ## Preamble
@@ -62,7 +62,7 @@ valuable feedback :)
 ## Walkthrough
 
 For the rest of this doc I'll show you Sweet Tooth's ideas and
-features by walking you through what happens when you create a todo
+features by walking you through what happens when you create a to-do
 list. First, get the app running:
 
 1. In a terminal, run `shadow-cljs watch dev`
@@ -78,12 +78,12 @@ something like this:
 
 ![01 running](docs/walkthrough/01-running.png)
 
-Now, create a todo list by entering its title and hitting enter or
-clicking the "create todo list" button. You should see a little
+Now, create a to-do list by entering its title and hitting enter or
+clicking the "create to-do list" button. You should see a little
 activity indicator appear for a split second, then you should get
-redirected to your newly-created todo list. The URL should have
+redirected to your newly-created to-do list. The URL should have
 changed to something like
-`http://localhost:3000/todo-list/17592186045431`.
+`http://localhost:3000/to-do-list/17592186045431`.
 
 In even these two simple steps there's a lot going on, including:
 
@@ -92,12 +92,12 @@ In even these two simple steps there's a lot going on, including:
   * Route handling for `http://localhost:3000/`
   * Rendering the "home page"
 * Form handling
-  * Managing the input for the todo list title
+  * Managing the input for the to-do list title
   * Submitting the form
   * Displaying an activity indicator
 * API request handling
 * Frontend response handling
-* Navigating to the new todo list
+* Navigating to the new to-do list
 
 Let's dig in!
 
@@ -144,7 +144,7 @@ DOM element. Here's what that looks like:
   []
   [:div.app
    [:div.head
-    [:div.container [:a {:href (stfr/path :home)} "Wow! A Todo List!"]]]
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A To-Do List!"]]]
    [:div.container.grid
     [:div.side @(rf/subscribe [::stnf/routed-component :side])]
     [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])
@@ -415,7 +415,7 @@ the route data. Here's `froutes/frontend-routes`:
      :lifecycle  {:param-change [::stsf/sync-once [:get :todo-lists]]}
      :components {:side [tll/component]
                   :main [h/component]}
-     :title      "Todo List"}]
+     :title      "To-Do List"}]
 
    ["/todo-list/{db/id}"
     {:name       :show-todo-list
@@ -426,7 +426,7 @@ the route data. Here's `froutes/frontend-routes`:
                   :main [tls/component]}
      :coercion   rs/coercion
      :parameters {:path (s/keys :req [:db/id])}
-     :title      "Todo List"}]])
+     :title      "To-Do List"}]])
 ```
 
 You can see that each route has a `:components` key, a map with
@@ -439,7 +439,7 @@ At the beginning of all this I asked how the `app` component worked:
   []
   [:div.app
    [:div.head
-    [:div.container [:a {:href (stfr/path :home)} "Wow! A Todo List!"]]]
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A To-Do List!"]]]
    [:div.container.grid
     [:div.side @(rf/subscribe [::stnf/routed-component :side])]
     [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])

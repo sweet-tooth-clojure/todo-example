@@ -1,5 +1,5 @@
 (defproject sweet-tooth-todo-example "0.1.0-SNAPSHOT"
-  :description "a sweet little todo example"
+  :description "a sweet little to-do example"
   :min-lein-version "2.0.0"
 
   :plugins [[duct/lein-duct "0.12.1"]

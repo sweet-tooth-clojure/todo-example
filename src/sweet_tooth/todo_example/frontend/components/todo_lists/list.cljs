@@ -17,16 +17,16 @@
                                                 [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title
          {:id          "todo-list-title"
-          :placeholder "new todo list title"
+          :placeholder "new to-do list title"
           :no-label    true}]
-        [:input {:type "submit" :value "create todo list"}]
+        [:input {:type "submit" :value "create to-do list"}]
         [ui/form-state-feedback form]])
 
      [ui/loadable-component
       [::stsf/sync-state [:get :todo-lists]]
-      [:em "no todo lists"]
+      [:em "no to-do lists"]
       [:div
-       [:h3 (count todo-lists) " Todo lists"]
+       [:h3 (count todo-lists) " To-do lists"]
        (->> todo-lists
             (map (fn [tl]
                    ^{:key (:db/id tl)}
