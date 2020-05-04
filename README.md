@@ -390,8 +390,8 @@ configuration:
  :routes froutes/frontend-routes}
 ```
 
-`:use` specifies what library should be use to parse route data into a
-router, and reitit is supported out of the box. `:routes` specifies
+`:use` specifies what library should be used to parse route data into
+a router, and reitit is supported out of the box. `:routes` specifies
 the route data. Here's `froutes/frontend-routes`:
 
 ```clojure
@@ -430,7 +430,9 @@ the route data. Here's `froutes/frontend-routes`:
 ```
 
 You can see that each route has a `:components` key, a map with
-`:side` and `:main` keys.
+`:side` and `:main` keys. When you load the home page, `tll/component`
+shows up in the side bar, and `tls/component` shows up in the "main"
+column.
 
 At the beginning of all this I asked how the `app` component worked:
 

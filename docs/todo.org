@@ -68,7 +68,7 @@ if necessary, move them to sweet tooth and document them
 *** auto run create, migrate?
 ** DONE from todo to to-do
 ** DONE commit the compiled CSS
-** TODO un-tie the two create forms
+** DONE un-tie the two create forms
 ** TODO add check boxes with an animation
 ** TODO fix deletion
 ** TODO recreate-db doesn't work

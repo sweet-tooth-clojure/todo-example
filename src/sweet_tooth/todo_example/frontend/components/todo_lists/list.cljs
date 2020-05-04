@@ -2,6 +2,7 @@
   (:require [re-frame.core :as rf]
             [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.form.components :as stfc]
+            [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.sync.flow :as stsf]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
@@ -13,7 +14,7 @@
     [:div.todo-lists
      (stfc/with-form [:todo-lists :create]
        [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
-                                                [:select-created-todo-list :$ctx]
+                                                [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                                 [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title
          {:id          "todo-list-title"
