@@ -22,8 +22,8 @@ desktop app, you shouldn't have to write your own form handling system
 to launch your cool idea.
 
 I've tried to write Sweet Tooth so that using it doesn't lock you into
-its own weird, arcane world the way some frameworks do. It's built on
-top of popular and proven libraries like re-frame, duct, integrant,
+some weird, arcane world the way some frameworks do. It's built on top
+of popular and proven libraries like re-frame, duct, integrant,
 liberator, ring, and reitit, and you can always use those libraries
 directly if you need to.
 

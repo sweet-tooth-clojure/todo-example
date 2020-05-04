@@ -81,5 +81,6 @@
     {:focus-element args}))
 
 (rf/reg-fx :focus-element
+  ;; TODO update this to wait for the element to be ready, then select it
   (fn [[selector timeout]]
     (js/setTimeout #(.focus (js/document.querySelector selector)) timeout)))
