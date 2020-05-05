@@ -252,4 +252,9 @@ input[type=submit] + .activity-indicator {
   color: #b55478;
 }
 
+.todo-checkbox {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
 /*# sourceMappingURL=main.css.map */

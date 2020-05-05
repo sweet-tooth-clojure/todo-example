@@ -69,12 +69,11 @@ if necessary, move them to sweet tooth and document them
 ** DONE from todo to to-do
 ** DONE commit the compiled CSS
 ** DONE un-tie the two create forms
-** TODO add check boxes with an animation
-** TODO fix deletion
-** TODO recreate-db doesn't work
-** TODO home page experience?
+** DONE home page experience?
 - show all todo lists on home page?
 - big ol' new todo list on empty page?
+** TODO fix deletion
+** TODO add check boxes with an animation
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
 ** TODO try client-side validation

@@ -36,6 +36,11 @@
 ;; todos
 ;;------
 
+(rf/reg-event-fx :toggle-todo
+  [rf/trim-v]
+  (fn [{:keys [db] :as cofx} [todo new-done]]
+    ((stsf/sync-fx [:put :todo {:route-params todo}]) cofx [{} {:todo/done? new-done}])))
+
 (rf/reg-event-fx :delete-todo
   [rf/trim-v]
   (delete-entity-optimistic :todo))

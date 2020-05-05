@@ -8,6 +8,17 @@
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
+(defmethod stfc/input ::done-checkbox
+  [{:keys [attr-buffer attr-path partial-form-path todo]}]
+  [:span.todo-checkbox
+   {:on-click (u/prevent-default
+               #(let [done? (not @attr-buffer)]
+                  (stfc/dispatch-new-val partial-form-path attr-path done?)
+                  (rf/dispatch [:toggle-todo todo done?])))}
+   (if @attr-buffer
+     [:i.far.fa-check-square]
+     [:i.far.fa-square])])
+
 (defn- stop-clicks
   "Prevent click propagation. For cases where we've registered a window
   event to close and submit a form, and we don't want clicks on the
@@ -36,7 +47,8 @@
                                 (rf/dispatch [:close-form path t]))}
           [:i.fas.fa-trash]]]
         [:li.todo
-         {:on-click #(rf/dispatch [:open-form path t])}
+         ;; {:on-click #(rf/dispatch [:open-form path t])}
+         [input ::done-checkbox :todo/done? {:todo t}]
          (:todo/title t)
          [ui/form-state-feedback form]]))))
 
