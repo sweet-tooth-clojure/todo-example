@@ -2,6 +2,7 @@
   (:require [goog.events]
             [re-frame.core :as rf]
 
+            [sweet-tooth.frontend.core.flow :as stcf]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.paths :as paths]
             [sweet-tooth.frontend.form.flow :as stff]
@@ -38,10 +39,12 @@
 
 (rf/reg-event-fx :toggle-todo
   [rf/trim-v]
-  (fn [{:keys [db] :as cofx} [todo]]
-    (let [new-done (not (:todo/done? todo))]
-      (merge ((stsf/sync-fx [:put :todo {:route-params todo}]) cofx [{} {:todo/done? new-done}])
-             {:db (assoc-in db (paths/full-path :entity :todo (:db/id todo) :todo/done?) new-done)}))))
+  (fn [{:keys [db]} [todo]]
+    (let [new-todo (-> todo
+                       (select-keys [:db/id :todo/done?])
+                       (update :todo/done? not))]
+      {:dispatch [::stsf/sync [:put :todo {:params new-todo}]]
+       :db       (stcf/merge-entity db :todo :db/id new-todo)})))
 
 (rf/reg-event-fx :delete-todo
   [rf/trim-v]
