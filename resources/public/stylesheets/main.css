@@ -254,7 +254,14 @@ input[type=submit] + .activity-indicator {
 
 .todo-checkbox {
   display: inline-block;
-  margin-right: 0.5rem;
+  margin-right: 0.25rem;
+  padding: 0.25rem 0;
+  border-radius: 0.25rem;
+  width: 2rem;
+}
+.todo-checkbox:hover {
+  background: white;
+  color: #e95d74;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -8,14 +8,6 @@
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
-(defn todo-checkbox
-  [todo]
-  [:span.todo-checkbox
-   {:on-click #(rf/dispatch [:toggle-todo todo])}
-   (if (:todo/done? todo)
-     [:i.far.fa-check-square]
-     [:i.far.fa-square])])
-
 (defn- stop-clicks
   "Prevent click propagation. For cases where we've registered a window
   event to close and submit a form, and we don't want clicks on the
@@ -27,6 +19,15 @@
        (when (or (= this-dom-node target)
                  (.contains this-dom-node target))
          (.stopImmediatePropagation (u/go-get % "nativeEvent"))))))
+
+(defn todo-checkbox
+  [todo]
+  [:span.todo-checkbox
+   {:on-click #(do (.stopPropagation %)
+                   (rf/dispatch [:toggle-todo todo]))}
+   (if (:todo/done? todo)
+     [:i.far.fa-check-square]
+     [:i.far.fa-square])])
 
 (defn todo
   [t]
