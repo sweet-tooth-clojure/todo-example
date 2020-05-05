@@ -8,14 +8,11 @@
             [sweet-tooth.todo-example.cross.utils :as u]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]))
 
-(defmethod stfc/input ::done-checkbox
-  [{:keys [attr-buffer attr-path partial-form-path todo]}]
+(defn todo-checkbox
+  [todo]
   [:span.todo-checkbox
-   {:on-click (u/prevent-default
-               #(let [done? (not @attr-buffer)]
-                  (stfc/dispatch-new-val partial-form-path attr-path done?)
-                  (rf/dispatch [:toggle-todo todo done?])))}
-   (if @attr-buffer
+   {:on-click #(rf/dispatch [:toggle-todo todo])}
+   (if (:todo/done? todo)
      [:i.far.fa-check-square]
      [:i.far.fa-square])])
 
@@ -47,8 +44,8 @@
                                 (rf/dispatch [:close-form path t]))}
           [:i.fas.fa-trash]]]
         [:li.todo
-         ;; {:on-click #(rf/dispatch [:open-form path t])}
-         [input ::done-checkbox :todo/done? {:todo t}]
+         {:on-click #(rf/dispatch [:open-form path t])}
+         [todo-checkbox t]
          (:todo/title t)
          [ui/form-state-feedback form]]))))
 

@@ -11,6 +11,9 @@
 
    :ent
    {:put {:put!      ed/update->:result
+          :respond-with-entity? (fn [ctx]
+                                  ;; don't return data if only updating :todo/done?
+                                  (:todo/title (el/params ctx)))
           :handle-ok ed/updated-pull}
 
     :delete {:delete!   ed/delete->:result

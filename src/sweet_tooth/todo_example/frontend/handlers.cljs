@@ -38,8 +38,10 @@
 
 (rf/reg-event-fx :toggle-todo
   [rf/trim-v]
-  (fn [{:keys [db] :as cofx} [todo new-done]]
-    ((stsf/sync-fx [:put :todo {:route-params todo}]) cofx [{} {:todo/done? new-done}])))
+  (fn [{:keys [db] :as cofx} [todo]]
+    (let [new-done (not (:todo/done? todo))]
+      (merge ((stsf/sync-fx [:put :todo {:route-params todo}]) cofx [{} {:todo/done? new-done}])
+             {:db (assoc-in db (paths/full-path :entity :todo (:db/id todo) :todo/done?) new-done)}))))
 
 (rf/reg-event-fx :delete-todo
   [rf/trim-v]

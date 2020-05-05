@@ -5,6 +5,7 @@
 (defn todos-by-todo-list
   [db todo-list-id]
   (->> (d/q '[:find (pull ?e [:db/id
+                              :todo/done?
                               :todo/title
                               :todo/todo-list])
               :where [?e :todo/todo-list ?todo-list-id]
