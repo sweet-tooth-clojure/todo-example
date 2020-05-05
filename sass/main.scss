@@ -122,6 +122,11 @@ h1, h2 {
     background: $hot;
     color: white;
   }
+
+  &.done {
+    font-style: italic;
+    color: #aaa;
+  }
 }
 
 .todo-list h2 {

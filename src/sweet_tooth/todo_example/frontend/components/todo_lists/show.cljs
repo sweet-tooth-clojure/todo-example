@@ -45,7 +45,8 @@
                                 (rf/dispatch [:close-form path t]))}
           [:i.fas.fa-trash]]]
         [:li.todo
-         {:on-click #(rf/dispatch [:open-form path t])}
+         {:class    (when (:todo/done? t) "done")
+          :on-click #(rf/dispatch [:open-form path t])}
          [todo-checkbox t]
          (:todo/title t)
          [ui/form-state-feedback form]]))))
