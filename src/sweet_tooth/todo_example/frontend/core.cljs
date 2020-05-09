@@ -37,12 +37,11 @@
                  {::stfr/frontend-router {:use    :reitit
                                           :routes froutes/frontend-routes}
                   ::stfr/sync-router     {:use    :reitit
-                                          :routes (ig/ref ::eroutes/routes)}
+                                          :routes eroutes/routes}
 
                   ;; Treat handler registration as an external service,
                   ;; interact with it via re-frame effects
-                  ::stjehf/handlers {}
-                  ::eroutes/routes  ""}))
+                  ::stjehf/handlers {}}))
 
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])

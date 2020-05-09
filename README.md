@@ -65,7 +65,7 @@ For the rest of this doc I'll show you Sweet Tooth's ideas and
 features by walking you through what happens when you create a to-do
 list. First, get the app running:
 
-1. In a terminal, run `shadow-cljs watch dev`
+1. In a terminal, run `npm install` then `shadow-cljs watch dev`
 2. Start a REPL. If prompted to choose between `lein`, `clojure-cli`,
    and `shadow-cljs`, choose `lein`.
 3. Evaluate `(dev)` in the REPL. The REPL will pause for a little bit
