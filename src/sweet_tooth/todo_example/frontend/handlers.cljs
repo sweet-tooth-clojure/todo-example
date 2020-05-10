@@ -29,16 +29,13 @@
   [rf/trim-v]
   (fn [{:keys [db]} [todo-list]]
     {:dispatch-n [[::stsf/sync-entity [:delete :todo-list todo-list]]
-                  [::stnf/navigate "/"]]
+                  [::stnf/navigate-route :home]]
      :db (remove-entity-from-db db :todo-list todo-list)}))
 
 (rf/reg-event-fx :select-created-todo-list
   [rf/trim-v]
   (fn [_cofx [args]]
-    {:dispatch [::stnf/navigate (stfr/path :show-todo-list (-> (get-in args [:resp :response-data 0 1])
-                                                               :todo-list
-                                                               vals
-                                                               first))]}))
+    {:dispatch [::stnf/navigate-route :show-todo-list (stsf/single-entity args)]}))
 
 ;;------
 ;; todos

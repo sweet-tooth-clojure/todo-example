@@ -76,6 +76,7 @@ if necessary, move them to sweet tooth and document them
 - 500 on attempt
 - should redirect you to home page
 ** TODO add check boxes with an animation
+** TODO disable double-submit
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
 ** TODO try client-side validation
