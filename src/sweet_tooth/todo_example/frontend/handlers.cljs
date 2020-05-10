@@ -14,7 +14,7 @@
   [db ent-type ent]
   (update-in db [:entity ent-type] dissoc (:db/id ent)))
 
-(defn- delete-entity-optimistic
+(defn- delete-entity-optimistic-handler
   [ent-type]
   (fn [{:keys [db]} args]
     {:dispatch [::stsf/sync-entity (into [:delete :todo-list] args)]
@@ -46,7 +46,7 @@
 
 (rf/reg-event-fx :delete-todo
   [rf/trim-v]
-  (delete-entity-optimistic :todo))
+  (delete-entity-optimistic-handler :todo))
 
 ;;------
 ;; inline forms
