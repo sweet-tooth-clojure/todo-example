@@ -72,7 +72,9 @@ if necessary, move them to sweet tooth and document them
 ** DONE home page experience?
 - show all todo lists on home page?
 - big ol' new todo list on empty page?
-** TODO fix deletion
+** TODO fix todo deletion
+- 500 on attempt
+- should redirect you to home page
 ** TODO add check boxes with an animation
 ** TODO multiple users
 ** TODO specmonstah schema and data gen

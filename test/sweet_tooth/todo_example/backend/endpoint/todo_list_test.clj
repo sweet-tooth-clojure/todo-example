@@ -38,8 +38,15 @@
                           (eth/read-body))]
     (eth/assert-response-contains-one-entity-like resp-data tl :todo-list)))
 
+(deftest deletes-todo-list
+  (let [{:keys [tl0]} (td/transact! {:todo-list [[1]]})
+        resp-data     (-> (eth/req :delete (str "/api/v1/todo-list/" tl0))
+                          (eth/read-body))]
+    (is (empty? resp-data))))
+
 
 (deftest demo-failing-create-test
-  (let [resp-data (-> (eth/req :post "/api/v1/todo-list" {:todo-list/title "GET EGGS"})
-                      (eth/read-body))]
-    (eth/assert-response-contains-one-entity-like resp-data {:todo-list/title "GET MILK"} :todo-list)))
+  (testing "this purposefully fails so you can see the test report"
+    (let [resp-data (-> (eth/req :post "/api/v1/todo-list" {:todo-list/title "GET EGGS"})
+                        (eth/read-body))]
+      (eth/assert-response-contains-one-entity-like resp-data {:todo-list/title "GET MILK"} :todo-list))))

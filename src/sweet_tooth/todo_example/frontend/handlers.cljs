@@ -3,6 +3,7 @@
             [re-frame.core :as rf]
 
             [sweet-tooth.frontend.core.flow :as stcf]
+            [sweet-tooth.frontend.core.compose :as stcc]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.paths :as paths]
             [sweet-tooth.frontend.form.flow :as stff]
@@ -11,11 +12,15 @@
             [sweet-tooth.frontend.js-event-handlers.flow :as stjehf])
   (:import [goog.events EventType]))
 
-(defn delete-entity-optimistic
+(defn- remove-entity-from-db
+  [db ent-type ent]
+  (update-in db [:entity ent-type] dissoc (:db/id ent)))
+
+(defn- delete-entity-optimistic
   [ent-type]
   (fn [{:keys [db] :as cofx} args]
     (merge ((stsf/sync-fx [:delete ent-type]) cofx args)
-           {:db (update-in db [:entity ent-type] dissoc (:db/id (first args)))})))
+           {:db (remove-entity-from-db db ent-type (first args))})))
 
 ;;------
 ;; todo lists
@@ -23,7 +28,10 @@
 
 (rf/reg-event-fx :delete-todo-list
   [rf/trim-v]
-  (delete-entity-optimistic :todo-list))
+  (fn [{:keys [db] :as cofx} [todo-list]]
+    {:dispatch-n [[::stsf/sync [:delete :todo-list {:route-params (select-keys todo-list [:db/id])}]]
+                  [::stnf/navigate "/"]]
+     :db (remove-entity-from-db db :todo-list todo-list)}))
 
 (rf/reg-event-fx :select-created-todo-list
   [rf/trim-v]

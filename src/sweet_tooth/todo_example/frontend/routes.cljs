@@ -15,7 +15,8 @@
 (def frontend-routes
   [["/"
     {:name       :home
-     :lifecycle  {:param-change [::stsf/sync-once [:get :todo-lists]]}
+     :lifecycle  {:param-change [[::stsf/sync-once [:get :todo-lists]]
+                                 [::stff/initialize-form [:home-new-todo-list :create]]]}
      :components {:side [tll/component]
                   :main [h/component]}
      :title      "Todo List"}]

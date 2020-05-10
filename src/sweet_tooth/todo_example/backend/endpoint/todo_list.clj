@@ -26,6 +26,7 @@
                           (let [tl-id (ed/ctx-id ctx)
                                 todos (t/todos-by-todo-list (ed/db ctx) tl-id)]
                             @(d/transact (ed/conn ctx) (->> todos
+                                                            (map :db/id)
                                                             (into [tl-id])
-                                                            (map (fn [t] [:db.fn/retractEntity (:db/id t)]))))))
+                                                            (map (fn [id] [:db.fn/retractEntity id]))))))
              :handle-ok []}}})
