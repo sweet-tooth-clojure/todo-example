@@ -40,7 +40,7 @@
   [query]
   (let [sm-db  (rsg/ent-db-spec-gen {:schema schema} query)
         result @(d/transact (tdb/conn) (vals (spec-gen-map sm-db)))]
-    (-> (rs/visit-ents-once sm-db :transact! (fn [db {:keys [spec-gen]}]
+    (-> (rs/visit-ents-once sm-db :transact! (fn [_ent-db {:keys [spec-gen]}]
                                                (d/resolve-tempid (:db-after result)
                                                                  (:tempids result)
                                                                  (:db/id spec-gen))))
