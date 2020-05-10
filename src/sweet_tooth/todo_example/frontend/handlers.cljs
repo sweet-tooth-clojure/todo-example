@@ -3,7 +3,6 @@
             [re-frame.core :as rf]
 
             [sweet-tooth.frontend.core.flow :as stcf]
-            [sweet-tooth.frontend.core.compose :as stcc]
             [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.paths :as paths]
             [sweet-tooth.frontend.form.flow :as stff]
@@ -18,9 +17,9 @@
 
 (defn- delete-entity-optimistic
   [ent-type]
-  (fn [{:keys [db] :as cofx} args]
-    (merge ((stsf/sync-fx [:delete ent-type]) cofx args)
-           {:db (remove-entity-from-db db ent-type (first args))})))
+  (fn [{:keys [db]} args]
+    {:dispatch [::stsf/sync-entity (into [:delete :todo-list] args)]
+     :db (remove-entity-from-db db ent-type (first args))}))
 
 ;;------
 ;; todo lists
@@ -28,8 +27,8 @@
 
 (rf/reg-event-fx :delete-todo-list
   [rf/trim-v]
-  (fn [{:keys [db] :as cofx} [todo-list]]
-    {:dispatch-n [[::stsf/sync [:delete :todo-list {:route-params (select-keys todo-list [:db/id])}]]
+  (fn [{:keys [db]} [todo-list]]
+    {:dispatch-n [[::stsf/sync-entity [:delete :todo-list todo-list]]
                   [::stnf/navigate "/"]]
      :db (remove-entity-from-db db :todo-list todo-list)}))
 
@@ -51,7 +50,7 @@
     (let [new-todo (-> todo
                        (select-keys [:db/id :todo/done?])
                        (update :todo/done? not))]
-      {:dispatch [::stsf/sync [:put :todo {:params new-todo}]]
+      {:dispatch [::stsf/sync-entity [:put :todo new-todo]]
        :db       (stcf/merge-entity db :todo :db/id new-todo)})))
 
 (rf/reg-event-fx :delete-todo
