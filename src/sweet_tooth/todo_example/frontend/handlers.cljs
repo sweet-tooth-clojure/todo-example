@@ -3,7 +3,6 @@
             [re-frame.core :as rf]
 
             [sweet-tooth.frontend.core.flow :as stcf]
-            [sweet-tooth.frontend.routes :as stfr]
             [sweet-tooth.frontend.paths :as paths]
             [sweet-tooth.frontend.form.flow :as stff]
             [sweet-tooth.frontend.nav.flow :as stnf]
@@ -31,11 +30,6 @@
     {:dispatch-n [[::stsf/sync-entity [:delete :todo-list todo-list]]
                   [::stnf/navigate-route :home]]
      :db (remove-entity-from-db db :todo-list todo-list)}))
-
-(rf/reg-event-fx :select-created-todo-list
-  [rf/trim-v]
-  (fn [_cofx [args]]
-    {:dispatch [::stnf/navigate-route :show-todo-list (stsf/single-entity args)]}))
 
 ;;------
 ;; todos
@@ -75,7 +69,7 @@
 
 (rf/reg-event-fx :close-and-submit-form
   [rf/trim-v]
-  (fn [{:keys [db] :as ctx} [path ent :as args]]
+  (fn [{:keys [db] :as ctx} [path :as args]]
     (let [form (paths/get-path db :form path)]
       (cond-> (close-form ctx args)
         (and (:ui-state form) (not= (:base form) (:buffer form)))
