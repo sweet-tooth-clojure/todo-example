@@ -75,8 +75,9 @@ if necessary, move them to sweet tooth and document them
 ** DONE fix todo deletion
 - 500 on attempt
 - should redirect you to home page
+** DONE disable double-submit
+** DONE simplify shadow / don't use local path / get rid of deps.edn?
 ** TODO add check boxes with an animation
-** TODO disable double-submit
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
 ** TODO try client-side validation
@@ -84,4 +85,3 @@ if necessary, move them to sweet tooth and document them
 **** don't submit if it's invalid
 **** run the validator on submit
 ** TODO write tests
-** TODO simplify shadow / don't use local path / get rid of deps.edn?

@@ -457,6 +457,30 @@ Now we have all the pieces to solve the puzzle:
    `:component` key for the current route in the app db.
 5. Those components get rendered.
 
+### Form Handlng
+
+Form handling is one of those corners of SPA development that's ripe
+for frameworking: it's somewhat tedious and difficult to get right,
+and time spent on it takes away from spending time on building your
+product. Sweet Tooth has a featureful, extensible system for working
+with forms.
+
+#### Form representation
+
+- form keys
+- path in db
+- global state atom as filesystem
+- conventions
+- loose coupling
+
+#### Input components
+
+#### Submitting the form
+
+#### Displaying an activity indicator
+
+
+
 ## notes to self
 
 You should ignore everything after this point; it's just notes to myself.
