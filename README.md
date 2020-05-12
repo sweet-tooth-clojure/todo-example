@@ -487,7 +487,7 @@ To ground the discussion, let's look at the small form found in the
                             :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
                                                    [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                                    [:focus-element "#todo-list-title" 100]]}}})
-   [field :text :todo-list/title
+   [input :text :todo-list/title
     {:id          "todo-list-title"
      :placeholder "new to-do list title"
      :no-label    true}]
@@ -495,8 +495,13 @@ To ground the discussion, let's look at the small form found in the
    [ui/form-state-feedback form]])
 ```
 
+(Side note: if you actually submit the form it will disappear. It only
+shows when you have no to-do lists. To get it back, evaluate
+`(recreate-db) (reset)` in the REPL from the `dev` namespace, then
+refresh localhost:3000).
+
 You'll notice some peculiarties: What is `stfc/with-form`? Where did
-`field` come from - there's no binding for it in sight? And `form`, in
+`input` come from - there's no binding for it in sight? And `form`, in
 the last line?
 
 I'll answer those questions, but first let's focus on answering more
@@ -518,7 +523,7 @@ Forms are represented as a map with the following keys:
 
 * `:buffer` is a map that stores the current state of form
   inputs. When you type into the input element, whatever you type gets
-  put here. The example above shows the component `[field :text
+  put here. The example above shows the component `[input :text
   :todo-list/title ...]`. Its value is stored under `[:buffer
   :todo-list/title]` in the form map. The buffer map's keys are
   _attributes_. For example, I will refer to `:todo-list/title` as an
@@ -547,11 +552,11 @@ components that update that form state.
 
 #### Input components
 
-In the form `(stfc/with-form [:home-new-todo-list :create])`,
-`with-form` is a macro (the only one in the frontend lib!) that
-creates a bunch of bindings. If you really, really, really hate that,
-like with a passion, then you can use the function `stfc/form` and
-destructure the bindings yourself.
+In the exprsesion `(stfc/with-form [:home-new-todo-list :create])`,
+`with-form` is a macro—the only one in Sweet Tooth's frontend
+lib!—that creates a bunch of bindings. (If you really, really, really
+hate that, like with a passion, then you can use the function
+`stfc/form` and destructure the bindings yourself.)
 
 One of the values it binds is the `input` component. The form uses it
 like this:
@@ -575,9 +580,9 @@ state atom at the path `[:form :home-new-todo-list :create :buffer
 :todo-list/title]`. It likewise creates subscriptions for the
 attribute's buffer and its errors.
 
-These subscriptions and event handlers are wired up with an actual
-input component. The result - the return value of the `input`
-function/component - resembles something like the one of the following:
+These subscriptions and event handlers are wired up to an HTML form
+element. The result—the return value of the `input`
+function/component—resembles something like the one of the following:
 
 ```clojure
 [:input {:type text
@@ -595,18 +600,18 @@ How does the `input` component know which element (text input,
 checkbox, textarea, select, etc.) to use? The `input` component,
 introduced in a let binding by the `stfc/with-form` macro, returns a
 form component by dispatching to the `stfc/input` multimethod. When
-you put `[input :text :todo-list/title]`, the `stfc/input` multimethod
-dispatches on `:text`, resulting in `[:input {:type :text}]`.
+you put `[input :text :todo-list/title]` in your code, it calls the
+the `stfc/input` multimethod internally, which dispatches on `:text`,
+resulting in `[:input {:type :text}]`.
 
 The multimethod is extended for `:textarea`, `:select`, `:radio`, and
 more. What's really, really freaking cool though is that you can
-extend it for custom input types. Here's an example of how I extended
-it in one project so that I could use a markdown editor:
+extend it for custom input types. Here's an example of extending it so
+you can use a markdown editor:
 
 ```clojure
-(ns grateful-place.frontend.components.ui.simplemde
+(ns sweet-tooth.todo-example.frontend.components.ui.simplemde
   (:require ["react-simplemde-editor" :default SimpleMDE]
-            [reagent.core :as r]
             [sweet-tooth.frontend.form.components :as stfc]))
 
 (defmethod stfc/input :simplemde
@@ -615,10 +620,25 @@ it in one project so that I could use a markdown editor:
                  :value    value}])
 ```
 
-Sweet Tooth provides all the machinery necessary for this new input
-type to participate in the form abstracton.
+To try this out, modify
+`sweet-tooth.todo-example.frontend.components.home` by changing
+`[input :text :todo-list/title ...]` to `[input :simplemde
+:todo-list/title ...]`
 
-`field` is a function (actually, a multimethod), which means it's a
+Sweet Tooth provides all the machinery necessary for this new input
+type to participate in the form abstracton! You, the developer, don't
+have to agonize over whether to use global or local state, or
+otherwise figure out how to get your custom input component to play
+with the rest of your form.
+
+#### Aside: The Global State Atom and Composition
+
+I think of this as similar to how OS shells provide the machinery for
+easy process composition via piping. When a shell starts a process, it
+
+These communication conventions enable composition. That's what I've 
+
+`input` is a function (actually, a multimethod), which means it's a
 reagent component. Its purpose is to provide some common chrome around
 input elements: it adds a label and displays error messages, among
 other things. Try submitting the form with the input empty to see an

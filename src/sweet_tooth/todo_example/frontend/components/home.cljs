@@ -4,7 +4,8 @@
             [sweet-tooth.frontend.form.components :as stfc]
             [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.frontend.routes :as stfr]
-            [sweet-tooth.todo-example.frontend.components.ui :as ui]))
+            [sweet-tooth.todo-example.frontend.components.ui :as ui]
+            [sweet-tooth.todo-example.frontend.components.ui.simplemde]))
 
 
 (defn component

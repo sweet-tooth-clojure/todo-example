@@ -298,3 +298,6 @@ input[type=submit] + .activity-indicator {
     color: $hot;
   }
 }
+
+@import "vendor/simplemde.min";
+@import "vendor/simplemde.custom";

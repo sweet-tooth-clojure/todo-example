@@ -77,6 +77,7 @@ if necessary, move them to sweet tooth and document them
 - should redirect you to home page
 ** DONE disable double-submit
 ** DONE simplify shadow / don't use local path / get rid of deps.edn?
+** TODO fix flash of form while loading home page
 ** TODO add check boxes with an animation
 ** TODO multiple users
 ** TODO specmonstah schema and data gen
