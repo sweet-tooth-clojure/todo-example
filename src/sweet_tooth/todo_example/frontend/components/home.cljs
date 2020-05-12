@@ -20,7 +20,7 @@
                                     :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
                                                            [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                                            [:focus-element "#todo-list-title" 100]]}}})
-           [field :text :todo-list/title
+           [input :text :todo-list/title
             {:id          "todo-list-title"
              :placeholder "new to-do list title"
              :no-label    true}]

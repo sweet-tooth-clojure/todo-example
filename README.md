@@ -547,7 +547,82 @@ components that update that form state.
 
 #### Input components
 
+In the form `(stfc/with-form [:home-new-todo-list :create])`,
+`with-form` is a macro (the only one in the frontend lib!) that
+creates a bunch of bindings. If you really, really, really hate that,
+like with a passion, then you can use the function `stfc/form` and
+destructure the bindings yourself.
 
+One of the values it binds is the `input` component. The form uses it
+like this:
+
+```clojure
+[input :text :todo-list/title
+ {:id          "todo-list-title"
+  :placeholder "new to-do list title"
+  :no-label    true}]
+```
+
+Earlier I said that what you type gets stored in the global app
+db. However, there aren't any callbacks here: no `:on-change`, no
+`:on-keyup`, nothing! How does `input` do it?
+
+The overall strategy is to create a partialized function, `input`,
+that closes over the value `[:home-new-todo-list :create]`. `input`
+uses that value, along with the argument `:todo-list/title`, to create
+event handlers that will update the attribute's value in the global
+state atom at the path `[:form :home-new-todo-list :create :buffer
+:todo-list/title]`. It likewise creates subscriptions for the
+attribute's buffer and its errors.
+
+These subscriptions and event handlers are wired up with an actual
+input component. The result - the return value of the `input`
+function/component - resembles something like the one of the following:
+
+```clojure
+[:input {:type text
+         :on-change (fn [event]
+                      (update-buffer [:home-new-todo-list :create]
+                                     :todo-list/title
+                                     event))}]
+[:textarea {:on-change (fn [event]
+                         (update-buffer [:home-new-todo-list :create]
+                                        :todo-list/title
+                                        event))}]
+```
+
+How does the `input` component know which element (text input,
+checkbox, textarea, select, etc.) to use? The `input` component,
+introduced in a let binding by the `stfc/with-form` macro, returns a
+form component by dispatching to the `stfc/input` multimethod. When
+you put `[input :text :todo-list/title]`, the `stfc/input` multimethod
+dispatches on `:text`, resulting in `[:input {:type :text}]`.
+
+The multimethod is extended for `:textarea`, `:select`, `:radio`, and
+more. What's really, really freaking cool though is that you can
+extend it for custom input types. Here's an example of how I extended
+it in one project so that I could use a markdown editor:
+
+```clojure
+(ns grateful-place.frontend.components.ui.simplemde
+  (:require ["react-simplemde-editor" :default SimpleMDE]
+            [reagent.core :as r]
+            [sweet-tooth.frontend.form.components :as stfc]))
+
+(defmethod stfc/input :simplemde
+  [{:keys [partial-form-path attr-path value]}]
+  [:> SimpleMDE {:onChange (fn [val] (stfc/dispatch-new-val partial-form-path attr-path val))
+                 :value    value}])
+```
+
+Sweet Tooth provides all the machinery necessary for this new input
+type to participate in the form abstracton.
+
+`field` is a function (actually, a multimethod), which means it's a
+reagent component. Its purpose is to provide some common chrome around
+input elements: it adds a label and displays error messages, among
+other things. Try submitting the form with the input empty to see an
+error message.
 
 #### Submitting the form
 
