@@ -548,7 +548,7 @@ Forms are represented as a map with the following keys:
   view. Or something.
 
 Now that we know how we represent forms, let's look at the input
-components that update that form state.
+components and how they update form state.
 
 #### Input components
 
@@ -598,16 +598,24 @@ function/component—resembles something like the one of the following:
 
 How does the `input` component know which element (text input,
 checkbox, textarea, select, etc.) to use? The `input` component,
-introduced in a let binding by the `stfc/with-form` macro, returns a
-form component by dispatching to the `stfc/input` multimethod. When
-you put `[input :text :todo-list/title]` in your code, it calls the
-the `stfc/input` multimethod internally, which dispatches on `:text`,
+introduced in a let binding by the `stfc/with-form` macro, calls the
+`stfc/input` multimethod internally. The code `[input :text
+:todo-list/title]` calls `stfc/input`, which dispatches on `:text`,
 resulting in `[:input {:type :text}]`.
 
-The multimethod is extended for `:textarea`, `:select`, `:radio`, and
-more. What's really, really freaking cool though is that you can
-extend it for custom input types. Here's an example of extending it so
-you can use a markdown editor:
+This might be a little confusing because I'm using the name `input` in
+multiple contexts, and it has a different meaning in each one. Let's
+break it down:
+
+* `stfc/with-form`, a macro, expands to create a `let` binding that
+  binds a function to `input`. With Reagent, functions are
+  components. We use `input` as a component for form inputs.
+* `stfc/input` is a multimethod that returns a form element
+
+The `stfc/input` multimethod is extended for `:textarea`, `:select`,
+`:radio`, and more. What's really, really freaking cool though is that
+you can extend it for custom input types. Here's an example of
+extending it so you can use a markdown editor:
 
 ```clojure
 (ns sweet-tooth.todo-example.frontend.components.ui.simplemde
