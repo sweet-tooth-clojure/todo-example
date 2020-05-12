@@ -13,13 +13,17 @@ list app.
 My dream for Sweet Tooth is to make it easier, faster, and funner for
 developers like you to get your ideas into production.
 
-It does this by supporting common use cases like form handling,
-navigation, and handling API calls. These use cases are not particular
-to the app you're trying to build, but as a Clojurian you've likely
-had to figure them out for yourself when building an SPA. In the same
-way that you shouldn't have to write your own filesystem when making a
-desktop app, you shouldn't have to write your own form handling system
-to launch your cool idea.
+Swet Tooth does this by giving you the tools to deal with common SPA
+concerns like handling forms, configuring routing and navigation, and
+managing API calls. These use cases are not particular to the app
+you're trying to build, but as a Clojurian you've likely had to figure
+them out for yourself when building an SPA. In the same way that you
+shouldn't have to write your own filesystem when making a desktop app,
+you shouldn't have to write your own form handling system to launch
+your cool idea. (BTW - word on the street is in the 80's a new OS
+would the street [every month or
+so](https://twitter.com/GeePawHill/status/1256342997643526151),
+supporting my thesis that operating systems are frameworks.)
 
 I've tried to write Sweet Tooth so that using it doesn't lock you into
 some weird, arcane world the way some frameworks do. It's built on top
@@ -32,7 +36,10 @@ can be structured as text, text can be structured as JSON, and JSON
 can be structured as transit. Each additional degree of structure
 gives you added power while requiring more special-purpose tools. Your
 YAML tools won't work on a JSON file. However, you can still use the
-lower-level tools; `sed` and `awk` work just fine.
+lower-level tools; `sed` and `awk` work just fine. For more on my
+underlying approach to framework development, see [Frameworks and Why
+(Clojure) Programmers Need
+Them](http://flyingmachinestudios.com/programming/why-programmers-need-frameworks/)
 
 Eventually, I'd like to make it dramatically easier for beginners to
 make cool stuff and show it to their friends and family. For that
@@ -463,17 +470,84 @@ Form handling is one of those corners of SPA development that's ripe
 for frameworking: it's somewhat tedious and difficult to get right,
 and time spent on it takes away from spending time on building your
 product. Sweet Tooth has a featureful, extensible system for working
-with forms.
+with forms. The form system consists of:
+
+* Form represenation, both the shape of form data and the convention
+  for storing forms in the global state app
+* The component system for building form inputs
+* The set of handlers for updating form data
+* The set of callbacks for form state transitions
+
+To ground the discussion, let's look at the small form found in the
+`sweet-tooth.todo-example.frontend.components.home` namespace:
+
+```clojure
+(stfc/with-form [:home-new-todo-list :create]
+  [:form (on-submit {:sync {:route-name :todo-lists
+                            :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                                   [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
+                                                   [:focus-element "#todo-list-title" 100]]}}})
+   [field :text :todo-list/title
+    {:id          "todo-list-title"
+     :placeholder "new to-do list title"
+     :no-label    true}]
+   [:input {:type "submit" :value "create to-do list"}]
+   [ui/form-state-feedback form]])
+```
+
+You'll notice some peculiarties: What is `stfc/with-form`? Where did
+`field` come from - there's no binding for it in sight? And `form`, in
+the last line?
+
+I'll answer those questions, but first let's focus on answering more
+basic questions: How does this form manage state so that it can submit
+input to the backend? The first step to answering that is looking at
+how forms are stored in the global state atom:
 
 #### Form representation
 
-- form keys
-- path in db
-- global state atom as filesystem
-- conventions
-- loose coupling
+Form state is stored in the global state atom under `[:form :the :form
+:name]`. In the example above, the form state is stored under `[:form
+:home-new-todo-list :create]`. You can check that for yourself by
+hitting `Ctrl-h` when viewing the to-do list app in your browser; this
+should open the [re-frame 10x](https://github.com/day8/re-frame-10x)
+dashboard. If you click on the app-db link and enter the bath above,
+you should see values get updated when you type.
+
+Forms are represented as a map with the following keys:
+
+* `:buffer` is a map that stores the current state of form
+  inputs. When you type into the input element, whatever you type gets
+  put here. The example above shows the component `[field :text
+  :todo-list/title ...]`. Its value is stored under `[:buffer
+  :todo-list/title]` in the form map. The buffer map's keys are
+  _attributes_. For example, I will refer to `:todo-list/title` as an
+  attribute.
+* `:base` is a map that can be used to reset a form or discard
+  changes.
+* `:errors` is a map where keys are form attributes and
+  values are error messages.
+* `:input-events` is used to control the display of error
+  messages. For example: if you're typing into a password confirmation
+  input, the field is invalid as you type, but you don't want to
+  display error messages until the input loses focus (unless you want
+  to come off as extremely aggressive).
+* `:state` refers to the form's submission state: unsubmitted, active,
+  success. I think. I'm not sure this is a good idea.
+* `:ui-state` This is a convenience for when you want to, say,
+  show/hide a form. I'm not sure this is a good idea either, but
+  associating ui state with a form makes it easy to completely reset a
+  form. For example, when you navigate out of a view where you've
+  shown a form, you might want to completely reset the form state so
+  that the form isn't showing the next time you navigate to that
+  view. Or something.
+
+Now that we know how we represent forms, let's look at the input
+components that update that form state.
 
 #### Input components
+
+
 
 #### Submitting the form
 
