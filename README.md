@@ -477,7 +477,6 @@ with forms. The form system consists of:
 * The component system for building form inputs
 * The set of handlers for updating form data
 * Form submission
-* The set of callbacks for form state transitions
 
 To ground the discussion, let's look at the small form found in the
 `sweet-tooth.todo-example.frontend.components.home` namespace:
@@ -670,8 +669,129 @@ with the rest of your form.
 
 ### Submitting the form
 
+Let's look at the full form again:
+
+```clojure
+(stfc/with-form [:todo-lists :create]
+  [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                           [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
+                                           [:focus-element "#todo-list-title" 100]]}}})
+   [input :text :todo-list/title
+    {:id          "todo-list-title"
+     :placeholder "new to-do list title"
+     :no-label    true}]
+   [:input {:type "submit" :value "create to-do list"}]
+   [ui/form-state-feedback form]])
+```
+
+`on-submit` is a function created by `stfc/with-form` that returns an
+`:on-submit` event handler when called. Evaluating it with the above
+arguments yields essentially:
+
+```clojure
+{:on-submit
+ #(rf/dispatch [::stff/submit-form
+                [:todo-lists :create]
+                {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                       [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
+                                       [:focus-element "#todo-list-title" 100]]}}}])}
+```
+
+The `::stff/submit-form` event handler does a couple things:
+
+* Changes the form's `:state` to `:submitting`
+* Dispatches an API call with the current value of the form's buffer
+
+Notice that you don't have to pass in the data to be
+submitted. Instead, the `::stff/submit-form` event handler takes the
+form's name, `[:todo-lists :create]`, and uses that to look up the
+form's buffer. This is what you get when you let a framework introduce
+a few conventions about how to structure your data.
+
+The second argument to the `::stff/submit-form` event handler, `{:sync
+...}` is an options map. I don't remember _all_ the keywords it
+expects, and because I am a foolish, foolish man I haven't added specs
+for yet. However, it definitely does use `:sync` to specify re-frame
+events to dispatch when the API call succeeds or fails, as you can see
+in the snippet above.
+
+TODO: explain the success callback. Explain syncing.
 
 ### Displaying an activity indicator
+
+The last line of the form has:
+
+```clojure
+[ui/form-state-feedback form]
+```
+
+This component displays a spinning activity indicator while the form
+is submitting. If the API call is successful, then a little checkmark
+with the word `success!` appears. You actually won't see the success
+message because you get redirected to the new to-do page on success,
+but you can see the success message if you create to-dos, or create a
+to-do list using the form in the left column.
+
+The `form` argument above is a map that holds subscriptions produced
+by `stfc/with-form`, including `sync-active?` and
+`state-success?`. These are passed to a couple components, which you
+can see in the  `sweet-tooth.todo-example.frontend.components.ui`
+namespace:
+
+```clojure
+(def activity-icon [:i.fas.fa-spinner.fa-pulse.activity-indicator])
+
+(defn submitting-indicator
+  [sync-active?]
+  (when @sync-active? activity-icon))
+
+(defn success-indicator
+  [state-success? & [opts]]
+  (let [expiring-state-success? (stcu/expiring-reaction state-success? 1000)]
+    (fn [_state-success? & [opts]]
+      [:> TransitionGroup
+       {:component "span"
+        :className (or (:class opts) "success")}
+       (when @expiring-state-success?
+         [:> CSSTransition
+          {:classNames "fade"
+           :timeout    300}
+          [:span [:i.fas.fa-check-circle] [:span.success-message " success!"]]])])))
+
+(defn form-state-feedback
+  [{:keys [sync-active? state-success?]}]
+  [:span.activity-indicator
+   [submitting-indicator sync-active?]
+   [success-indicator state-success?]])
+```
+
+The more interesting component is `success-indicator`, which uses the
+helper `(stcu/expiring-reaction state-success? 1000)` to create a
+reaction `A'` over a given reaction `A` that reverts to `nil` (or a
+specified value) after a timeout. It's how the success message fades
+out after 1 second.
+
+The bigger story here is that Sweet Tooth gives you all the resources
+you need to provide this kind of feedback. Every form you create will
+have `sync-active?` and `state-success?` subscriptions that are
+directly tied to that form, and you can use them to build generic
+components that provide useful feedback to your users.
+
+### Form Recap
+
+Sweet Tooth's form system has even more capabilities than I've
+covered, but you've at least gotten a view of the fundamentals:
+
+* Each form is given a name, and the form's data is stored by
+  convention under the `:form` "directory" in the global state atom
+* Forms are represented as maps, and the `:buffer` key contains the
+  current values for inptus
+* Form components and subscriptions are created and bound by
+  `stfc/with-form`. These values close over the form's name and rely
+  on the framework's organization conventions to update and retrieve
+  form attribute values
+* Form subscriptions can be used to create form state feedback
+  components
 
 ## notes to self
 
