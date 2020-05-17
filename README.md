@@ -108,7 +108,7 @@ In even these two simple steps there's a lot going on, including:
 
 Let's dig in!
 
-### Initial Rendering
+## Initial Rendering
 
 What's involved in displaying the initial form and sidebar? If you
 look in the `sweet-tooth.todo-example.frontend.core` namespace, you'll
@@ -378,7 +378,7 @@ component in `sweet-tooth.todo-example.frontend.core`:
   reloaded changes"
   []
   (mm/meta-merge stconfig/default-config
-                 {::stfr/frontend-router {:use    :reitit ;; <--- There it is!
+                 {::stfr/frontend-router {:use    :reitit
                                           :routes froutes/frontend-routes}
                   ::stfr/sync-router     {:use    :reitit
                                           :routes (ig/ref ::eroutes/routes)}
@@ -464,7 +464,7 @@ Now we have all the pieces to solve the puzzle:
    `:component` key for the current route in the app db.
 5. Those components get rendered.
 
-### Form Handlng
+## Form Handlng
 
 Form handling is one of those corners of SPA development that's ripe
 for frameworking: it's somewhat tedious and difficult to get right,
@@ -510,7 +510,7 @@ basic questions: How does this form manage state so that it can submit
 input to the backend? The first step to answering that is looking at
 how forms are stored in the global state atom:
 
-#### Form representation
+### Form representation
 
 Form state is stored in the global state atom under `[:form :the :form
 :name]`. In the example above, the form state is stored under `[:form
@@ -552,7 +552,7 @@ Forms are represented as a map with the following keys:
 Now that we know how we represent forms, let's look at the input
 components and how they update form state.
 
-#### Input components
+### Input components
 
 Input components need to:
 
@@ -661,7 +661,7 @@ have to agonize over whether to use global or local state, or
 otherwise figure out how to get your custom input component to play
 with the rest of your form.
 
-#### Aside: The Global State Atom and Composition
+### Aside: The Global State Atom and Composition
 
 I think of this as similar to how OS shells provide the machinery for
 easy process composition via piping. When a shell starts a process, it
