@@ -607,15 +607,15 @@ lib!—that creates a bunch of bindings. (If you really, really, really
 hate that, like with a passion, then you can use the function
 `stfc/form` and destructure the bindings yourself.)
 
-One of the values it binds is the `input` function. `input` closes
-over the form's name, `[:home-new-todo-list :create]`. `input` uses
-that name and the argument `:todo-list/title` to create event handlers
-that will update the attribute's value in the global state atom at the
-path `[:form :home-new-todo-list :create :buffer
-:todo-list/title]`. It likewise creates subscriptions for the
-attribute's buffer and its errors. These subscriptions and
-handlers are composed in a map and passed to the multimethod
-`stfc/input-type-opts`.
+One of the values it binds is the `input` function. (Functions are
+Reagent components. This is completely badass.) `input` closes over
+the form's name, `[:home-new-todo-list :create]`. `input` uses that
+name and the argument `:todo-list/title` to create event handlers that
+will update the attribute's value in the global state atom at the path
+`[:form :home-new-todo-list :create :buffer :todo-list/title]`. It
+likewise creates subscriptions for the attribute's buffer and its
+errors. These subscriptions and handlers are composed in a map and
+passed to the multimethod `stfc/input-type-opts`.
 
 `stfc/input-type-opts` is implemented for different input types:
 `:text`, `:checkbox`, etc. This multimethod performs any
@@ -661,22 +661,9 @@ have to agonize over whether to use global or local state, or
 otherwise figure out how to get your custom input component to play
 with the rest of your form.
 
-### Aside: The Global State Atom and Composition
+### Submitting the form
 
-I think of this as similar to how OS shells provide the machinery for
-easy process composition via piping. When a shell starts a process, it
-
-These communication conventions enable composition. That's what I've 
-
-`input` is a function (actually, a multimethod), which means it's a
-reagent component. Its purpose is to provide some common chrome around
-input elements: it adds a label and displays error messages, among
-other things. Try submitting the form with the input empty to see an
-error message.
-
-#### Submitting the form
-
-#### Displaying an activity indicator
+### Displaying an activity indicator
 
 
 
