@@ -476,6 +476,7 @@ with forms. The form system consists of:
   for storing forms in the global state app
 * The component system for building form inputs
 * The set of handlers for updating form data
+* Form submission
 * The set of callbacks for form state transitions
 
 To ground the discussion, let's look at the small form found in the
@@ -513,11 +514,12 @@ how forms are stored in the global state atom:
 
 Form state is stored in the global state atom under `[:form :the :form
 :name]`. In the example above, the form state is stored under `[:form
-:home-new-todo-list :create]`. You can check that for yourself by
-hitting `Ctrl-h` when viewing the to-do list app in your browser; this
-should open the [re-frame 10x](https://github.com/day8/re-frame-10x)
-dashboard. If you click on the app-db link and enter the bath above,
-you should see values get updated when you type.
+:home-new-todo-list :create]`. (I'll refer to this as the form's
+name.) You can check that for yourself by hitting `Ctrl-h` when
+viewing the to-do list app in your browser; this should open the
+[re-frame 10x](https://github.com/day8/re-frame-10x) dashboard. If you
+click on the app-db link and enter the bath above, you should see
+values get updated when you type.
 
 Forms are represented as a map with the following keys:
 
@@ -573,12 +575,12 @@ db. However, there aren't any callbacks here: no `:on-change`, no
 `:on-keyup`, nothing! How does `input` do it?
 
 The overall strategy is to create a partialized function, `input`,
-that closes over the value `[:home-new-todo-list :create]`. `input`
-uses that value, along with the argument `:todo-list/title`, to create
-event handlers that will update the attribute's value in the global
-state atom at the path `[:form :home-new-todo-list :create :buffer
-:todo-list/title]`. It likewise creates subscriptions for the
-attribute's buffer and its errors.
+that closes over the form's name, `[:home-new-todo-list
+:create]`. `input` uses that name, along with the argument
+`:todo-list/title`, to create event handlers that will update the
+attribute's value in the global state atom at the path `[:form
+:home-new-todo-list :create :buffer :todo-list/title]`. It likewise
+creates subscriptions for the attribute's buffer and its errors.
 
 These subscriptions and event handlers are wired up to an HTML form
 element. The result—the return value of the `input`
@@ -597,25 +599,29 @@ function/component—resembles something like the one of the following:
 ```
 
 How does the `input` component know which element (text input,
-checkbox, textarea, select, etc.) to use? The `input` component,
-introduced in a let binding by the `stfc/with-form` macro, calls the
-`stfc/input` multimethod internally. The code `[input :text
-:todo-list/title]` calls `stfc/input`, which dispatches on `:text`,
-resulting in `[:input {:type :text}]`.
+checkbox, textarea, select, etc.) to use? It calls the `stfc/input`
+multimethod internally. The code `[input :text :todo-list/title]`
+calls `stfc/input`, which dispatches on `:text`, resulting in `[:input
+{:type :text}]`.
 
 This might be a little confusing because I'm using the name `input` in
 multiple contexts, and it has a different meaning in each one. Let's
 break it down:
 
 * `stfc/with-form`, a macro, expands to create a `let` binding that
-  binds a function to `input`. With Reagent, functions are
+  binds a function to the symbol `input`. With Reagent, functions are
   components. We use `input` as a component for form inputs.
-* `stfc/input` is a multimethod that returns a form element
+* `stfc/input` is a multimethod that dispatches on keywords like
+  `:text` and `:select` to returns the appropriate form element. The
+  `input` component calls `stfc/input`. `input`'s responsibility is to
+  compose options on like `:on-change` to pass to `stfc/input`.
+* `stfc/input` returns `[:input ...]`, `[:select ...]`, `[:textarea
+  ..]`, etc.
 
 The `stfc/input` multimethod is extended for `:textarea`, `:select`,
-`:radio`, and more. What's really, really freaking cool though is that
-you can extend it for custom input types. Here's an example of
-extending it so you can use a markdown editor:
+`:radio`, and more. What's cool is that you can extend it for custom
+input types. Here's an example of extending it so you can use a
+markdown editor:
 
 ```clojure
 (ns sweet-tooth.todo-example.frontend.components.ui.simplemde
