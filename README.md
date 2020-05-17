@@ -554,14 +554,15 @@ components and how they update form state.
 
 #### Input components
 
-In the exprsesion `(stfc/with-form [:home-new-todo-list :create])`,
-`with-form` is a macro—the only one in Sweet Tooth's frontend
-lib!—that creates a bunch of bindings. (If you really, really, really
-hate that, like with a passion, then you can use the function
-`stfc/form` and destructure the bindings yourself.)
+Input components need to:
 
-One of the values it binds is the `input` component. The form uses it
-like this:
+* Store their value somewhere
+* Update their value in response to... well, input
+* Display their value
+
+Sweet Tooth provides tools to create input components that manage
+these tasks consistently, unobtrusively, and extensibly. Look at the
+how the to-do list title input is defined:
 
 ```clojure
 [input :text :todo-list/title
@@ -570,58 +571,73 @@ like this:
   :no-label    true}]
 ```
 
-Earlier I said that what you type gets stored in the global app
-db. However, there aren't any callbacks here: no `:on-change`, no
-`:on-keyup`, nothing! How does `input` do it?
+This works with no `:value` or `:on-change` in sight, which is as it
+should be; those are details that should be handled for you, and
+shouldn't have to clutter your code with them. But how does `input`
+achieve this? That's what we'll look at in this section.
 
-The overall strategy is to create a partialized function, `input`,
-that closes over the form's name, `[:home-new-todo-list
-:create]`. `input` uses that name, along with the argument
-`:todo-list/title`, to create event handlers that will update the
-attribute's value in the global state atom at the path `[:form
-:home-new-todo-list :create :buffer :todo-list/title]`. It likewise
-creates subscriptions for the attribute's buffer and its errors.
+The high level strategy is:
 
-These subscriptions and event handlers are wired up to an HTML form
-element. The result—the return value of the `input`
-function/component—resembles something like the one of the following:
+1. Create event handlers and subscriptions that are common to all
+   input components. I'll refer to these as _input options_.
+2. Modify input options according to an input's type as
+   necessary. For example, with most inputs you display the current
+   value by providing a `:value` key. With checkboxes and radio
+   buttons, though you instead provide a `:checked` key.
+3. Pass the input options to the appropriate components. `:text`,
+   `:password`, and `:number` input types can all be handled with a
+   `[:input input-opts]` HTML element, but a `:select` needs special
+   handling.
+
+To see how Sweet Tooth implements this strategy, let's look at the
+input component in context:
 
 ```clojure
-[:input {:type text
-         :on-change (fn [event]
-                      (update-buffer [:home-new-todo-list :create]
-                                     :todo-list/title
-                                     event))}]
-[:textarea {:on-change (fn [event]
-                         (update-buffer [:home-new-todo-list :create]
-                                        :todo-list/title
-                                        event))}]
+(stfc/with-form [:home-new-todo-list :create]
+  [:form
+   [input :text :todo-list/title
+    {:id          "todo-list-title"
+     :placeholder "new to-do list title"
+     :no-label    true}]])
 ```
 
-How does the `input` component know which element (text input,
-checkbox, textarea, select, etc.) to use? It calls the `stfc/input`
-multimethod internally. The code `[input :text :todo-list/title]`
-calls `stfc/input`, which dispatches on `:text`, resulting in `[:input
-{:type :text}]`.
+In the expression `(stfc/with-form [:home-new-todo-list :create])`,
+`with-form` is a macro—the only one in Sweet Tooth's frontend
+lib!—that creates a bunch of bindings. (If you really, really, really
+hate that, like with a passion, then you can use the function
+`stfc/form` and destructure the bindings yourself.)
 
-This might be a little confusing because I'm using the name `input` in
-multiple contexts, and it has a different meaning in each one. Let's
-break it down:
+One of the values it binds is the `input` function. `input` closes
+over the form's name, `[:home-new-todo-list :create]`. `input` uses
+that name and the argument `:todo-list/title` to create event handlers
+that will update the attribute's value in the global state atom at the
+path `[:form :home-new-todo-list :create :buffer
+:todo-list/title]`. It likewise creates subscriptions for the
+attribute's buffer and its errors. These subscriptions and
+handlers are composed in a map and passed to the multimethod
+`stfc/input-type-opts`.
 
-* `stfc/with-form`, a macro, expands to create a `let` binding that
-  binds a function to the symbol `input`. With Reagent, functions are
-  components. We use `input` as a component for form inputs.
-* `stfc/input` is a multimethod that dispatches on keywords like
-  `:text` and `:select` to returns the appropriate form element. The
-  `input` component calls `stfc/input`. `input`'s responsibility is to
-  compose options on like `:on-change` to pass to `stfc/input`.
-* `stfc/input` returns `[:input ...]`, `[:select ...]`, `[:textarea
-  ..]`, etc.
+`stfc/input-type-opts` is implemented for different input types:
+`:text`, `:checkbox`, etc. This multimethod performs any
+transformations necessary so that the generic form subscriptions and
+handlers will work with the specified input type. For example, the
+`:checkbox` implementation returns a `:default-checked` key instead of
+a `:value` key.
 
-The `stfc/input` multimethod is extended for `:textarea`, `:select`,
-`:radio`, and more. What's cool is that you can extend it for custom
-input types. Here's an example of extending it so you can use a
-markdown editor:
+The `input` function takes the updated options from
+`stfc/input-type-opts` and passes them to the multimethod
+`stfc/input`.  `stfc/input` is implemented for different input
+elements like `<select>`, `<textarea>`, etc.
+
+So that explains what I mean when I say that Sweet Tooth's input
+component system is _consistent_ and _unobtrusive_: all form inputs
+are managed using the same tools, and the implementation details are
+in the background where they belong (you don't have to pass
+`:on-change` to `input` unless you want custom behavior.)
+
+The system is _extensible_ in that you can use these tools for custom
+input types, which I think is pretty cool. Here's an example of
+extending `stfc/input` so you can use a markdown editor:
 
 ```clojure
 (ns sweet-tooth.todo-example.frontend.components.ui.simplemde
