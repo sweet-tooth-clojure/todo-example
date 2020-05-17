@@ -617,8 +617,8 @@ likewise creates subscriptions for the attribute's buffer and its
 errors. These subscriptions and handlers are composed in a map and
 passed to the multimethod `stfc/input-type-opts`.
 
-`stfc/input-type-opts` is implemented for different input types:
-`:text`, `:checkbox`, etc. This multimethod performs any
+`stfc/input-type-opts` is implemented for different input types as
+needed: `:checkbox`, `:date`, etc. This multimethod performs any
 transformations necessary so that the generic form subscriptions and
 handlers will work with the specified input type. For example, the
 `:checkbox` implementation returns a `:default-checked` key instead of
@@ -664,8 +664,6 @@ with the rest of your form.
 ### Submitting the form
 
 ### Displaying an activity indicator
-
-
 
 ## notes to self
 
