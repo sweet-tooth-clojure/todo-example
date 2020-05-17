@@ -16,11 +16,10 @@
        [:div.new-todo-list
         [:h1 "Welcome!"]
         [:div "To get started, create a new to-do list:"]
-        (stfc/with-form [:home-new-todo-list :create]
-          [:form (on-submit {:sync {:route-name :todo-lists
-                                    :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
-                                                           [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
-                                                           [:focus-element "#todo-list-title" 100]]}}})
+        (stfc/with-form [:todo-lists :create]
+          [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                                   [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
+                                                   [:focus-element "#todo-list-title" 100]]}}})
            [input :text :todo-list/title
             {:id          "todo-list-title"
              :placeholder "new to-do list title"

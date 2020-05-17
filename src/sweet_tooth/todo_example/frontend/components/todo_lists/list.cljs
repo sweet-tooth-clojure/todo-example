@@ -12,10 +12,11 @@
   (let [todo-lists        @(rf/subscribe [:todo-lists])
         current-todo-list @(rf/subscribe [:routed-todo-list])]
     [:div.todo-lists
-     (stfc/with-form [:todo-lists :create]
-       [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
-                                                [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
-                                                [:focus-element "#todo-list-title" 100]]}}})
+     (stfc/with-form [:sidebar-new-todo-list :create]
+       [:form (on-submit {:sync {:route-name :todo-lists
+                                 :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                                        [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
+                                                        [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title
          {:id          "todo-list-title"
           :placeholder "new to-do list title"
