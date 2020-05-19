@@ -35,7 +35,7 @@ The analogy I've had in mind is taken from the way we use files: files
 can be structured as text, text can be structured as JSON, and JSON
 can be structured as transit. Each additional degree of structure
 gives you added power while requiring more special-purpose tools. Your
-YAML tools won't work on a JSON file. However, you can still use the
+XML tools won't work on a JSON file. However, you can still use the
 lower-level tools; `sed` and `awk` work just fine. For more on my
 underlying approach to framework development, see [Frameworks and Why
 (Clojure) Programmers Need
