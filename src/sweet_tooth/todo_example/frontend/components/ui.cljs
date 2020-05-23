@@ -1,5 +1,5 @@
 (ns sweet-tooth.todo-example.frontend.components.ui
-  (:require [reagent.core :as r]
+  (:require [reagent.dom :as rdom]
             [clojure.string :as str]
             ["react-transition-group/TransitionGroup" :as TransitionGroup]
             ["react-transition-group/CSSTransition" :as CSSTransition]
@@ -14,7 +14,7 @@
     (with-meta (fn [] component)
       {:component-did-mount
        (fn [el]
-         (let [dom-node (r/dom-node el)
+         (let [dom-node (rdom/dom-node el)
                node     (if (= (str/lower-case tag-name) (str/lower-case (u/go-get dom-node ["tagName"])))
                           dom-node
                           (first (.getElementsByTagName dom-node tag-name)))]

@@ -1,5 +1,5 @@
 (ns sweet-tooth.todo-example.frontend.core
-  (:require [reagent.core :as r]
+  (:require [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [re-frame.db :as rfdb]
             [integrant.core :as ig]
@@ -46,7 +46,7 @@
 (defn -main []
   (rf/dispatch-sync [::stcf/init-system (system-config)])
   (rf/dispatch-sync [::stnf/dispatch-current])
-  (r/render [app/app] (stcu/el-by-id "app")))
+  (rdom/render [app/app] (stcu/el-by-id "app")))
 
 (defonce initial-load (delay (-main)))
 @initial-load

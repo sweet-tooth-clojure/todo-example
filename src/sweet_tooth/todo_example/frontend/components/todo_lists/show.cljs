@@ -1,5 +1,6 @@
 (ns sweet-tooth.todo-example.frontend.components.todo-lists.show
   (:require [reagent.core :as r]
+            [reagent.dom :as rdom]
             [re-frame.core :as rf]
             [sweet-tooth.frontend.form.components :as stfc]
             [sweet-tooth.frontend.form.flow :as stff]
@@ -14,7 +15,7 @@
   form or its children to trigger the form close event."
   []
   (let [this (r/current-component)]
-    #(let [this-dom-node (r/dom-node this)
+    #(let [this-dom-node (rdom/dom-node this)
            target        (u/go-get % "target")]
        (when (or (= this-dom-node target)
                  (.contains this-dom-node target))
