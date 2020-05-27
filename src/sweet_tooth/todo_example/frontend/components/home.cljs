@@ -17,7 +17,7 @@
         [:h1 "Welcome!"]
         [:div "To get started, create a new to-do list:"]
         (stfc/with-form [:todo-lists :create]
-          [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+          [:form (on-submit {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                                    [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                                    [:focus-element "#todo-list-title" 100]]}}})
            [input :text :todo-list/title

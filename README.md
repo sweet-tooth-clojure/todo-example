@@ -483,7 +483,7 @@ To ground the discussion, let's look at the small form found in the
 
 ```clojure
 (stfc/with-form [:todo-lists :create]
-  [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+  [:form (on-submit {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                            [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                            [:focus-element "#todo-list-title" 100]]}}})
    [input :text :todo-list/title
@@ -673,7 +673,7 @@ Let's look at the full form again:
 
 ```clojure
 (stfc/with-form [:todo-lists :create]
-  [:form (on-submit {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+  [:form (on-submit {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                            [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                            [:focus-element "#todo-list-title" 100]]}}})
    [input :text :todo-list/title
@@ -692,7 +692,7 @@ arguments yields essentially:
 {:on-submit
  #(rf/dispatch [::stff/submit-form
                 [:todo-lists :create]
-                {:sync {:on {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                        [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                        [:focus-element "#todo-list-title" 100]]}}}])}
 ```

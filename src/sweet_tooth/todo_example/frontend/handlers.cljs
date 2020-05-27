@@ -73,7 +73,7 @@
     (let [form (paths/get-path db :form path)]
       (cond-> (close-form ctx args)
         (and (:ui-state form) (not= (:base form) (:buffer form)))
-        (assoc :dispatch [::stff/submit-form path {:sync {:on {:success [::stff/submit-form-success :$ctx {:clear [:buffer]}]}}}])))))
+        (assoc :dispatch [::stff/submit-form path])))))
 
 (rf/reg-event-fx :close-form
   [rf/trim-v]

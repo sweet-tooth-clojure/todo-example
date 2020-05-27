@@ -14,7 +14,7 @@
     [:div.todo-lists
      (stfc/with-form [:sidebar-new-todo-list :create]
        [:form (on-submit {:sync {:route-name :todo-lists
-                                 :on         {:success [[::stff/submit-form-success :$ctx {:clear [:buffer :ui-state]}]
+                                 :on         {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                                         [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                                         [:focus-element "#todo-list-title" 100]]}}})
         [field :text :todo-list/title

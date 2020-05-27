@@ -93,9 +93,7 @@
           (stfc/with-form [:todos :create]
             [:form.new-todo
              (on-submit {:data {:todo/todo-list (:db/id tl)}
-                         :sync {:on {:success [[::stff/submit-form-success
-                                                :$ctx
-                                                {:clear [:buffer :ui-state :input-events]}]
+                         :sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                                [:focus-element "#todo-title" 100]]}}})
              [field :text :todo/title {:placeholder    "new to-do"
                                        :id             "todo-title"
