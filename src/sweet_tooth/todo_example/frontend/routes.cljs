@@ -4,6 +4,7 @@
             [sweet-tooth.frontend.nav.flow :as stnf]
             [sweet-tooth.todo-example.cross.validate :as v]
             [sweet-tooth.todo-example.frontend.components.home :as h]
+            [sweet-tooth.todo-example.frontend.components.not-found :as nf]
             [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
             [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
             [sweet-tooth.todo-example.frontend.components.ui :as ui]
@@ -30,4 +31,7 @@
                   :main [tls/component]}
      :coercion   rs/coercion
      :parameters {:path (s/keys :req [:db/id])}
-     :title      "Todo List"}]])
+     :title      "Todo List"}]
+   ["/not-found"
+    {:name       ::stnf/not-found
+     :components {:main [nf/component]}}]])

@@ -12,7 +12,7 @@
             [sweet-tooth.todo-example.backend.duct :as app-duct] ;; for multimethod definitions
 
             [integrant.core :as ig]
-            [integrant.repl :refer [clear halt go init reset]]
+            [integrant.repl :as irp :refer [clear halt init reset]]
             [integrant.repl.state :refer [config system]]
 
             [sweet-tooth.endpoint.system :as es]
@@ -29,6 +29,11 @@
   (es/config :dev))
 
 (integrant.repl/set-prep! prep)
+
+(defn go
+  []
+  (irp/go)
+  (duct-repl/auto-reset))
 
 (defn db
   []
