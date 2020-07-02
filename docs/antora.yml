@@ -1,0 +1,5 @@
+name: Todo Example
+title: Todo Example
+version: dev
+nav:
+  - modules/ROOT/nav.adoc
