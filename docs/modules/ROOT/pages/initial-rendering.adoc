@@ -87,16 +87,13 @@ components. For most projects, your app must perform some kind of
 initialization process (to set up route handling, for example) to get
 to this point. How does a Sweet Tooth app do it?
 
-Briefly, Sweet Tooth provides a re-frame handler to initialize an
-[Integrant](https://github.com/weavejester/integrant[https://github.com/weavejester/integrant]) [underline]#system# (check
-out the Integrant docs for a description of what a system is and how
-Integrant provides a mechanism for starting and stopping
-components). The system includes a component for managing nav events,
-like loading the initial page or clicking a link. This nav component
-looks up the [underline]#route# for the current URL in a
-[reitit](https://github.com/metosin/reitit[https://github.com/metosin/reitit]) router. The route defines
-[underline]#lifecycle callbacks# and also defines which high-level components
-should get displayed.
+Briefly, Sweet Tooth provides a re-frame handler to initialize an https://github.com/weavejester/integrant[Integrant]
+_system_ (check out the Integrant docs for a description of what a system is and
+how Integrant provides a mechanism for starting and stopping components). The
+system includes a component for managing nav events, like loading the initial
+page or clicking a link. This nav component looks up the _route_ for the current
+URL in a https://github.com/metosin/reitit[reitit] router. The route defines _lifecycle callbacks_ and also defines
+which high-level components should get displayed.
 
 We'll look at each of these parts of the framework and how we use them
 in our app.
@@ -143,24 +140,20 @@ The first event is:
 ----
 
 `(system-config)` returns an Integrant config, a map describing a
-system where each key corresponds to the name of a [underline]#system component#
+system where each key corresponds to the name of a _system component_
 (as opposed to a React compononent) and each value is that component's
 configuration. Examples of system components include nav handlers that
 react to History events and web worker managers.
 
-Sweet Tooth comes with a bunch o' system components that are meant to
-make your life easier, and the default config for those components
-lives at `stconfig/default-config`. In the `system-config` function we
-merge the default Sweet Tooth config with our app's particular
-config. We use
-[`meta-merge`](https://github.com/weavejester/meta-merge[https://github.com/weavejester/meta-merge]) because of
-its support for deep merging and because of how it gives you some
-control over how the two values get merged.
+Sweet Tooth comes with a bunch o' system components that are meant to make your
+life easier, and the default config for those components lives at
+`stconfig/default-config`. In the `system-config` function we merge the default
+Sweet Tooth config with our app's particular config. We use https://github.com/weavejester/meta-merge[`meta-merge`] because
+of its support for deep merging and because of how it gives you some control
+over how the two values get merged.
 
-This system config is the payload for the `::stcf/init-system`
-event. This event [results in integrant getting
-called](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/core/flow.cljc#L123[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/core/flow.cljc#L123])
-to [underline]#initialize# the system:
+This system config is the payload for the `::stcf/init-system` event. This event
+https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/core/flow.cljc#L123[results in integrant getting called] to _initialize_ the system:
 
 [source,clojure]
 ----
@@ -188,7 +181,7 @@ necessary for it to be used, and then render the app proper once
 the system is ready. Integrant makes it a lot easier to determine
 when the system is ready.
 . Integrant has a very simple model for handling both initializing
-[underline]#and# halting a system. This is very useful for local development
+_and_ halting a system. This is very useful for local development
 with livereload when you have components that modify global state,
 for example by attaching event listeners to the window. Livereload
 can call `(ig/halt!)` on the system, giving each component to clean
@@ -213,13 +206,12 @@ process, the first step in the `-main` function:
 
 To understand the next step, `(rf/dispatch-sync
 [::stnf/dispatch-current])`, we'll take a closer look at Sweet Tooth's
-[underline]#nav handler# component.
+_nav handler_ component.
 
 
 == The nav handler component ==
 You can see the nav handler's default config in the
-[`sweet-tooth.frontend.config`](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs])
-namespace:
+https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs[`sweet-tooth.frontend.config`] namespace:
 
 [source,clojure]
 ----
@@ -229,14 +221,12 @@ namespace:
                  :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
 ----
 
-On initialization, it [uses an adapted version of the accountant
-library](https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26])
-to register javascript event handlers for nav events. These
-[underline]#javascript event# handlers will dispatch [underline]#re-frame events#; Sweet
-Tooth's default configuration, above, has the js event handlers
-dispatching the `::stnf/disptach-route` re-frame event by default. In
-extremely simplified pseudocode, it's as if the following gets
-evaluated when the nav component is initialized:
+On initialization, it https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26[uses an adapted version of the accountant library] to
+register javascript event handlers for nav events. These _javascript event_
+handlers will dispatch _re-frame events_; Sweet Tooth's default configuration,
+above, has the js event handlers dispatching the `::stnf/disptach-route`
+re-frame event by default. In extremely simplified pseudocode, it's as if the
+following gets evaluated when the nav component is initialized:
 
 [source,clojure]
 ----
@@ -247,11 +237,11 @@ evaluated when the nav component is initialized:
 and we don't need to go into all the details of how it works.
 Ultimately what it does is:
 
-. Figures out what [underline]#route# corresponds to the potential new URL
-proposed by the navigation event using a [underline]#router#. (I say
-[underline]#potential# URL because it's possible for nav events to get
+. Figures out what _route_ corresponds to the potential new URL
+proposed by the navigation event using a _router_. (I say
+_potential_ URL because it's possible for nav events to get
 rejected.)
-. Dispatches the route's [underline]#lifecycle callbacks#
+. Dispatches the route's _lifecycle callbacks_
 . Sets the currently active route in the re-frame app db
 
 In the -main function, we see `(rf/dispatch-sync
@@ -259,8 +249,8 @@ In the -main function, we see `(rf/dispatch-sync
 `::stnf/dispatch-route`; the only difference is that it operates on
 the current URL.
 
-To understand this process fully, we'll need to look at this router
-that I keep talking about.
+To understand this process fully, we'll need to look at this router that I keep
+talking about.
 
 
 == The router component ==
@@ -276,9 +266,9 @@ for the nav handler:
                  :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
 ----
 
-The config includes a [underline]#reference# to another component,
-`::stfr/frontend-router`. We actually saw the configuration for [underline]#that#
-component in `sweet-tooth.todo-example.frontend.core`:
+The config includes a _reference_ to another component,
+`::stfr/frontend-router`. We actually saw the configuration for _that_ component
+in `sweet-tooth.todo-example.frontend.core`:
 
 [source,clojure]
 ----
