@@ -6,13 +6,13 @@
             [sweet-tooth.todo-example.backend.db.validate :as v]))
 
 (def decisions
-  {:coll
+  {:collection
    {:get  {:handle-ok (comp tl/todo-lists ed/db)}
     :post {:malformed?     (v/validate-describe v/todo-list-rules)
            :post!          ed/create->:result
            :handle-created ed/created-pull}}
 
-   :ent
+   :member
    {;; TODO break this up, use exists? decision
     :get {:handle-ok (fn [ctx]
                        (when-let [todo-list (ed/pull-ctx-id ctx)]

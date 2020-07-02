@@ -18,25 +18,9 @@
   [_]
   (dissoc (prep [:duct.profile/test]) :duct.server.http/jetty))
 
-(defmethod es/config :integration
-  [_]
-  (prep [:duct.profile/test]))
-
 (defmethod es/config :dev
   [_]
   (prep [:duct.profile/dev :duct.profile/local]))
-
-(defmethod es/config :local-staging
-  [_]
-  (prep [:duct.profile/local-staging]))
-
-(defmethod es/config :staging
-  [_]
-  (prep [:duct.profile/staging]))
-
-(defmethod es/config :dev-email-test
-  [_]
-  (dissoc (prep [:duct.profile/dev]) :duct.server.http/jetty))
 
 (defmethod es/config :prod
   [_]

@@ -4,12 +4,12 @@
             [sweet-tooth.todo-example.cross.validate :as v]))
 
 (def decisions
-  {:coll
+  {:collection
    {:post {:malformed?     (el/validate-describe v/todo-rules)
            :post!          ed/create->:result
            :handle-created ed/created-pull}}
 
-   :ent
+   :member
    {:put {:put!      ed/update->:result
           :respond-with-entity? (fn [ctx]
                                   ;; don't return data if only updating :todo/done?

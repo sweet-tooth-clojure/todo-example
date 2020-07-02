@@ -8,7 +8,7 @@
          medley                           {:mvn/version "1.3.0"}
          metosin/reitit-spec              {:mvn/version "0.3.7"}
          sweet-tooth/describe             {:mvn/version "0.3.0"}
-         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.9.3"}}
+         sweet-tooth/sweet-tooth-endpoint {:mvn/version "0.10.5"}}
 
  :aliases
  {:dev        {:extra-deps {cider/cider-nrepl {:mvn/version "0.21.0"}
