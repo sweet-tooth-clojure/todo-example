@@ -59,11 +59,9 @@ overview, which I'll explain in detail in the sections that follow:
 2. One component is a /router/ that associates URL patterns with
 
    * What components to display
-   * Lifecycle callbacks that should get dispatched on entering or
-     exiting a route
-
-   (I haven't shown the router code that ties routes to components and
-   lifecycle callbacks, but I'll introduce you to it later.)
+   * Lifecycle callbacks that should get dispatched on entering or exiting a
+     route (I haven't shown the router code that ties routes to components and
+     lifecycle callbacks, but I'll introduce you to it later)
 3. Another component is a /nav handler/ that reacts to nav events by
    looking up the corresponding /route/, dispatching its lifecycle,
    and setting it as the current route in the appdb

@@ -13,9 +13,9 @@ of:
 - Form submission
 
 To ground the discussion, let's look at the small form found in the
-`sweet-tooth.todo-example.frontend.components.home` namespace:
+~sweet-tooth.todo-example.frontend.components.home~ namespace:
 
-```clojure
+#+BEGIN_SRC clojure
 (stfc/with-form [:todo-lists :create]
   [:form (on-submit {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                            [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
@@ -26,15 +26,15 @@ To ground the discussion, let's look at the small form found in the
      :no-label    true}]
    [:input {:type "submit" :value "create to-do list"}]
    [ui/form-state-feedback form]])
-```
+#+END_SRC
 
 (Side note: if you actually submit the form it will disappear. It only
 shows when you have no to-do lists. To get it back, evaluate
-`(recreate-db) (reset)` in the REPL from the `dev` namespace, then
+~(recreate-db) (reset)~ in the REPL from the ~dev~ namespace, then
 refresh localhost:3000).
 
-You'll notice some peculiarties: What is `stfc/with-form`? Where did
-`input` come from - there's no binding for it in sight? And `form`, in
+You'll notice some peculiarties: What is ~stfc/with-form~? Where did
+~input~ come from - there's no binding for it in sight? And ~form~, in
 the last line?
 
 I'll answer those questions, but first let's focus on answering more
@@ -44,53 +44,45 @@ how forms are stored in the global state atom:
 
 * Form representation
 
-The form shown above has its state stored in the global state atom
-under `[:form :todo-lists :create]`. You can check that for yourself
-by hitting `Ctrl-h` when viewing the to-do list app in your browser;
-this should open the [re-frame
-10x](https://github.com/day8/re-frame-10x) dashboard. If you click on
-the app-db link and enter the path above, you should see values get
-updated when you type.
+The form shown above has its state stored in the global state atom under ~[:form
+:todo-lists :create]~. You can check that for yourself by hitting ~Ctrl-h~ when
+viewing the to-do list app in your browser; this should open the [[https://github.com/day8/re-frame-10x][re-frame 10x]]
+dashboard. If you click on the app-db link and enter the path above, you should
+see values get updated when you type.
 
-If you think of the global state atom as a filesystem, forms are
-stored under the `:form` "directory" in the same way that logs are
-generally saved to `/var/log` on *nix systems. Files have names, and
-forms have names; the form above is named `[:todo-lists
-:create]`. This form name is closed over by event handlers and
-subscriptions created by `stfc/with-form`, making it possible to
+If you think of the global state atom as a filesystem, forms are stored under
+the ~:form~ "directory" in the same way that logs are generally saved to
+~/var/log~ on *nix systems. Files have names, and forms have names; the form
+above is named ~[:todo-lists :create]~. This form name is closed over by event
+handlers and subscriptions created by ~stfc/with-form~, making it possible to
 easily manage this particular form's state.
 
-So that's _where_ forms are stored. But what form data gets stored?
-Forms are represented as a map with the following keys:
+So that's /where/ forms are stored. But what form data gets stored? Forms are
+represented as a map with the following keys:
 
-- `:buffer` is a map that stores the current state of form
-  inputs. When you type into the input element, whatever you type gets
-  put here. The example above shows the component `[input :text
-  :todo-list/title ...]`. Its value is stored under `[:buffer
-  :todo-list/title]` in the form map. The buffer map's keys are
-  _attributes_. For example, I will refer to `:todo-list/title` as an
-  attribute.
-- `:base` is a map that can be used to reset a form or discard
-  changes.
-- `:errors` is a map where keys are form attributes and
-  values are error messages.
-- `:input-events` is used to control the display of error
-  messages. For example: if you're typing into a password confirmation
-  input, the field is invalid as you type, but you don't want to
-  display error messages until the input loses focus (unless you want
-  to come off as extremely aggressive).
-- `:state` refers to the form's submission state: unsubmitted, active,
-  success. I think. I'm not sure this is a good idea.
-- `:ui-state` This is a convenience for when you want to, say,
-  show/hide a form. I'm not sure this is a good idea either, but
-  associating ui state with a form makes it easy to completely reset a
-  form. For example, when you navigate out of a view where you've
-  shown a form, you might want to completely reset the form state so
-  that the form isn't showing the next time you navigate to that
+- ~:buffer~ is a map that stores the current state of form inputs. When you type
+  into the input element, whatever you type gets put here. The example above
+  shows the component ~[input :text :todo-list/title ...]~. Its value is stored
+  under ~[:buffer :todo-list/title]~ in the form map. The buffer map's keys are
+  /attributes/. For example, I will refer to ~:todo-list/title~ as an attribute.
+- ~:base~ is a map that can be used to reset a form or discard changes.
+- ~:errors~ is a map where keys are form attributes and values are error
+  messages.
+- ~:input-events~ is used to control the display of error messages. For example:
+  if you're typing into a password confirmation input, the field is invalid as
+  you type, but you don't want to display error messages until the input loses
+  focus (unless you want to come off as extremely aggressive).
+- ~:state~ refers to the form's submission state: unsubmitted, active, success.
+  I think. I'm not sure this is a good idea.
+- ~:ui-state~ This is a convenience for when you want to, say, show/hide a form.
+  I'm not sure this is a good idea either, but associating ui state with a form
+  makes it easy to completely reset a form. For example, when you navigate out
+  of a view where you've shown a form, you might want to completely reset the
+  form state so that the form isn't showing the next time you navigate to that
   view. Or something.
 
-Now that we know how we represent and store forms, let's look at the
-input components and how they update form state.
+Now that we know how we represent and store forms, let's look at the input
+components and how they update form state.
 
 * Input components
 
@@ -100,86 +92,81 @@ Input components need to:
 - Update their value in response to... well, input
 - Display their value
 
-Sweet Tooth provides tools to create input components that manage
-these tasks consistently, unobtrusively, and extensibly. Look at the
-how the to-do list title input is defined:
+Sweet Tooth provides tools to create input components that manage these tasks
+consistently, unobtrusively, and extensibly. Look at the how the to-do list
+title input is defined:
 
-```clojure
+#+BEGIN_SRC clojure
 [input :text :todo-list/title
  {:id          "todo-list-title"
   :placeholder "new to-do list title"
   :no-label    true}]
-```
+#+END_SRC
 
-This works with no `:value` or `:on-change` in sight, which is as it
-should be; those are details that should be handled for you, and
-shouldn't have to clutter your code with them. But how does `input`
-achieve this? That's what we'll look at in this section.
+This works with no ~:value~ or ~:on-change~ in sight, which is as it should be;
+those are details that should be handled for you, and shouldn't have to clutter
+your code with them. But how does ~input~ achieve this? That's what we'll look
+at in this section.
 
 The high level strategy is:
 
-1. Create event handlers and subscriptions that are common to all
-   input components. I'll refer to these as _input options_.
-2. Modify input options according to an input's type as necessary. For
-   example, with most inputs you display the current value by
-   providing a `:value` key. With checkboxes and radio buttons,
-   though, you instead provide a `:checked` key.
-3. Pass the input options to the appropriate components. `:text`,
-   `:password`, and `:number` input types can all be handled with a
-   `[:input input-opts]` HTML element, but a `:select` needs special
-   handling.
+1. Create event handlers and subscriptions that are common to all input
+   components. I'll refer to these as /input options/.
+2. Modify input options according to an input's type as necessary. For example,
+   with most inputs you display the current value by providing a ~:value~ key.
+   With checkboxes and radio buttons, though, you instead provide a ~:checked~
+   key.
+3. Pass the input options to the appropriate components. ~:text~, ~:password~,
+   and ~:number~ input types can all be handled with a ~[:input input-opts]~
+   HTML element, but a ~:select~ needs special handling.
 
-To see how Sweet Tooth implements this strategy, let's look at the
-input component in context:
+To see how Sweet Tooth implements this strategy, let's look at the input
+component in context:
 
-```clojure
+#+BEGIN_SRC clojure
 (stfc/with-form [:todo-lists :create]
   [:form
    [input :text :todo-list/title
     {:id          "todo-list-title"
      :placeholder "new to-do list title"
      :no-label    true}]])
-```
+#+END_SRC
 
-In the expression `(stfc/with-form [:todo-lists :create])`,
-`with-form` is a macro—the only one in Sweet Tooth's frontend
-lib!—that creates a bunch of bindings. (If you really, really, really
-hate that, like with a passion, then you can use the function
-`stfc/form` and destructure the bindings yourself.)
+In the expression ~(stfc/with-form [:todo-lists :create])~, ~with-form~ is a
+macro—the only one in Sweet Tooth's frontend lib!—that creates a bunch of
+bindings. (If you really, really, really hate that, like with a passion, then
+you can use the function ~stfc/form~ and destructure the bindings yourself.)
 
-One of the values it binds is the `input` function. (Functions are
-Reagent components. This is completely badass.) `input` closes over
-the form's name, `[:todo-lists :create]`. `input` uses that
-name and the argument `:todo-list/title` to create event handlers that
-will update the attribute's value in the global state atom at the path
-`[:form :todo-lists :create :buffer :todo-list/title]`. It
-likewise creates subscriptions for the attribute's buffer and its
-errors. These subscriptions and handlers are composed in a map and
-passed to the multimethod `stfc/input-type-opts`.
+One of the values it binds is the ~input~ function. (Functions are Reagent
+components. This is completely badass.) ~input~ closes over the form's name,
+~[:todo-lists :create]~. ~input~ uses that name and the argument
+~:todo-list/title~ to create event handlers that will update the attribute's
+value in the global state atom at the path ~[:form :todo-lists :create :buffer
+:todo-list/title]~. It likewise creates subscriptions for the attribute's buffer
+and its errors. These subscriptions and handlers are composed in a map and
+passed to the multimethod ~stfc/input-type-opts~.
 
-`stfc/input-type-opts` is implemented for different input types as
-needed: `:checkbox`, `:date`, etc. This multimethod performs any
-transformations necessary so that the generic form subscriptions and
-handlers will work with the specified input type. For example, the
-`:checkbox` implementation returns a `:default-checked` key instead of
-a `:value` key.
+~stfc/input-type-opts~ is implemented for different input types as needed:
+~:checkbox~, ~:date~, etc. This multimethod performs any transformations
+necessary so that the generic form subscriptions and handlers will work with the
+specified input type. For example, the ~:checkbox~ implementation returns a
+~:default-checked~ key instead of a ~:value~ key.
 
-The `input` function takes the updated options from
-`stfc/input-type-opts` and passes them to the multimethod
-`stfc/input`.  `stfc/input` is implemented for different input
-elements like `<select>`, `<textarea>`, etc.
+The ~input~ function takes the updated options from ~stfc/input-type-opts~ and
+passes them to the multimethod ~stfc/input~. ~stfc/input~ is implemented for
+different input elements like ~<select>~, ~<textarea>~, etc.
 
-So that explains what I mean when I say that Sweet Tooth's input
-component system is _consistent_ and _unobtrusive_: all form inputs
-are managed using the same tools, and the implementation details are
-in the background where they belong (you don't have to pass
-`:on-change` to `input` unless you want custom behavior.)
+So that explains what I mean when I say that Sweet Tooth's input component
+system is /consistent/ and /unobtrusive/: all form inputs are managed using the
+same tools, and the implementation details are in the background where they
+belong (you don't have to pass ~:on-change~ to ~input~ unless you want custom
+behavior.)
 
-The system is _extensible_ in that you can use these tools for custom
-input types, which I think is pretty cool. Here's an example of
-extending `stfc/input` so you can use a markdown editor:
+The system is /extensible/ in that you can use these tools for custom input
+types, which I think is pretty cool. Here's an example of extending ~stfc/input~
+so you can use a markdown editor:
 
-```clojure
+#+BEGIN_SRC clojure
 (ns sweet-tooth.todo-example.frontend.components.ui.simplemde
   (:require ["react-simplemde-editor" :default SimpleMDE]
             [sweet-tooth.frontend.form.components :as stfc]))
@@ -188,24 +175,22 @@ extending `stfc/input` so you can use a markdown editor:
   [{:keys [partial-form-path attr-path value]}]
   [:> SimpleMDE {:onChange (fn [val] (stfc/dispatch-new-val partial-form-path attr-path val))
                  :value    value}])
-```
+#+END_SRC
 
-To try this out, modify
-`sweet-tooth.todo-example.frontend.components.home` by changing
-`[input :text :todo-list/title ...]` to `[input :simplemde
-:todo-list/title ...]`
+To try this out, modify ~sweet-tooth.todo-example.frontend.components.home~ by
+changing ~[input :text :todo-list/title ...]~ to ~[input :simplemde
+:todo-list/title ...]~
 
-Sweet Tooth provides all the machinery necessary for this new input
-type to participate in the form abstracton! You, the developer, don't
-have to agonize over whether to use global or local state, or
-otherwise figure out how to get your custom input component to play
-with the rest of your form.
+Sweet Tooth provides all the machinery necessary for this new input type to
+participate in the form abstracton! You, the developer, don't have to agonize
+over whether to use global or local state, or otherwise figure out how to get
+your custom input component to play with the rest of your form.
 
 * Submitting the form
 
 Let's look at the full form again:
 
-```clojure
+#+BEGIN_SRC clojure
 (stfc/with-form [:todo-lists :create]
   [:form (on-submit {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                            [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
@@ -216,63 +201,62 @@ Let's look at the full form again:
      :no-label    true}]
    [:input {:type "submit" :value "create to-do list"}]
    [ui/form-state-feedback form]])
-```
+#+END_SRC
 
-`on-submit` is a function created by `stfc/with-form` that returns an
-`:on-submit` event handler when called. Evaluating it with the above
-arguments yields essentially:
+~on-submit~ is a function created by ~stfc/with-form~ that returns an
+~:on-submit~ event handler when called. Evaluating it with the above arguments
+yields essentially:
 
-```clojure
+#+BEGIN_SRC clojure
 {:on-submit
  #(rf/dispatch [::stff/submit-form
                 [:todo-lists :create]
                 {:sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
                                        [::stnf/navigate-to-synced-entity :show-todo-list :$ctx]
                                        [:focus-element "#todo-list-title" 100]]}}}])}
-```
+#+END_SRC
 
-The `::stff/submit-form` event handler does a couple things:
+The ~::stff/submit-form~ event handler does a couple things:
 
-- Changes the form's `:state` to `:submitting`
+- Changes the form's ~:state~ to ~:submitting~
 - Dispatches an API call with the current value of the form's buffer
 
-Notice that you don't have to pass in the data to be
-submitted. Instead, the `::stff/submit-form` event handler takes the
-form's name, `[:todo-lists :create]`, and uses that to look up the
-form's buffer. This is what you get when you let a framework introduce
-a few conventions about how to structure your data.
+Notice that you don't have to pass in the data to be submitted. Instead, the
+~::stff/submit-form~ event handler takes the form's name, ~[:todo-lists
+:create]~, and uses that to look up the form's buffer. This is what you get when
+you let a framework introduce a few conventions about how to structure your
+data.
 
-The second argument to the `::stff/submit-form` event handler, `{:sync
-...}` is an options map. I don't remember _all_ the keywords it
-expects, and because I am a foolish, foolish man I haven't added specs
-for yet. However, it definitely does use `:sync` to specify re-frame
-events to dispatch when the API call succeeds or fails, as you can see
-in the snippet above.
+The second argument to the ~::stff/submit-form~ event handler, ~{:sync ...}~ is
+an options map. I don't remember /all/ the keywords it expects, and because I am
+a foolish, foolish man I haven't added specs for yet. However, it definitely
+does use ~:sync~ to specify re-frame events to dispatch when the API call
+succeeds or fails, as you can see in the snippet above.
 
 TODO: explain the success callback. Explain syncing.
 
-### Displaying an activity indicator
+** Displaying an activity indicator
 
 The last line of the form has:
 
-```clojure
+#+BEGIN_SRC clojure
 [ui/form-state-feedback form]
-```
+#+END_SRC
 
 This component displays a spinning activity indicator while the form
 is submitting. If the API call is successful, then a little checkmark
-with the word `success!` appears. You actually won't see the success
+with the word ~success!~ appears. You actually won't see the success
 message because you get redirected to the new to-do page on success,
 but you can see the success message if you create to-dos, or create a
 to-do list using the form in the left column.
 
-The `form` argument above is a map that holds subscriptions produced
-by `stfc/with-form`, including `sync-active?` and
-`state-success?`. These are passed to a couple components, which you
-can see in the  `sweet-tooth.todo-example.frontend.components.ui`
+The ~form~ argument above is a map that holds subscriptions produced
+by ~stfc/with-form~, including ~sync-active?~ and
+~state-success?~. These are passed to a couple components, which you
+can see in the  ~sweet-tooth.todo-example.frontend.components.ui~
 namespace:
 
-```clojure
+#+BEGIN_SRC clojure
 (def activity-icon [:i.fas.fa-spinner.fa-pulse.activity-indicator])
 
 (defn submitting-indicator
@@ -297,31 +281,31 @@ namespace:
   [:span.activity-indicator
    [submitting-indicator sync-active?]
    [success-indicator state-success?]])
-```
+#+END_SRC
 
-The more interesting component is `success-indicator`, which uses the
-helper `(stcu/expiring-reaction state-success? 1000)` to create a
-reaction `A'` over a given reaction `A` that reverts to `nil` (or a
+The more interesting component is ~success-indicator~, which uses the
+helper ~(stcu/expiring-reaction state-success? 1000)~ to create a
+reaction ~A'~ over a given reaction ~A~ that reverts to ~nil~ (or a
 specified value) after a timeout. It's how the success message fades
 out after 1 second.
 
 The bigger story here is that Sweet Tooth gives you all the resources
 you need to provide this kind of feedback. Every form you create will
-have `sync-active?` and `state-success?` subscriptions that are
+have ~sync-active?~ and ~state-success?~ subscriptions that are
 directly tied to that form, and you can use them to build generic
 components that provide useful feedback to your users.
 
-### Form Recap
+* Form Recap
 
 Sweet Tooth's form system has even more capabilities than I've
 covered, but you've at least gotten a view of the fundamentals:
 
 - Each form is given a name, and the form's data is stored by
-  convention under the `:form` "directory" in the global state atom
-- Forms are represented as maps, and the `:buffer` key contains the
+  convention under the ~:form~ "directory" in the global state atom
+- Forms are represented as maps, and the ~:buffer~ key contains the
   current values for inptus
 - Form components and subscriptions are created and bound by
-  `stfc/with-form`. These values close over the form's name and rely
+  ~stfc/with-form~. These values close over the form's name and rely
   on the framework's organization conventions to update and retrieve
   form attribute values
 - Form subscriptions can be used to create form state feedback

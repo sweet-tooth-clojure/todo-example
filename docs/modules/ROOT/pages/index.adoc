@@ -1,4 +1,4 @@
-= Sweet Tooth Todo Example =
+= Sweet Tooth To-Do Example Walkthrough =
 Daniel Higginbotham
 
 
@@ -10,70 +10,28 @@ simple to-do list app.
 TODO: include an overview here.
 
 
-== Preamble ==
+== Target Audience ==
+This README has been written for people who have written at least one Clojure
+web app. It assumes knowledge of web app development; it is not intended for
+complete for beginners. (Maybe one day I'll write that!) In particular, I'll
+refer to Integrant and re-frame concepts and explain them only briefly, if at
+all.
 
-=== What is Sweet Tooth? ===
-My dream for Sweet Tooth is to make it easier, faster, and funner for
-developers like you to get your ideas into production.
-
-Swet Tooth does this by giving you the tools to deal with common SPA concerns
-like handling forms, configuring routing and navigation, and managing API calls.
-These use cases are not particular to the app you're trying to build, but as a
-Clojurian you've likely had to figure them out for yourself when building an
-SPA. In the same way that you shouldn't have to write your own filesystem when
-making a desktop app, you shouldn't have to write your own form handling system
-to launch your cool idea. (BTW - word on the street is in the 80's a new OS
-would the street https://twitter.com/GeePawHill/status/1256342997643526151[every month or so], supporting my thesis that operating systems
-are frameworks.)
-
-I've tried to write Sweet Tooth so that using it doesn't lock you into some
-weird, arcane world the way some frameworks do. It's built on top of popular and
-proven libraries like re-frame, duct, integrant, liberator, ring, and reitit,
-and you can always use those libraries directly if you need to.
-
-The analogy I've had in mind is taken from the way we use files: files can be
-structured as text, text can be structured as JSON, and JSON can be structured
-as transit. Each additional degree of structure gives you added power while
-requiring more special-purpose tools. Your XML tools won't work on a JSON file.
-However, you can still use the lower-level tools; `sed` and `awk` work just
-fine. For more on my underlying approach to framework development, see
-http://flyingmachinestudios.com/programming/why-programmers-need-frameworks/[Frameworks and Why (Clojure) Programmers Need Them]
-
-Eventually, I'd like to make it dramatically easier for beginners to make cool
-stuff and show it to their friends and family. For that reason, I haven't put
-any effort into making use of tools like GraphQL which can be quite powerful but
-harder for beginners to grok and which, in my opinion, many apps don't need.
+I dive into Sweet Tooth internals more than I would in a tutorial that was
+focused solely on building stuff with the framework because you're experienced
+and I'm hoping to reveal some of its design and get your valuable feedback :)
 
 
-=== What isn't Sweet Tooth? ===
-Sweet Tooth is not for creating server-rendered apps. It hasn't been
-used for high-traffic projects, so it's currently not for that,
-either.
-
-
-=== Target Audience ===
-This README has been written for people who have written at least one
-Clojure web app. It assumes knowledge of web app development; it is
-not intended for complete for beginners. (Maybe one day I'll write
-that!) In particular, I'll refer to Integrant and re-frame concepts
-and explain them only briefly, if at all.
-
-I dive into Sweet Tooth internals more than I would in a tutorial that
-was focused solely on building stuff with the framework because you're
-experienced and I'm hoping to reveal some of its design and get your
-valuable feedback :)
-
-
-== Walkthrough ==
-For the rest of this doc I'll show you Sweet Tooth's ideas and
-features by walking you through what happens when you create a to-do
-list. First, get the app running:
+== First Steps ==
+For the rest of this doc I'll show you Sweet Tooth's ideas and features by
+walking you through what happens when you create a to-do list. First, get the
+app running:
 
 . In a terminal, run `npm install` then `shadow-cljs watch dev`
-. Start a REPL. If prompted to choose between `lein`, `clojure-cli`,
-and `shadow-cljs`, choose `lein`.
-. Evaluate `(dev)` in the REPL. The REPL will pause for a little bit
-while it thinks.
+. Start a REPL. If prompted to choose between `lein`, `clojure-cli`, and
+`shadow-cljs`, choose `lein`.
+. Evaluate `(dev)` in the REPL. The REPL will pause for a little bit while it
+thinks.
 . Evaluate `(go)`.
 
 The app should now be running at http://localhost:3000[http://localhost:3000] and you should see
@@ -81,11 +39,10 @@ something like this:
 
 image::01-running.png[todo example screenshot]
 
-Now, create a to-do list by entering its title and hitting enter or
-clicking the "create to-do list" button. You should see a little
-activity indicator appear for a split second, then you should get
-redirected to your newly-created to-do list. The URL should have
-changed to something like
+Now, create a to-do list by entering its title and hitting enter or clicking the
+"create to-do list" button. You should see a little activity indicator appear
+for a split second, then you should get redirected to your newly-created to-do
+list. The URL should have changed to something like
 `http://localhost:3000/to-do-list/17592186045431`.
 
 In even these two simple steps there's a lot going on, including:
@@ -103,39 +60,3 @@ In even these two simple steps there's a lot going on, including:
 * Navigating to the new to-do list
 
 Let's dig in!
-
-
-== Prior Art ==
-* http://hoplon.io/[Hoplon]
-* https://luminusweb.com/[Luminus]
-* http://pedestal.io/[Pedestal]
-* http://fulcro.fulcrologic.com/[Fulcro]
-* https://github.com/coast-framework/coast[Coast]
-* https://github.com/keechma/keechma[Keechma]
-
-Or see the entire list of frameworks at https://www.clojure-toolbox.com/[https://www.clojure-toolbox.com/] under
-Web Frameworks.
-
-
-== notes to self ==
-You should ignore everything after this point; it's just notes to myself.
-
-* TODO include screenshot earlier
-
-### Frontend
-
-* routing
-* syncing
-* forms
-* activity indicator
-* validation
-* expiring subscriptions
-* re-frame sugar
-* sync language
-
-### Backend
-
-* routing
-* endpoints
-
-## Exercises
