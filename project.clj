@@ -21,27 +21,19 @@
    :repl         {:repl-options {:init-ns user}}
    :uberjar      {:aot :all}
    :profiles/dev {}
-   :project/dev  {:source-paths   ["dev/src"]
-                  :resource-paths ["dev/resources" "target/dev/resources"]
-                  :target-path    "target/dev/"
-                  :dependencies   [[integrant/repl "0.3.1"]
-                                   [eftest "0.5.4"]
-                                   [kerodon "0.9.0"]
-                                   [com.gfredericks/test.chuck "0.2.7"]
-                                   [reifyhealth/specmonstah "2.0.0"]
-                                   [test2junit "1.4.2"]]
-                  :plugins        [[test2junit "1.4.2"]]
-
+   :project/dev  {:source-paths           ["dev/src"]
+                  :resource-paths         ["dev/resources" "target/dev/resources"]
+                  :target-path            "target/dev/"
+                  :lein-tools-deps/config {:aliases [:dev :test]}
+                  :plugins                [[test2junit "1.4.2"]]
                   :test2junit-output-dir ".out/test-results"}
 
-   :local-staging {:target-path    "target/local-staging/"
-                   :resource-paths ["dev/resources" "frontend-target/local-staging"]}
-   :staging       {:target-path            "target/staging/"
-                   :resource-paths         ["dev/resources" "frontend-target/staging"]
-                   :lein-tools-deps/config {:aliases ^:replace [:backend]}}
-   :prod          {:target-path            "target/prod/"
-                   :resource-paths         ["frontend-target/prod"]
-                   :lein-tools-deps/config {:aliases ^:replace [:backend]}}
+   :staging {:target-path            "target/staging/"
+             :resource-paths         ["dev/resources" "frontend-target/staging"]
+             :lein-tools-deps/config {:aliases ^:replace [:backend]}}
+   :prod    {:target-path            "target/prod/"
+             :resource-paths         ["frontend-target/prod"]
+             :lein-tools-deps/config {:aliases ^:replace [:backend]}}
 
    :test {:resource-paths         ["dev/resources" "frontend-target/test"]
           :lein-tools-deps/config {:aliases [:test]}}})

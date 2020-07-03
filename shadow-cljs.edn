@@ -25,15 +25,6 @@
            :modules
            {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}
 
-          :local-staging
-          {:target     :browser
-           :output-dir "frontend-target/local-staging/public/js"
-           :asset-path "/js"
-           :compiler-options {:optimizations :advanced}
-
-           :modules
-           {:main {:entries [sweet-tooth.todo-example.frontend.core]}}}
-
           :staging
           {:target     :browser
            :output-dir "frontend-target/staging/public/js"
