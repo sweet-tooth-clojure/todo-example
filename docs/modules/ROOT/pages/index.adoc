@@ -7,13 +7,11 @@ framework for Clojure! I'll guide you through many of its features by taking you
 on a depth-first walk through a single action: creating a new to-do list in a
 simple to-do list app.
 
-TODO: include an overview here.
-
 
 == Target Audience ==
-This README has been written for people who have written at least one Clojure
-web app. It assumes knowledge of web app development; it is not intended for
-complete for beginners. (Maybe one day I'll write that!) In particular, I'll
+This walkthrough has been written for people who have written at least one
+Clojure web app. It assumes knowledge of web app development; it is not intended
+for complete for beginners. (Maybe one day I'll write that!) In particular, I'll
 refer to Integrant and re-frame concepts and explain them only briefly, if at
 all.
 
