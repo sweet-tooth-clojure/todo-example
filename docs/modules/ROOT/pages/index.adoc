@@ -1,0 +1,60 @@
+= Sweet Tooth To-Do Example Walkthrough =
+Daniel Higginbotham
+
+
+Get a _taste_ of what it's like to work with Sweet Tooth, a single-page app
+framework for Clojure! I'll guide you through many of its features by taking you
+on a depth-first walk through a single action: creating a new to-do list in a
+simple to-do list app.
+
+
+== Target Audience ==
+This walkthrough has been written for people who have written at least one
+Clojure web app. It assumes knowledge of web app development; it is not intended
+for complete for beginners. (Maybe one day I'll write that!) In particular, I'll
+refer to Integrant and re-frame concepts and explain them only briefly, if at
+all.
+
+I dive into Sweet Tooth internals more than I would in a tutorial that was
+focused solely on building stuff with the framework because you're experienced
+and I'm hoping to reveal some of its design and get your valuable feedback :)
+
+
+== First Steps ==
+For the rest of this doc I'll show you Sweet Tooth's ideas and features by
+walking you through what happens when you create a to-do list. First, get the
+app running:
+
+. In a terminal, run `npm install` then `shadow-cljs watch dev`
+. Start a REPL. If prompted to choose between `lein`, `clojure-cli`, and
+`shadow-cljs`, choose `lein`.
+. Evaluate `(dev)` in the REPL. The REPL will pause for a little bit while it
+thinks.
+. Evaluate `(go)`.
+
+The app should now be running at http://localhost:3000[http://localhost:3000] and you should see
+something like this:
+
+image::01-running.png[todo example screenshot]
+
+Now, create a to-do list by entering its title and hitting enter or clicking the
+"create to-do list" button. You should see a little activity indicator appear
+for a split second, then you should get redirected to your newly-created to-do
+list. The URL should have changed to something like
+`http://localhost:3000/to-do-list/17592186045431`.
+
+In even these two simple steps there's a lot going on, including:
+
+* Initial rendering
+** App initialization
+** Route handling for the URL `http://localhost:3000/`
+** Rendering the "home page"
+* Form handling
+** Managing the input for the to-do list title
+** Submitting the form
+** Displaying an activity indicator
+* API request handling
+* Frontend response handling
+* Navigating to the new to-do list
+
+Let's dig in!

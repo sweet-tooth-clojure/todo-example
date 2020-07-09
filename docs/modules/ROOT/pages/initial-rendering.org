@@ -1,0 +1,349 @@
+#+TITLE: Initial Rendering
+
+
+What's involved in displaying the initial form and sidebar? If you
+look in the ~sweet-tooth.todo-example.frontend.core~ namespace, you'll
+see:
+
+#+CAPTION: initial rendering fns
+#+BEGIN_SRC clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+#+END_SRC
+
+Most of this will be unfamiliar, but you look at the very last line
+you'll see some code you might recognize:
+
+#+CAPTION: here's where we render
+#+BEGIN_SRC clojure
+(r/render [app/app] (stcu/el-by-id "app"))
+#+END_SRC
+
+We're rendering the ~app/app~ component to the ~<div id="app"></div>~ DOM
+element. Here's what the ~app/app~ component looks like:
+
+#+CAPTION: the ~app/app~ component
+#+BEGIN_SRC clojure
+(defn app
+  []
+  [:div.app
+   [:div.head
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A To-Do List!"]]]
+   [:div.container.grid
+    [:div.side @(rf/subscribe [::stnf/routed-component :side])]
+    [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])
+#+END_SRC
+
+Hmm. There's still nothing here that looks like the forms we see in
+the sidebar and main area. What's going on? Here's the high level
+overview, which I'll explain in detail in the sections that follow:
+
+1. Integrant initializes system components
+2. One component is a /router/ that associates URL patterns with
+
+   * What components to display
+   * Lifecycle callbacks that should get dispatched on entering or exiting a
+     route (I haven't shown the router code that ties routes to components and
+     lifecycle callbacks, but I'll introduce you to it later)
+3. Another component is a /nav handler/ that reacts to nav events by
+   looking up the corresponding /route/, dispatching its lifecycle,
+   and setting it as the current route in the appdb
+4. The ~[::stnf/dispatch-current]~ re-frame event causes the nav
+   handler to handle the current URL, dispatching its lifecycle and
+   setting the current route
+5. The ~::stnf/routed-component~ subscription pulls components for the
+   current route out of the app db, and those components get rendered
+
+Now let's go through all this in detail.
+
+* App Initialization
+
+When you open the home page, the app renders the home page's
+components. For most projects, your app must perform some kind of
+initialization process (to set up route handling, for example) to get
+to this point. How does a Sweet Tooth app do it?
+
+Briefly, Sweet Tooth provides a re-frame handler to initialize an [[https://github.com/weavejester/integrant][Integrant]]
+/system/ (check out the Integrant docs for a description of what a system is and
+how Integrant provides a mechanism for starting and stopping components). The
+system includes a component for managing nav events, like loading the initial
+page or clicking a link. This nav component looks up the /route/ for the current
+URL in a [[https://github.com/metosin/reitit][reitit]] router. The route defines /lifecycle callbacks/ and also defines
+which high-level components should get displayed.
+
+We'll look at each of these parts of the framework and how we use them
+in our app.
+
+First, let's look at the ~sweet-tooth.todo-example.frontend.core~
+namespace again:
+
+#+CAPTION: system config
+#+BEGIN_SRC clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+#+END_SRC
+
+As is tradition for Lispers, let's start at the bottom and work our
+way up. In the ~-main~ function, you can see we're dispatching two
+events and then rendering a component. Let's walk through the
+mechanics of what's going on, and then we'll talk about why it works
+the way it does.
+
+The first event is:
+
+#+CAPTION: first event
+#+BEGIN_SRC clojure
+(rf/dispatch-sync [::stcf/init-system (system-config)])
+#+END_SRC
+
+~(system-config)~ returns an Integrant config, a map describing a
+system where each key corresponds to the name of a /system component/
+(as opposed to a React compononent) and each value is that component's
+configuration. Examples of system components include nav handlers that
+react to History events and web worker managers.
+
+Sweet Tooth comes with a bunch o' system components that are meant to make your
+life easier, and the default config for those components lives at
+~stconfig/default-config~. In the ~system-config~ function we merge the default
+Sweet Tooth config with our app's particular config. We use [[https://github.com/weavejester/meta-merge][~meta-merge~]] because
+of its support for deep merging and because of how it gives you some control
+over how the two values get merged.
+
+This system config is the payload for the ~::stcf/init-system~ event. This event
+[[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/core/flow.cljc#L123][results in integrant getting called]] to /initialize/ the system:
+
+#+BEGIN_SRC clojure
+(rf/reg-event-fx ::init-system
+  (fn [_ [_ config]]
+    {::init-system config}))
+
+(rf/reg-fx ::init-system
+  (fn [config]
+    (reset! rfdb/app-db {:sweet-tooth/system (-> config
+                                                 ig/prep
+                                                 ig/init)})))
+#+END_SRC
+
+Integrant initializes an app by initializing individual components in
+dependency order; the nav handler component depends on a router
+component, so the router gets initialized before the nav handler.
+
+Why do we use Integrant to initialize our app? A few reasons:
+
+1. Sometimes we want to render different React components at different
+   stages of the system's readiness. For example, you might want to
+   show a loading indicator while the app sets up whatever state is
+   necessary for it to be used, and then render the app proper once
+   the system is ready. Integrant makes it a lot easier to determine
+   when the system is ready.
+2. Integrant has a very simple model for handling both initializing
+   /and/ halting a system. This is very useful for local development
+   with livereload when you have components that modify global state,
+   for example by attaching event listeners to the window. Livereload
+   can call ~(ig/halt!)~ on the system, giving each component to clean
+   up after itself (remove its listeners) before code gets reloaded.
+3. Integrant makes it easier to code to interfaces. The nav handler
+   component depends on a router, and by default it depends on a
+   reitit router. However, you could provide a bidi or silk router
+   instead, as long as it can conform to the same interface. (This
+   isn't particular to the initialization process per se but I threw
+   it in because why not!?)
+
+So that explains Integrant and how it fits into the app initialization
+process, the first step in the ~-main~ function:
+
+#+BEGIN_SRC clojure
+(defn -main []
+  (rf/dispatch-sync [::stcf/init-system (system-config)])
+  (rf/dispatch-sync [::stnf/dispatch-current])
+  (r/render [app/app] (stcu/el-by-id "app")))
+#+END_SRC
+
+To understand the next step, ~(rf/dispatch-sync
+[::stnf/dispatch-current])~, we'll take a closer look at Sweet Tooth's
+/nav handler/ component.
+
+* The nav handler component
+
+You can see the nav handler's default config in the
+[[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/config.cljs][~sweet-tooth.frontend.config~]] namespace:
+
+#+BEGIN_SRC clojure
+{::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
+                 :check-can-unload?      true
+                 :router                 (ig/ref ::stfr/frontend-router)
+                 :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
+#+END_SRC
+
+On initialization, it [[https://github.com/sweet-tooth-clojure/frontend/blob/master/src/sweet_tooth/frontend/nav/flow.cljs#L26][uses an adapted version of the accountant library]] to
+register javascript event handlers for nav events. These /javascript event/
+handlers will dispatch /re-frame events/; Sweet Tooth's default configuration,
+above, has the js event handlers dispatching the ~::stnf/disptach-route~
+re-frame event by default. In extremely simplified pseudocode, it's as if the
+following gets evaluated when the nav component is initialized:
+
+#+BEGIN_SRC clojure
+(js/listen js/NavEvent #(rf/dispatch [::stnf/dispatch-route]))
+#+END_SRC
+
+~::stnf/dispatch-route~ is one of the gnarlier bits of Sweet Tooth,
+and we don't need to go into all the details of how it works.
+Ultimately what it does is:
+
+1. Figures out what /route/ corresponds to the potential new URL
+   proposed by the navigation event using a /router/. (I say
+   /potential/ URL because it's possible for nav events to get
+   rejected.)
+1. Dispatches the route's /lifecycle callbacks/
+2. Sets the currently active route in the re-frame app db
+
+In the -main function, we see ~(rf/dispatch-sync
+[::stnf/dispatch-current])~. This behaves almost identically to
+~::stnf/dispatch-route~; the only difference is that it operates on
+the current URL.
+
+To understand this process fully, we'll need to look at this router that I keep
+talking about.
+
+* The router component
+
+I kept saying that the nav handler uses a router to look up
+routes. Where does the router come from? You can see it in the config
+for the nav handler:
+
+#+BEGIN_SRC clojure
+{::stnf/handler {:dispatch-route-handler ::stnf/dispatch-route
+                 :check-can-unload?      true
+                 :router                 (ig/ref ::stfr/frontend-router) ;; <--- There it is!
+                 :global-lifecycle       (ig/ref ::stnf/global-lifecycle)}}
+#+END_SRC
+
+The config includes a /reference/ to another component,
+~::stfr/frontend-router~. We actually saw the configuration for /that/ component
+in ~sweet-tooth.todo-example.frontend.core~:
+
+#+BEGIN_SRC clojure
+(defn system-config
+  "This is a function instead of a static value so that it will pick up
+  reloaded changes"
+  []
+  (mm/meta-merge stconfig/default-config
+                 {::stfr/frontend-router {:use    :reitit
+                                          :routes froutes/frontend-routes}
+                  ::stfr/sync-router     {:use    :reitit
+                                          :routes (ig/ref ::eroutes/routes)}
+
+                  ;; Treat handler registration as an external service,
+                  ;; interact with it via re-frame effects
+                  ::stjehf/handlers {}
+                  ::eroutes/routes  ""}))
+#+END_SRC
+
+So the ~::stfr/frontend-router~ component gets initialized with this
+configuration:
+
+#+BEGIN_SRC clojure
+{:use    :reitit
+ :routes froutes/frontend-routes}
+#+END_SRC
+
+~:use~ specifies what library should be used to parse route data into
+a router, and reitit is supported out of the box. ~:routes~ specifies
+the route data. Here's ~froutes/frontend-routes~:
+
+#+BEGIN_SRC clojure
+(ns sweet-tooth.todo-example.frontend.routes
+  (:require [sweet-tooth.frontend.sync.flow :as stsf]
+            [sweet-tooth.frontend.form.flow :as stff]
+            [sweet-tooth.frontend.nav.flow :as stnf]
+            [sweet-tooth.todo-example.cross.validate :as v]
+            [sweet-tooth.todo-example.frontend.components.home :as h]
+            [sweet-tooth.todo-example.frontend.components.todo-lists.list :as tll]
+            [sweet-tooth.todo-example.frontend.components.todo-lists.show :as tls]
+            [sweet-tooth.todo-example.frontend.components.ui :as ui]
+            [clojure.spec.alpha :as s]
+            [reitit.coercion.spec :as rs]))
+
+(s/def :db/id int?)
+
+(def frontend-routes
+  [["/"
+    {:name       :home
+     :lifecycle  {:param-change [::stsf/sync-once [:get :todo-lists]]}
+     :components {:side [tll/component]
+                  :main [h/component]}
+     :title      "To-Do List"}]
+
+   ["/todo-list/{db/id}"
+    {:name       :show-todo-list
+     :lifecycle  {:param-change [[::stff/initialize-form [:todos :create] {:validate (ui/validate-with v/todo-rules)}]
+                                 [::stsf/sync-once [:get :todo-lists]]
+                                 [::stnf/get-with-route-params :todo-list]]}
+     :components {:side [tll/component]
+                  :main [tls/component]}
+     :coercion   rs/coercion
+     :parameters {:path (s/keys :req [:db/id])}
+     :title      "To-Do List"}]])
+#+END_SRC
+
+You can see that each route has a ~:components~ key, a map with
+~:side~ and ~:main~ keys. When you load the home page, ~tll/component~
+shows up in the side bar, and ~tls/component~ shows up in the "main"
+column.
+
+At the beginning of all this I asked how the ~app~ component worked:
+
+#+BEGIN_SRC clojure
+(defn app
+  []
+  [:div.app
+   [:div.head
+    [:div.container [:a {:href (stfr/path :home)} "Wow! A To-Do List!"]]]
+   [:div.container.grid
+    [:div.side @(rf/subscribe [::stnf/routed-component :side])]
+    [:div.main @(rf/subscribe [::stnf/routed-component :main])]]])
+#+END_SRC
+
+Now we have all the pieces to solve the puzzle:
+
+1. A nav handler gets created on initialization
+2. It's passed a router that associates URL paths with components
+3. We dispatch ~(rf/dispatch-sync [::stnf/dispatch-current])~. This
+   sets the current route in the re-frame app db.
+4. The ~::stnf/routed-component~ subscription looks up the
+   ~:component~ key for the current route in the app db.
+5. Those components get rendered.

@@ -54,29 +54,29 @@ is not showing checkmark
 ****** review process, is it good
 *** DONE inline "success" text should be hidden
 *** DONE only submit todo edit form if it's dirty
-** DONE reexamine the duct middleware web defaults
+*** DONE reexamine the duct middleware web defaults
 [[file:~/projects/web/sweet-tooth/todo-example/resources/config.edn:::duct.middleware.web/defaults][these items]]
 if necessary, move them to sweet tooth and document them
-*** figure out anti-forgery
-** DONE figure out re-ajax in uberjar
-** DONE uberjar server is not working with todo list URLs
-*** they weren't in the config
-*** how to make this cross as well?
-** DONE update to 0.7.1
-** DONE "new todo" showing error after submission
-** DONE convert datomic to in-memory so anyone can run it
-*** auto run create, migrate?
-** DONE from todo to to-do
-** DONE commit the compiled CSS
-** DONE un-tie the two create forms
-** DONE home page experience?
+**** figure out anti-forgery
+*** DONE figure out re-ajax in uberjar
+*** DONE uberjar server is not working with todo list URLs
+**** they weren't in the config
+**** how to make this cross as well?
+*** DONE update to 0.7.1
+*** DONE "new todo" showing error after submission
+*** DONE convert datomic to in-memory so anyone can run it
+**** auto run create, migrate?
+*** DONE from todo to to-do
+*** DONE commit the compiled CSS
+*** DONE un-tie the two create forms
+*** DONE home page experience?
 - show all todo lists on home page?
 - big ol' new todo list on empty page?
-** DONE fix todo deletion
+*** DONE fix todo deletion
 - 500 on attempt
 - should redirect you to home page
-** DONE disable double-submit
-** DONE simplify shadow / don't use local path / get rid of deps.edn?
+*** DONE disable double-submit
+*** DONE simplify shadow / don't use local path / get rid of deps.edn?
 ** TODO fix flash of form while loading home page
 ** TODO add check boxes with an animation
 ** TODO multiple users
