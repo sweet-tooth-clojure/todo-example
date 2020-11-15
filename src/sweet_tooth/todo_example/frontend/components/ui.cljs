@@ -32,8 +32,8 @@
   (when @sync-active? activity-icon))
 
 (defn success-indicator
-  [state-success? & [opts]]
-  (let [expiring-state-success? (stcu/expiring-reaction state-success? 1000)]
+  [state-success? & [_opts]]
+  (let [expiring-state-success? (stcu/expiring-reaction state-success? 2000)]
     (fn [_state-success? & [opts]]
       [:> TransitionGroup
        {:component "span"

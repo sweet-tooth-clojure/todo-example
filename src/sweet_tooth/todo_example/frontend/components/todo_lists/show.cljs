@@ -72,10 +72,11 @@
               [ui/form-state-feedback form]])])))
 
 (defn submit-btn
-  [form-errors]
+  [partial-form-path form-dscr]
   [:input {:type     "submit"
            :value    "create to-do"
-           :disabled (not-empty @form-errors)}])
+           :on-click #(rf/dispatch [::stff/form-input-event {:partial-form-path partial-form-path
+                                                             :event-type        "submit-click"}])}])
 
 (defn component
   []
@@ -91,15 +92,22 @@
          [:div.todo-list
           [todo-list-title tl]
           (stfc/with-form [:todos :create]
+            {:dscr-sub :todo-validation}
             [:form.new-todo
-             (on-submit {:data {:todo/todo-list (:db/id tl)}
-                         :sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state}]
-                                               [:focus-element "#todo-title" 100]]}}})
-             [field :text :todo/title {:placeholder    "new to-do"
-                                       :id             "todo-title"
-                                       :no-label       true
-                                       :show-errors-on #{"submit"}}]
-             [submit-btn form-errors]
+             {:on-submit
+              (fn [e]
+                (if-not (:prevent-submit? @form-dscr)
+                  ((on-submit-handler
+                    {:data {:todo/todo-list (:db/id tl)}
+                     :sync {:on {:success [[::stff/clear form-path #{:buffer :ui-state :input-events}]
+                                           [:focus-element "#todo-title" 100]]}}})
+                   e)
+                  (.preventDefault e)))}
+
+             [field :text :todo/title {:placeholder "new to-do"
+                                       :id          "todo-title"
+                                       :no-label    true}]
+             [submit-btn form-path form-dscr]
              [ui/form-state-feedback form]])
           (if (seq todos)
             [:ol.todos (doall (map (fn [t] ^{:key (:db/id t)} [todo t])
